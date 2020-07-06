@@ -43,7 +43,6 @@
         android:textAlignment="center"
         android:textColor="@android:color/black"
         app:autoSizeMaxTextSize="30sp"
-        app:autoSizeMinTextSize="18sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
