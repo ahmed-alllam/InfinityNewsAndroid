@@ -11,4 +11,12 @@
     <string name="tutorial4_description">Receive Notifications for Posts as soon as Published by Subscribing to news sources Push Notifications</string>
     <string name="sign_up">Sign up</string>
     <string name="log_in">Log in</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="welcome">Welcome!</string>
 </resources>
