@@ -1,7 +1,10 @@
 package com.bitnews.bitnews.data.models;
 
+import androidx.room.Entity;
+
 import java.util.Objects;
 
+@Entity
 public class User {
     private String username;
     private String firstName;
