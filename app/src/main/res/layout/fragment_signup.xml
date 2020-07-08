@@ -34,7 +34,10 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/first_name"
+        android:drawableStart="@drawable/ic_person"
+        android:drawablePadding="8dp"
         android:inputType="textPersonName"
+        app:drawableTint="@android:color/secondary_text_dark"
         app:layout_constraintEnd_toStartOf="@+id/guideline30"
         app:layout_constraintStart_toStartOf="@+id/guideline24"
         app:layout_constraintTop_toTopOf="@+id/guideline29" />
@@ -44,19 +47,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.48" />
 
     <EditText
         android:id="@+id/editText2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:ems="10"
         android:hint="@string/last_name"
+        android:drawableStart="@drawable/ic_person"
         android:inputType="textPersonName"
+        android:drawablePadding="8dp"
+        app:drawableTint="@android:color/secondary_text_dark"
         app:layout_constraintEnd_toStartOf="@+id/guideline26"
-        app:layout_constraintStart_toStartOf="@+id/guideline30"
+        app:layout_constraintStart_toStartOf="@+id/guideline34"
         app:layout_constraintTop_toTopOf="@+id/guideline29" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline34"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.52" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline31"
@@ -72,6 +84,9 @@
         android:ems="10"
         android:hint="@string/username"
         android:inputType="textPersonName"
+        android:drawableStart="@drawable/ic_email"
+        android:drawablePadding="8dp"
+        app:drawableTint="@android:color/secondary_text_dark"
         app:layout_constraintEnd_toStartOf="@+id/guideline26"
         app:layout_constraintStart_toStartOf="@+id/guideline24"
         app:layout_constraintTop_toTopOf="@+id/guideline31" />
@@ -89,7 +104,10 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/password"
+        android:drawableStart="@drawable/ic_lock"
         android:inputType="textPassword"
+        android:drawablePadding="8dp"
+        app:drawableTint="@android:color/secondary_text_dark"
         app:layout_constraintEnd_toStartOf="@+id/guideline26"
         app:layout_constraintStart_toStartOf="@+id/guideline24"
         app:layout_constraintTop_toTopOf="@+id/guideline32" />
@@ -109,7 +127,10 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/confirm_password"
+        android:drawableStart="@drawable/ic_lock"
         android:inputType="textPassword"
+        android:drawablePadding="8dp"
+        app:drawableTint="@android:color/secondary_text_dark"
         app:layout_constraintEnd_toStartOf="@+id/guideline26"
         app:layout_constraintStart_toStartOf="@+id/guideline24"
         app:layout_constraintTop_toTopOf="@+id/guideline33" />

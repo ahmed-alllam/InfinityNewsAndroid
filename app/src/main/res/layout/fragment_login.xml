@@ -29,15 +29,15 @@
 
 
     <EditText
-        android:id="@+id/emailField"
+        android:id="@+id/usernameField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_email"
         android:drawablePadding="8dp"
         android:ems="10"
         android:fontFamily="@font/roboto_medium"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
+        android:hint="@string/username"
+        android:inputType="text"
         app:drawableTint="@android:color/secondary_text_dark"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
