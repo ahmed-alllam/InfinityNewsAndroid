@@ -11,7 +11,7 @@ import com.bitnews.bitnews.data.db.dao.UserDao;
 import com.bitnews.bitnews.data.models.AuthToken;
 import com.bitnews.bitnews.data.models.User;
 
-@Database(entities = {User.class, AuthToken.class}, version = 1)
+@Database(entities = {User.class, AuthToken.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "bitnews-db";
     private static AppDatabase instance;

@@ -39,6 +39,7 @@ public class TutorialActivity extends AppCompatActivity {
         getStartedButton.setOnClickListener((v) -> {
             Intent intent = new Intent(this, LoginSignupActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 }

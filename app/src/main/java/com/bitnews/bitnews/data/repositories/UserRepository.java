@@ -20,16 +20,14 @@ import retrofit2.Call;
 
 public class UserRepository {
     private static UserRepository instance;
-    private AppExecutors appExecutors;
-    private APIEndpoints apiEndpoints;
+    private AppExecutors appExecutors = AppExecutors.getInstance();
+    private APIEndpoints apiEndpoints = APIService.getService();
     private UserDao userDao;
     private AuthTokenDao authTokenDao;
 
     public static UserRepository getInstance(Context context) {
         if (instance == null) {
             instance = new UserRepository();
-            instance.apiEndpoints = APIService.getService();
-            instance.appExecutors = AppExecutors.getInstance();
             AppDatabase appDatabase = AppDatabase.getInstance(context);
             instance.userDao = appDatabase.getUserDao();
             instance.authTokenDao = appDatabase.getAuthTokenDao();

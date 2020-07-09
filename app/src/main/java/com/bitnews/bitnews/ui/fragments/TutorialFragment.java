@@ -15,12 +15,11 @@ import androidx.fragment.app.Fragment;
 import com.bitnews.bitnews.R;
 
 public class TutorialFragment extends Fragment {
-    private int image_drawable_id; // todo
+    private int image_drawable_id; // TODO: 2020-07-09
     private int title_string_id;
     private int description_string_id;
 
     public TutorialFragment(int fragmentPosition) {
-        System.out.println(fragmentPosition);
         switch (fragmentPosition) {
             case 0:
                 image_drawable_id = R.drawable.ic_launcher_background;

@@ -12,17 +12,17 @@ import retrofit2.http.POST;
 public interface APIEndpoints {
 
     @FormUrlEncoded
-    @POST("users/signup")
+    @POST("users/signup/")
     Call<User> signUp(@Field("first_name") String firstName,
                       @Field("last_name") String lastName,
                       @Field("username") String userName,
                       @Field("password") String password);
 
     @FormUrlEncoded
-    @POST("users/token")
+    @POST("users/token/")
     Call<AuthToken> logIn(@Field("username") String username,
                           @Field("password") String password);
 
-    @GET("users/me")
+    @GET("users/me/")
     Call<User> getCurrentUser();
 }
