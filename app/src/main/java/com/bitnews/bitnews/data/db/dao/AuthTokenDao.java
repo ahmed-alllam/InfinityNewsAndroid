@@ -1,8 +1,8 @@
 package com.bitnews.bitnews.data.db.dao;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.Query;
 
 import com.bitnews.bitnews.data.models.AuthToken;
 
@@ -10,8 +10,8 @@ import com.bitnews.bitnews.data.models.AuthToken;
 public interface AuthTokenDao {
 
     @Insert
-    public void addAuthToken(AuthToken authToken);
+    void addAuthToken(AuthToken authToken);
 
-    @Delete
-    public void deleteAuthToken(AuthToken authToken);
+    @Query("DELETE FROM authtoken;")
+    void deleteAuthToken();
 }

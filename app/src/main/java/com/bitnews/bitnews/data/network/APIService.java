@@ -5,9 +5,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIService {
     private static final String BASE_URL = "127.0.0.1";
-    private APIEndpoints endpoints;
+    private static APIEndpoints endpoints;
 
-    public APIEndpoints getService() {
+    public static APIEndpoints getService() {
         if (endpoints == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)

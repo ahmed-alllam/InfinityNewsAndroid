@@ -47,4 +47,8 @@ public class User {
     public boolean isCurrentUser() {
         return isCurrentUser;
     }
+
+    public void setCurrentUser(boolean currentUser) {
+        isCurrentUser = currentUser;
+    }
 }

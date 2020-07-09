@@ -7,9 +7,9 @@ import com.bitnews.bitnews.data.models.User;
 
 public interface UserDao {
 
-    @Query("SELECT * FROM user WHERE isCurrentUser=1")
-    public User getCurrentUser();
+    @Query("SELECT * FROM user WHERE isCurrentUser=1;")
+    User getCurrentUser();
 
     @Insert
-    public void addUser(User user);
+    void addUser(User user);
 }

@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name" translatable="false">Bit News</string>
-    <string name="get_started_button">Get Started</string>
+    <string name="app_name">Bit News</string>
+    <string name="get_started_button">إبدأ</string>
     <string name="tutorial1_title">Get Latest News</string>
     <string name="tutorial2_title">Keep Up-To-Date</string>
     <string name="tutorial3_title">Smart Searching</string>
@@ -9,14 +9,14 @@
     <string name="tutorial2_description">Keep Up-to-date with the Daily and Breaking News in your Area by using the Daily Recap Stories</string>
     <string name="tutorial3_description">Search By Title, Tags, Date and Keywords for all the News Posts and Stories that you need</string>
     <string name="tutorial4_description">Receive Notifications for Posts as soon as Published by Subscribing to news sources Push Notifications</string>
-    <string name="sign_up">Sign up</string>
-    <string name="log_in">Log in</string>
-    <string name="password">Password</string>
-    <string name="forget_password">Forget Password?</string>
-    <string name="last_name">Last Name</string>
-    <string name="first_name">First Name</string>
-    <string name="username">Username</string>
-    <string name="confirm_password">Confirm Password</string>
-    <string name="welcome">Welcome!</string>
-    <string name="skip">Skip</string>
+    <string name="sign_up">انشئ حساب</string>
+    <string name="log_in">سجل دخول</string>
+    <string name="password">كلمة السر</string>
+    <string name="forget_password">نسيت كلمة السر؟</string>
+    <string name="last_name">الإسم الاخير</string>
+    <string name="first_name">الإسم الأول</string>
+    <string name="username">إسم المستخدم</string>
+    <string name="confirm_password">تأكيد كلمة السر</string>
+    <string name="welcome">مرحباً!</string>
+    <string name="skip">تخطي</string>
 </resources>
