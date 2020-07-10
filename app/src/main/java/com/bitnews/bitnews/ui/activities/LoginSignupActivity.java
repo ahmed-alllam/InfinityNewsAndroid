@@ -43,8 +43,10 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
 
         FloatingActionButton nextButton = findViewById(R.id.nextFab);
         nextButton.setOnClickListener((v) -> {
-            if (!isRequestPending)
-                currentAuthFragment.sendAuthRequest();
+            if (!isRequestPending) {
+                if (currentAuthFragment != null)
+                    currentAuthFragment.sendAuthRequest();
+            }
         });
     }
 
@@ -53,7 +55,7 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
 
         if (signupFragment == null) {
             isNew = true;
-            signupFragment = new SignupFragment();
+            signupFragment = new SignupFragment(this);
         }
 
         switchFragments(signupFragment, loginFragment, signupButton,
@@ -65,7 +67,7 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
 
         if (loginFragment == null) {
             isNew = true;
-            loginFragment = new LoginFragment();
+            loginFragment = new LoginFragment(this);
         }
 
         switchFragments(loginFragment, signupFragment, loginButton,

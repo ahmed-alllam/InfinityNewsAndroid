@@ -19,4 +19,10 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="welcome">Welcome!</string>
     <string name="skip">Skip</string>
+    <string name="network_error" translatable="false">No Network Connection, Please try again</string>
+    <string name="wrong_username_or_password" translatable="false">Wrong Username or Password</string>
+    <string name="username_taken" translatable="false">Username already taken</string>
+    <string name="invalid_name" translatable="false">Invalid First or Last Name</string>
+    <string name="invalid_username" translatable="false">Invalid Username</string>
+    <string name="invalid_password" translatable="false">Invalid or Not Matching Password</string>
 </resources>

@@ -33,6 +33,16 @@ public class UserViewModel extends ViewModel {
         });
     }
 
+    public void loginUser(Context context, String userName, String password) {
+        LiveData<APIResponse<AuthToken>> repositoryLiveData = getUserRepository(context)
+                .loginUser(userName, password);
+
+        token.addSource(repositoryLiveData, (response) -> {
+            token.removeSource(repositoryLiveData);
+            token.setValue(response);
+        });
+    }
+
     public MediatorLiveData<APIResponse<User>> getUser() {
         return user;
     }

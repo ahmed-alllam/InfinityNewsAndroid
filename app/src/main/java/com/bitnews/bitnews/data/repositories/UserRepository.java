@@ -38,23 +38,29 @@ public class UserRepository {
     public LiveData<APIResponse<User>> getCurrentUser() {
         return new NetworkBoundResource<User>() {
             @Override
-            protected void saveAPIResponse(User item) {
-
+            protected void saveToDB(User user) {
+                // TODO: 2020-07-10: should change it to update
+                userDao.addUser(user);
             }
 
             @Override
-            protected boolean shouldFetch(User data) {
+            protected boolean shouldFetchFromAPI(User data) {
                 return true;
             }
 
             @Override
-            protected User loadFromDB() {
+            protected User fetchFromDB() {
                 return userDao.getCurrentUser();
             }
 
             @Override
             protected Call<User> getCall() {
                 return apiEndpoints.getCurrentUser();
+            }
+
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return true;
             }
         }.asLiveData();
     }
@@ -63,19 +69,24 @@ public class UserRepository {
                                                   String userName, String password) {
         return new NetworkBoundResource<User>() {
             @Override
-            protected void saveAPIResponse(User user) {
+            protected void saveToDB(User user) {
                 user.setCurrentUser(true);
                 userDao.addUser(user);
             }
 
             @Override
-            protected boolean shouldFetch(User data) {
+            protected boolean shouldFetchFromAPI(User data) {
                 return true;
             }
 
             @Override
-            protected User loadFromDB() {
+            protected User fetchFromDB() {
                 return null;
+            }
+
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return false;
             }
 
             @Override
@@ -88,18 +99,23 @@ public class UserRepository {
     public LiveData<APIResponse<AuthToken>> loginUser(String userName, String password) {
         return new NetworkBoundResource<AuthToken>() {
             @Override
-            protected void saveAPIResponse(AuthToken token) {
+            protected void saveToDB(AuthToken token) {
                 authTokenDao.addAuthToken(token);
             }
 
             @Override
-            protected boolean shouldFetch(AuthToken data) {
+            protected boolean shouldFetchFromAPI(AuthToken data) {
                 return true;
             }
 
             @Override
-            protected AuthToken loadFromDB() {
+            protected AuthToken fetchFromDB() {
                 return null;
+            }
+
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return false;
             }
 
             @Override

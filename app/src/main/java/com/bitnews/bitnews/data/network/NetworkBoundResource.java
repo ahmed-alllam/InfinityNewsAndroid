@@ -5,6 +5,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bitnews.bitnews.utils.AppExecutors;
 
@@ -14,48 +15,57 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public abstract class NetworkBoundResource<ResponseType> {
-    private MediatorLiveData<APIResponse<ResponseType>> Response = new MediatorLiveData<>();
+    private MediatorLiveData<APIResponse<ResponseType>> response = new MediatorLiveData<>();
     private AppExecutors appExecutors = AppExecutors.getInstance();
 
 
     public NetworkBoundResource() {
-        MediatorLiveData<ResponseType> dbResponse = new MediatorLiveData<>();
+        if (shouldFetchFromDB()) {
+            MediatorLiveData<ResponseType> dbResponse = new MediatorLiveData<>();
 
-        appExecutors.getDiskIO().execute(() -> {
-            ResponseType response = loadFromDB();
-            appExecutors.getMainThread().execute(() -> dbResponse.setValue(response));
-        });
+            appExecutors.getDiskIO().execute(() -> {
+                ResponseType response = fetchFromDB();
+                appExecutors.getMainThread().execute(() -> dbResponse.setValue(response));
+            });
 
-        Response.addSource(dbResponse, data -> {
-            Response.removeSource(dbResponse);
-            if (shouldFetch(data))
-                fetchFromNetwork(dbResponse);
-            else
-                Response.addSource(dbResponse, APIResponse::new);
-        });
+            response.addSource(dbResponse, data -> {
+                response.removeSource(dbResponse);
+                if (shouldFetchFromAPI(data))
+                    fetchFromAPI(dbResponse);
+                else
+                    response.addSource(dbResponse, APIResponse::new);
+            });
+        } else {
+            fetchFromAPI(new MutableLiveData<>(null));
+        }
     }
 
-    private void fetchFromNetwork(LiveData<ResponseType> dbResponse) {
+    private void fetchFromAPI(LiveData<ResponseType> dbResponse) {
         MediatorLiveData<APIResponse<ResponseType>> apiResponse = new MediatorLiveData<>();
         appExecutors.getNetworkIO().execute(() -> {
-            APIResponse<ResponseType> response = executeCall(getCall());
-            appExecutors.getMainThread().execute(() -> apiResponse.setValue(response));
+            APIResponse<ResponseType> callResponse = executeCall(getCall());
+            appExecutors.getMainThread().execute(() -> apiResponse.setValue(callResponse));
         });
 
-        Response.addSource(apiResponse, response -> {
-            Response.removeSource(apiResponse);
-            Response.removeSource(dbResponse);
-            if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
-                if (shouldSaveToDB(response.getitem(), dbResponse.getValue()))
-                    appExecutors.getDiskIO().execute(() -> saveAPIResponse(response.getitem()));
-                Response.setValue(response);
-            } else if (response.getStatus() == APIResponse.Status.NETWORK_FAILED) {
-                if (dbResponse.getValue() != null)
-                    Response.setValue(new APIResponse<>(dbResponse.getValue()));
-                else
-                    Response.setValue(response);
-            } else
-                Response.setValue(response);
+        response.addSource(apiResponse, callResponse -> {
+            response.removeSource(apiResponse);
+            response.removeSource(dbResponse);
+
+            switch (callResponse.getStatus()) {
+                case SUCCESFUL:
+                    if (shouldSaveToDB(callResponse.getitem(), dbResponse.getValue()))
+                        appExecutors.getDiskIO().execute(() -> saveToDB(callResponse.getitem()));
+                    response.setValue(callResponse);
+                    break;
+                case NETWORK_FAILED:
+                    if (dbResponse.getValue() != null)
+                        response.setValue(new APIResponse<>(dbResponse.getValue()));
+                    else
+                        response.setValue(callResponse);
+                    break;
+                case BAD_REQUEST:
+                    response.setValue(callResponse);
+            }
         });
     }
 
@@ -74,7 +84,6 @@ public abstract class NetworkBoundResource<ResponseType> {
                     errorBody = retrofitResponse.errorBody().string();
                 }
                 response.setError(new Throwable(errorBody));
-
                 responseStatus = statusCode < 500 ? APIResponse.Status.BAD_REQUEST : APIResponse.Status.NETWORK_FAILED;
             } else {
                 response.setitem(retrofitResponse.body());
@@ -92,14 +101,17 @@ public abstract class NetworkBoundResource<ResponseType> {
     }
 
     public LiveData<APIResponse<ResponseType>> asLiveData() {
-        return Response;
+        return response;
     }
 
     @WorkerThread
-    protected abstract void saveAPIResponse(ResponseType item);
+    protected abstract void saveToDB(ResponseType item);
 
     @MainThread
-    protected abstract boolean shouldFetch(ResponseType data);
+    protected abstract boolean shouldFetchFromDB();
+
+    @MainThread
+    protected abstract boolean shouldFetchFromAPI(ResponseType data);
 
     @MainThread
     protected boolean shouldSaveToDB(ResponseType apiResponse, ResponseType dbResponse) {
@@ -107,7 +119,7 @@ public abstract class NetworkBoundResource<ResponseType> {
     }
 
     @WorkerThread
-    protected abstract ResponseType loadFromDB();
+    protected abstract ResponseType fetchFromDB();
 
     @MainThread
     protected abstract Call<ResponseType> getCall();

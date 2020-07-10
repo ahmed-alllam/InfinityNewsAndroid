@@ -29,7 +29,7 @@
         app:layout_constraintGuide_percent="0.15" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/firstNameField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -50,7 +50,7 @@
         app:layout_constraintGuide_percent="0.48" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/lastNameField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -78,7 +78,7 @@
         app:layout_constraintGuide_percent="0.25" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/usernameField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -99,7 +99,7 @@
         app:layout_constraintGuide_percent="0.35" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/passwordField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -122,7 +122,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/confirmPasswordField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -134,4 +134,33 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline26"
         app:layout_constraintStart_toStartOf="@+id/guideline24"
         app:layout_constraintTop_toTopOf="@+id/guideline33" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline40"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <TextView
+        android:id="@+id/errorLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@android:color/holo_red_light"
+        app:autoSizeMaxTextSize="16dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/guideline41"
+        app:layout_constraintEnd_toStartOf="@+id/guideline26"
+        app:layout_constraintStart_toStartOf="@+id/guideline24"
+        app:layout_constraintTop_toTopOf="@+id/guideline40"
+        tools:text="TextView" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline41"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.65" />
 </androidx.constraintlayout.widget.ConstraintLayout>
