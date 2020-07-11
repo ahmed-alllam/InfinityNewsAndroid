@@ -33,6 +33,15 @@ public class UserViewModel extends ViewModel {
         });
     }
 
+    public void signupAsGuest(Context context) {
+        LiveData<APIResponse<User>> repositoryLiveData = getUserRepository(context).signupAsGuest();
+
+        user.addSource(repositoryLiveData, (response) -> {
+            user.removeSource(repositoryLiveData);
+            user.setValue(response);
+        });
+    }
+
     public void loginUser(Context context, String userName, String password) {
         LiveData<APIResponse<AuthToken>> repositoryLiveData = getUserRepository(context)
                 .loginUser(userName, password);
@@ -41,6 +50,18 @@ public class UserViewModel extends ViewModel {
             token.removeSource(repositoryLiveData);
             token.setValue(response);
         });
+    }
+
+    public void logoutUser(Context context) {
+        getUserRepository(context).logoutUser();
+    }
+
+    public LiveData<APIResponse<Boolean>> isUserAuthenticated(Context context) {
+        return getUserRepository(context).isUserAuthenticated();
+    }
+
+    public LiveData<APIResponse<Boolean>> isUserAuthenticatedAndNotGuest(Context context) {
+        return getUserRepository(context).isUserAuthenticatedAndNotGuest();
     }
 
     public MediatorLiveData<APIResponse<User>> getUser() {

@@ -33,7 +33,7 @@ public abstract class NetworkBoundResource<ResponseType> {
                 if (shouldFetchFromAPI(data))
                     fetchFromAPI(dbResponse);
                 else
-                    response.addSource(dbResponse, APIResponse::new);
+                    response.setValue(new APIResponse<>(data));
             });
         } else {
             fetchFromAPI(new MutableLiveData<>(null));

@@ -19,9 +19,17 @@ public interface APIEndpoints {
                       @Field("password") String password);
 
     @FormUrlEncoded
+    @POST("users/signup/")
+    Call<User> sinUpAsGuest(@Field("guest") boolean isGuest);
+
+    @FormUrlEncoded
     @POST("users/token/")
     Call<AuthToken> logIn(@Field("username") String username,
                           @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("users/token/")
+    Call<AuthToken> logIn(@Field("username") String username);
 
     @GET("users/me/")
     Call<User> getCurrentUser();

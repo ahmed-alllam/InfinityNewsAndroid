@@ -159,8 +159,7 @@ public class SignupFragment extends Fragment implements UserAuthFragmentListener
     private void processLoginResponse(APIResponse<AuthToken> response) {
         switch (response.getStatus()) {
             case SUCCESFUL:
-                // TODO: 2020-07-10: start next activity
-                errorLabel.setText("success");
+                onUserAuthRequestListener.onRequestSuccessful();
                 break;
             case NETWORK_FAILED:
                 errorLabel.setText(R.string.network_error);

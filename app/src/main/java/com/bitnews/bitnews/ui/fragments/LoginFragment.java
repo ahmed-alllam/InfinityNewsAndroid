@@ -92,8 +92,7 @@ public class LoginFragment extends Fragment implements UserAuthFragmentListener 
     private void processResponse(APIResponse<AuthToken> response) {
         switch (response.getStatus()) {
             case SUCCESFUL:
-                // TODO: 2020-07-10: start next activity
-                errorLabel.setText("success"); // todo: remove
+                onUserAuthRequestListener.onRequestSuccessful();
                 break;
             case BAD_REQUEST:
                 errorLabel.setText(R.string.wrong_username_or_password);

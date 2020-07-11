@@ -8,28 +8,43 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.callbacks.OnUserAuthRequestListener;
 import com.bitnews.bitnews.callbacks.UserAuthFragmentListener;
+import com.bitnews.bitnews.data.models.AuthToken;
+import com.bitnews.bitnews.data.models.User;
+import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.fragments.LoginFragment;
 import com.bitnews.bitnews.ui.fragments.SignupFragment;
+import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class LoginSignupActivity extends AppCompatActivity implements OnUserAuthRequestListener {
     private SignupFragment signupFragment;
     private LoginFragment loginFragment;
+    private UserViewModel userViewModel;
     private UserAuthFragmentListener currentAuthFragment;
     private Button signupButton;
     private Button loginButton;
     private ProgressBar progressBar;
 
+    private String guestUsername = "";
     private boolean isRequestPending;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_signup);
+
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getUser().observe(this, (this::processGuestSignupResponse));
+        userViewModel.getToken().observe(this, (response -> {
+            onRequestFinished();
+            processGuestLoginResponse(response);
+        }));
 
         signupButton = findViewById(R.id.signupButton);
         loginButton = findViewById(R.id.loginButton);
@@ -48,6 +63,16 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
                     currentAuthFragment.sendAuthRequest();
             }
         });
+
+        ExtendedFloatingActionButton skipButton = findViewById(R.id.skipFab);
+        skipButton.setOnClickListener((v -> {
+            if (!isRequestPending) {
+                if (guestUsername.isEmpty())
+                    signupAsGuest();
+                else
+                    loginAsGuest();
+            }
+        }));
     }
 
     private void showSignupFragment() {
@@ -109,5 +134,41 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
     public void onRequestFinished() {
         isRequestPending = false;
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onRequestSuccessful() {
+        // TODO: 2020-07-11 : Start the next activity
+    }
+
+    private void signupAsGuest() {
+        userViewModel.signupAsGuest(getApplicationContext());
+    }
+
+    private void loginAsGuest() {
+        userViewModel.loginUser(getApplicationContext(), guestUsername, "");
+    }
+
+    private void processGuestSignupResponse(APIResponse<User> response) {
+        switch (response.getStatus()) {
+            case SUCCESFUL:
+                guestUsername = response.getitem().getUsername();
+                loginAsGuest();
+                break;
+            case NETWORK_FAILED:
+                guestUsername = "";
+                onRequestFinished();
+                currentAuthFragment.setErrorMessage(R.string.network_error);
+        }
+    }
+
+    private void processGuestLoginResponse(APIResponse<AuthToken> response) {
+        switch (response.getStatus()) {
+            case SUCCESFUL:
+                onRequestSuccessful();
+                break;
+            case NETWORK_FAILED:
+                currentAuthFragment.setErrorMessage(R.string.network_error);
+        }
     }
 }

@@ -14,6 +14,7 @@ public class User {
     private String lastName;
     private String profilePhoto;
     private boolean isCurrentUser;
+    private boolean isGuest;
 
     @Override
     public boolean equals(Object o) {
@@ -37,6 +38,14 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isGuest() {
+        return isGuest;
+    }
+
+    public void setGuest(boolean guest) {
+        isGuest = guest;
     }
 
     public String getUsername() {

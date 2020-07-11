@@ -5,15 +5,27 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bitnews.bitnews.R;
+import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 
 public class SplashActivity extends AppCompatActivity {
+    private Class nextActivityClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.isUserAuthenticated(getApplicationContext()).observe(this, (result) -> {
+            boolean isAuthenticated = result.getitem();
+            if (isAuthenticated)
+                nextActivityClass = MainActivity.class;
+            else
+                nextActivityClass = TutorialActivity.class;
+        });
 
         new Handler().postDelayed(() -> {
             Intent mainIntent = new Intent(SplashActivity.this, getNextActivityClass());
@@ -23,10 +35,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private Class getNextActivityClass() {
-        // if ()
-        // return MainActivity.class;
-        // else
-        //    return LoginActivity.class;
-        return TutorialActivity.class;
+        return nextActivityClass;
     }
 }

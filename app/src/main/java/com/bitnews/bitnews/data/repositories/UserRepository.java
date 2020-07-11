@@ -39,7 +39,6 @@ public class UserRepository {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user) {
-                // TODO: 2020-07-10: should change it to update
                 userDao.addUser(user);
             }
 
@@ -96,6 +95,38 @@ public class UserRepository {
         }.asLiveData();
     }
 
+    public LiveData<APIResponse<User>> signupAsGuest() {
+        return new NetworkBoundResource<User>() {
+            @Override
+            protected void saveToDB(User user) {
+                user.setGuest(true);
+                user.setCurrentUser(true);
+                userDao.addUser(user);
+            }
+
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return false;
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI(User data) {
+                return true;
+            }
+
+            @Override
+            protected User fetchFromDB() {
+                return null;
+            }
+
+            @Override
+            protected Call<User> getCall() {
+                return apiEndpoints.sinUpAsGuest(true);
+            }
+        }.asLiveData();
+    }
+
+
     public LiveData<APIResponse<AuthToken>> loginUser(String userName, String password) {
         return new NetworkBoundResource<AuthToken>() {
             @Override
@@ -120,12 +151,75 @@ public class UserRepository {
 
             @Override
             protected Call<AuthToken> getCall() {
+                if (password.isEmpty())
+                    return apiEndpoints.logIn(userName);
                 return apiEndpoints.logIn(userName, password);
             }
         }.asLiveData();
     }
 
     public void logoutUser() {
-        appExecutors.getDiskIO().execute(() -> authTokenDao.deleteAuthToken());
+        appExecutors.getDiskIO().execute(() -> {
+            userDao.deleteCurrentUser();
+            authTokenDao.deleteAuthToken();
+        });
+    }
+
+    public LiveData<APIResponse<Boolean>> isUserAuthenticated() {
+        return new NetworkBoundResource<Boolean>() {
+            @Override
+            protected void saveToDB(Boolean item) {
+            }
+
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return true;
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI(Boolean data) {
+                return false;
+            }
+
+            @Override
+            protected Boolean fetchFromDB() {
+                boolean b = userDao.isUserAuthenticated();
+                System.out.println(b);
+                return b;
+            }
+
+            @Override
+            protected Call<Boolean> getCall() {
+                return null;
+            }
+        }.asLiveData();
+    }
+
+    public LiveData<APIResponse<Boolean>> isUserAuthenticatedAndNotGuest() {
+        return new NetworkBoundResource<Boolean>() {
+            @Override
+            protected void saveToDB(Boolean item) {
+            }
+
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return true;
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI(Boolean data) {
+                return false;
+            }
+
+            @Override
+            protected Boolean fetchFromDB() {
+                return userDao.isUserAuthenticatedAndNotGuest();
+            }
+
+            @Override
+            protected Call<Boolean> getCall() {
+                return null;
+            }
+        }.asLiveData();
     }
 }
