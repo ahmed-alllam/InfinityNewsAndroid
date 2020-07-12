@@ -14,4 +14,7 @@ public interface AuthTokenDao {
 
     @Query("DELETE FROM authtoken;")
     void deleteAuthToken();
+
+    @Query("SELECT * FROM authtoken;")
+    AuthToken getAuthToken();
 }

@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.bitnews.bitnews.data.models.User;
 
@@ -19,10 +20,8 @@ public abstract class UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void addUser(User user);
 
-    // todo change to auth token dao
-    public Boolean isUserAuthenticated() {
-        return getCurrentUser() != null;
-    }
+    @Update
+    public abstract void updateUser(User user);
 
     public Boolean isUserAuthenticatedAndNotGuest() {
         User user = getCurrentUser();

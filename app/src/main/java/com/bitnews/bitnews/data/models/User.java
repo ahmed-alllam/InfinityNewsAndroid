@@ -7,8 +7,7 @@ import java.util.Objects;
 
 @Entity
 public class User {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
     private String username;
     private String firstName;
     private String lastName;
@@ -30,14 +29,6 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(username, firstName, lastName, profilePhoto);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public boolean isGuest() {

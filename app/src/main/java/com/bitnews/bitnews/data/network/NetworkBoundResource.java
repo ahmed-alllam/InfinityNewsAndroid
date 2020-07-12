@@ -54,7 +54,7 @@ public abstract class NetworkBoundResource<ResponseType> {
             switch (callResponse.getStatus()) {
                 case SUCCESFUL:
                     if (shouldSaveToDB(callResponse.getitem(), dbResponse.getValue()))
-                        appExecutors.getDiskIO().execute(() -> saveToDB(callResponse.getitem()));
+                        appExecutors.getDiskIO().execute(() -> saveToDB(callResponse.getitem(), dbResponse.getValue() != null));
                     response.setValue(callResponse);
                     break;
                 case NETWORK_FAILED:
@@ -105,7 +105,7 @@ public abstract class NetworkBoundResource<ResponseType> {
     }
 
     @WorkerThread
-    protected abstract void saveToDB(ResponseType item);
+    protected abstract void saveToDB(ResponseType item, boolean isUpdate);
 
     @MainThread
     protected abstract boolean shouldFetchFromDB();

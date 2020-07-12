@@ -38,8 +38,13 @@ public class UserRepository {
     public LiveData<APIResponse<User>> getCurrentUser() {
         return new NetworkBoundResource<User>() {
             @Override
-            protected void saveToDB(User user) {
-                userDao.addUser(user);
+            protected void saveToDB(User user, boolean isUpdate) {
+                if (isUpdate) {
+                    userDao.updateUser(user);
+                } else {
+                    user.setCurrentUser(true);
+                    userDao.addUser(user);
+                }
             }
 
             @Override
@@ -68,7 +73,7 @@ public class UserRepository {
                                                   String userName, String password) {
         return new NetworkBoundResource<User>() {
             @Override
-            protected void saveToDB(User user) {
+            protected void saveToDB(User user, boolean isUpdate) {
                 user.setCurrentUser(true);
                 userDao.addUser(user);
             }
@@ -98,7 +103,7 @@ public class UserRepository {
     public LiveData<APIResponse<User>> signupAsGuest() {
         return new NetworkBoundResource<User>() {
             @Override
-            protected void saveToDB(User user) {
+            protected void saveToDB(User user, boolean isUpdate) {
                 user.setGuest(true);
                 user.setCurrentUser(true);
                 userDao.addUser(user);
@@ -130,7 +135,7 @@ public class UserRepository {
     public LiveData<APIResponse<AuthToken>> loginUser(String userName, String password) {
         return new NetworkBoundResource<AuthToken>() {
             @Override
-            protected void saveToDB(AuthToken token) {
+            protected void saveToDB(AuthToken token, boolean isUpdate) {
                 authTokenDao.addAuthToken(token);
             }
 
@@ -168,7 +173,7 @@ public class UserRepository {
     public LiveData<APIResponse<Boolean>> isUserAuthenticated() {
         return new NetworkBoundResource<Boolean>() {
             @Override
-            protected void saveToDB(Boolean item) {
+            protected void saveToDB(Boolean item, boolean isUpdate) {
             }
 
             @Override
@@ -183,9 +188,7 @@ public class UserRepository {
 
             @Override
             protected Boolean fetchFromDB() {
-                boolean b = userDao.isUserAuthenticated();
-                System.out.println(b);
-                return b;
+                return authTokenDao.getAuthToken() != null;
             }
 
             @Override
@@ -198,7 +201,7 @@ public class UserRepository {
     public LiveData<APIResponse<Boolean>> isUserAuthenticatedAndNotGuest() {
         return new NetworkBoundResource<Boolean>() {
             @Override
-            protected void saveToDB(Boolean item) {
+            protected void saveToDB(Boolean item, boolean isUpdate) {
             }
 
             @Override
