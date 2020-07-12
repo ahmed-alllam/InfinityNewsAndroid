@@ -139,7 +139,7 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
 
     @Override
     public void onRequestSuccessful() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, ChooseCategoriesActivity.class);
         startActivity(intent);
         finish();
     }
