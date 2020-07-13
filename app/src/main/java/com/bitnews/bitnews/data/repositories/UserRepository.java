@@ -3,8 +3,6 @@ package com.bitnews.bitnews.data.repositories;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
-
 import com.bitnews.bitnews.data.db.AppDatabase;
 import com.bitnews.bitnews.data.db.dao.AuthTokenDao;
 import com.bitnews.bitnews.data.db.dao.UserDao;
@@ -14,13 +12,14 @@ import com.bitnews.bitnews.data.network.APIEndpoints;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.data.network.APIService;
 import com.bitnews.bitnews.data.network.NetworkBoundResource;
-import com.bitnews.bitnews.utils.AppExecutors;
 
-import retrofit2.Call;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.Subject;
 
 public class UserRepository {
     private static UserRepository instance;
-    private AppExecutors appExecutors = AppExecutors.getInstance();
     private APIEndpoints apiEndpoints = APIService.getService();
     private UserDao userDao;
     private AuthTokenDao authTokenDao;
@@ -35,7 +34,7 @@ public class UserRepository {
         return instance;
     }
 
-    public LiveData<APIResponse<User>> getCurrentUser() {
+    public Subject<APIResponse<User>> getCurrentUser() {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
@@ -53,12 +52,12 @@ public class UserRepository {
             }
 
             @Override
-            protected User fetchFromDB() {
+            protected Single<User> fetchFromDB() {
                 return userDao.getCurrentUser();
             }
 
             @Override
-            protected Call<User> getCall() {
+            protected Single<User> getAPICall() {
                 return apiEndpoints.getCurrentUser();
             }
 
@@ -66,11 +65,11 @@ public class UserRepository {
             protected boolean shouldFetchFromDB() {
                 return true;
             }
-        }.asLiveData();
+        }.asSubject();
     }
 
-    public LiveData<APIResponse<User>> signupUser(String firstName, String lastName,
-                                                  String userName, String password) {
+    public Subject<APIResponse<User>> signupUser(String firstName, String lastName,
+                                                 String userName, String password) {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
@@ -84,7 +83,7 @@ public class UserRepository {
             }
 
             @Override
-            protected User fetchFromDB() {
+            protected Single<User> fetchFromDB() {
                 return null;
             }
 
@@ -94,13 +93,13 @@ public class UserRepository {
             }
 
             @Override
-            protected Call<User> getCall() {
+            protected Single<User> getAPICall() {
                 return apiEndpoints.signUp(firstName, lastName, userName, password);
             }
-        }.asLiveData();
+        }.asSubject();
     }
 
-    public LiveData<APIResponse<User>> signupAsGuest() {
+    public Subject<APIResponse<User>> signupAsGuest() {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
@@ -120,19 +119,19 @@ public class UserRepository {
             }
 
             @Override
-            protected User fetchFromDB() {
+            protected Single<User> fetchFromDB() {
                 return null;
             }
 
             @Override
-            protected Call<User> getCall() {
+            protected Single<User> getAPICall() {
                 return apiEndpoints.sinUpAsGuest(true);
             }
-        }.asLiveData();
+        }.asSubject();
     }
 
 
-    public LiveData<APIResponse<AuthToken>> loginUser(String userName, String password) {
+    public Subject<APIResponse<AuthToken>> loginUser(String userName, String password) {
         return new NetworkBoundResource<AuthToken>() {
             @Override
             protected void saveToDB(AuthToken token, boolean isUpdate) {
@@ -145,7 +144,7 @@ public class UserRepository {
             }
 
             @Override
-            protected AuthToken fetchFromDB() {
+            protected Single<AuthToken> fetchFromDB() {
                 return null;
             }
 
@@ -155,74 +154,33 @@ public class UserRepository {
             }
 
             @Override
-            protected Call<AuthToken> getCall() {
+            protected Single<AuthToken> getAPICall() {
                 if (password.isEmpty())
                     return apiEndpoints.logIn(userName);
                 return apiEndpoints.logIn(userName, password);
             }
-        }.asLiveData();
+        }.asSubject();
     }
 
     public void logoutUser() {
-        appExecutors.getDiskIO().execute(() -> {
+        Subject.fromCallable(() -> {
             userDao.deleteCurrentUser();
             authTokenDao.deleteAuthToken();
-        });
+
+            return null;
+        }).observeOn(Schedulers.io())
+                .subscribe();
     }
 
-    public LiveData<APIResponse<Boolean>> isUserAuthenticated() {
-        return new NetworkBoundResource<Boolean>() {
-            @Override
-            protected void saveToDB(Boolean item, boolean isUpdate) {
-            }
-
-            @Override
-            protected boolean shouldFetchFromDB() {
-                return true;
-            }
-
-            @Override
-            protected boolean shouldFetchFromAPI(Boolean data) {
-                return false;
-            }
-
-            @Override
-            protected Boolean fetchFromDB() {
-                return authTokenDao.getAuthToken() != null;
-            }
-
-            @Override
-            protected Call<Boolean> getCall() {
-                return null;
-            }
-        }.asLiveData();
+    public Single<Boolean> isUserAuthenticated() {
+        return authTokenDao.isUserAuthenticated()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public LiveData<APIResponse<Boolean>> isUserAuthenticatedAndNotGuest() {
-        return new NetworkBoundResource<Boolean>() {
-            @Override
-            protected void saveToDB(Boolean item, boolean isUpdate) {
-            }
-
-            @Override
-            protected boolean shouldFetchFromDB() {
-                return true;
-            }
-
-            @Override
-            protected boolean shouldFetchFromAPI(Boolean data) {
-                return false;
-            }
-
-            @Override
-            protected Boolean fetchFromDB() {
-                return userDao.isUserAuthenticatedAndNotGuest();
-            }
-
-            @Override
-            protected Call<Boolean> getCall() {
-                return null;
-            }
-        }.asLiveData();
+    public Single<Boolean> isUserAuthenticatedAndNotGuest() {
+        return userDao.isUserAuthenticatedAndNotGuest()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

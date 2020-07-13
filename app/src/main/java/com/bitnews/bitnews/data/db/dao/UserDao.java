@@ -8,11 +8,13 @@ import androidx.room.Update;
 
 import com.bitnews.bitnews.data.models.User;
 
+import io.reactivex.Single;
+
 @Dao
 public abstract class UserDao {
 
     @Query("SELECT * FROM user WHERE isCurrentUser=1;")
-    public abstract User getCurrentUser();
+    public abstract Single<User> getCurrentUser();
 
     @Query("DELETE FROM user WHERE isCurrentUser=1;")
     public abstract void deleteCurrentUser();
@@ -23,8 +25,9 @@ public abstract class UserDao {
     @Update
     public abstract void updateUser(User user);
 
-    public Boolean isUserAuthenticatedAndNotGuest() {
-        User user = getCurrentUser();
-        return user != null && !user.isGuest();
+    public Single<Boolean> isUserAuthenticatedAndNotGuest() {
+        // return getCurrentUser().map(user -> user != null && !user.isGuest());
+        // TODO: 2020-07-13
+        return Single.just(false);
     }
 }

@@ -1,5 +1,6 @@
 package com.bitnews.bitnews.data.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -8,7 +9,8 @@ import java.util.Objects;
 @Entity
 public class User {
     @PrimaryKey
-    private String username;
+    @NonNull
+    private String username = "";
     private String firstName;
     private String lastName;
     private String profilePhoto;

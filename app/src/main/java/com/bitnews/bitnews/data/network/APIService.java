@@ -1,6 +1,7 @@
 package com.bitnews.bitnews.data.network;
 
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIService {
@@ -12,6 +13,7 @@ public class APIService {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
             endpoints = retrofit.create(APIEndpoints.class);
         }

@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
 
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.isUserAuthenticated(getApplicationContext()).observe(this, (result) -> {
-            boolean isAuthenticated = result.getitem();
+            boolean isAuthenticated = result;
             if (isAuthenticated)
                 nextActivityClass = MainActivity.class;
             else
