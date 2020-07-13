@@ -168,7 +168,8 @@ public class UserRepository {
             authTokenDao.deleteAuthToken();
 
             return null;
-        }).observeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
 

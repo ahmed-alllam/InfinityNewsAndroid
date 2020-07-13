@@ -25,9 +25,6 @@ public abstract class UserDao {
     @Update
     public abstract void updateUser(User user);
 
-    public Single<Boolean> isUserAuthenticatedAndNotGuest() {
-        // return getCurrentUser().map(user -> user != null && !user.isGuest());
-        // TODO: 2020-07-13
-        return Single.just(false);
-    }
+    @Query("SELECT EXISTS(SELECT * FROM user WHERE isCurrentUser=1);")
+    public abstract Single<Boolean> isUserAuthenticatedAndNotGuest();
 }

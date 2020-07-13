@@ -20,9 +20,6 @@ public abstract class AuthTokenDao {
     @Query("SELECT * FROM authtoken;")
     public abstract Single<AuthToken> getAuthToken();
 
-    public Single<Boolean> isUserAuthenticated() {
-        // return getAuthToken().map((token -> token != null));
-        // TODO: 2020-07-13
-        return Single.just(false);
-    }
+    @Query("SELECT EXISTS(SELECT * FROM authtoken);")
+    public abstract Single<Boolean> isUserAuthenticated();
 }

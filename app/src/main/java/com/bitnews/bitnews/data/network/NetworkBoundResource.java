@@ -18,6 +18,7 @@ public abstract class NetworkBoundResource<T> {
         if (shouldFetchFromDB()) {
             fetchFromDB()
                     .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
                     .subscribe((dbResponse) -> {
                         if (shouldFetchFromAPI(dbResponse))
                             fetchFromAPI(dbResponse).subscribe(response::onNext);
