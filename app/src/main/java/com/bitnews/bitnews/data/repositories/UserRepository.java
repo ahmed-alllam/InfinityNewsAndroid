@@ -16,25 +16,20 @@ import com.bitnews.bitnews.data.network.NetworkBoundResource;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.Subject;
+
 
 public class UserRepository {
-    private static UserRepository instance;
     private APIEndpoints apiEndpoints = APIService.getService();
     private UserDao userDao;
     private AuthTokenDao authTokenDao;
 
-    public static UserRepository getInstance(Context context) {
-        if (instance == null) {
-            instance = new UserRepository();
-            AppDatabase appDatabase = AppDatabase.getInstance(context);
-            instance.userDao = appDatabase.getUserDao();
-            instance.authTokenDao = appDatabase.getAuthTokenDao();
-        }
-        return instance;
+    public UserRepository(Context context) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        userDao = appDatabase.getUserDao();
+        authTokenDao = appDatabase.getAuthTokenDao();
     }
 
-    public Subject<APIResponse<User>> getCurrentUser() {
+    public Single<APIResponse<User>> getCurrentUser() {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
@@ -65,11 +60,11 @@ public class UserRepository {
             protected boolean shouldFetchFromDB() {
                 return true;
             }
-        }.asSubject();
+        }.asSingle();
     }
 
-    public Subject<APIResponse<User>> signupUser(String firstName, String lastName,
-                                                 String userName, String password) {
+    public Single<APIResponse<User>> signupUser(String firstName, String lastName,
+                                                String userName, String password) {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
@@ -96,10 +91,10 @@ public class UserRepository {
             protected Single<User> getAPICall() {
                 return apiEndpoints.signUp(firstName, lastName, userName, password);
             }
-        }.asSubject();
+        }.asSingle();
     }
 
-    public Subject<APIResponse<User>> signupAsGuest() {
+    public Single<APIResponse<User>> signupAsGuest() {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
@@ -127,11 +122,11 @@ public class UserRepository {
             protected Single<User> getAPICall() {
                 return apiEndpoints.sinUpAsGuest(true);
             }
-        }.asSubject();
+        }.asSingle();
     }
 
 
-    public Subject<APIResponse<AuthToken>> loginUser(String userName, String password) {
+    public Single<APIResponse<AuthToken>> loginUser(String userName, String password) {
         return new NetworkBoundResource<AuthToken>() {
             @Override
             protected void saveToDB(AuthToken token, boolean isUpdate) {
@@ -159,18 +154,17 @@ public class UserRepository {
                     return apiEndpoints.logIn(userName);
                 return apiEndpoints.logIn(userName, password);
             }
-        }.asSubject();
+        }.asSingle();
     }
 
-    public void logoutUser() {
-        Subject.fromCallable(() -> {
+    public Single logoutUser() {
+        return Single.fromCallable(() -> {
             userDao.deleteCurrentUser();
             authTokenDao.deleteAuthToken();
 
             return null;
         }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<Boolean> isUserAuthenticated() {

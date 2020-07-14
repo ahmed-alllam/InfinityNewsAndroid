@@ -1,6 +1,8 @@
 package com.bitnews.bitnews.data.network;
 
 import com.bitnews.bitnews.data.models.AuthToken;
+import com.bitnews.bitnews.data.models.Category;
+import com.bitnews.bitnews.data.models.ResponseList;
 import com.bitnews.bitnews.data.models.User;
 
 import io.reactivex.Single;
@@ -33,4 +35,7 @@ public interface APIEndpoints {
 
     @GET("users/me/")
     Single<User> getCurrentUser();
+
+    @GET("news/categories/")
+    Single<ResponseList<Category>> getAllCategories();
 }

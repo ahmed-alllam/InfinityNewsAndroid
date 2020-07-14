@@ -1,6 +1,5 @@
 package com.bitnews.bitnews.ui.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
@@ -13,54 +12,54 @@ import com.bitnews.bitnews.data.models.User;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.data.repositories.UserRepository;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public class UserViewModel extends ViewModel {
     private UserRepository userRepository;
     private MediatorLiveData<APIResponse<User>> user = new MediatorLiveData<>();
     private MediatorLiveData<APIResponse<AuthToken>> token = new MediatorLiveData<>();
+    private CompositeDisposable disposable = new CompositeDisposable();
 
-    public UserRepository getUserRepository(Context context) {
+    private UserRepository getUserRepository(Context context) {
         if (userRepository == null)
-            userRepository = UserRepository.getInstance(context);
+            userRepository = new UserRepository(context);
         return userRepository;
     }
 
-    @SuppressLint("CheckResult")
     public void signupUser(Context context, String firstName, String lastName,
                            String userName, String password) {
-        getUserRepository(context)
+        disposable.add(getUserRepository(context)
                 .signupUser(firstName, lastName, userName, password)
-                .subscribe(user::setValue);
+                .subscribe(user::setValue));
     }
 
-    @SuppressLint("CheckResult")
     public void signupAsGuest(Context context) {
-        getUserRepository(context)
+        disposable.add(getUserRepository(context)
                 .signupAsGuest()
-                .subscribe(user::setValue);
+                .subscribe(user::setValue));
     }
 
-    @SuppressLint("CheckResult")
     public void loginUser(Context context, String userName, String password) {
-        getUserRepository(context)
+        disposable.add(getUserRepository(context)
                 .loginUser(userName, password)
-                .subscribe(token::setValue);
+                .subscribe(token::setValue));
     }
 
     public void logoutUser(Context context) {
-        getUserRepository(context).logoutUser();
+        disposable.add(getUserRepository(context).logoutUser().subscribe());
     }
 
-    @SuppressLint("CheckResult")
     public LiveData<Boolean> isUserAuthenticated(Context context) {
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
-        getUserRepository(context).isUserAuthenticated().subscribe(liveData::setValue);
+        disposable.add(getUserRepository(context).isUserAuthenticated()
+                .subscribe(liveData::setValue));
         return liveData;
     }
 
-    @SuppressLint("CheckResult")
     public LiveData<Boolean> isUserAuthenticatedAndNotGuest(Context context) {
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
-        getUserRepository(context).isUserAuthenticated().subscribe(liveData::setValue);
+        disposable.add(getUserRepository(context).isUserAuthenticated()
+                .subscribe(liveData::setValue));
         return liveData;
     }
 
@@ -70,5 +69,11 @@ public class UserViewModel extends ViewModel {
 
     public MediatorLiveData<APIResponse<AuthToken>> getToken() {
         return token;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposable.dispose();
     }
 }

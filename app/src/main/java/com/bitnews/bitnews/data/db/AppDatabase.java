@@ -7,18 +7,24 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.bitnews.bitnews.data.db.dao.AuthTokenDao;
+import com.bitnews.bitnews.data.db.dao.CategoryDao;
 import com.bitnews.bitnews.data.db.dao.UserDao;
 import com.bitnews.bitnews.data.models.AuthToken;
+import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.data.models.User;
 
-@Database(entities = {User.class, AuthToken.class}, version = 2, exportSchema = false)
+@Database(entities = {User.class, AuthToken.class, Category.class},
+        version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
+
     private static final String DATABASE_NAME = "bitnews-db";
     private static AppDatabase instance;
 
     public abstract UserDao getUserDao();
 
     public abstract AuthTokenDao getAuthTokenDao();
+
+    public abstract CategoryDao getCategoryDao();
 
     public static AppDatabase getInstance(Context context) {
         if (instance == null)
