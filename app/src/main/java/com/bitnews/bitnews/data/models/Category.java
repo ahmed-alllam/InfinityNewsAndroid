@@ -11,7 +11,8 @@ public class Category {
     @PrimaryKey()
     @NonNull
     private String slug = "";
-    private String image = "";
+    private String title;
+    private String image;
 
     @Override
     public boolean equals(Object o) {
@@ -26,6 +27,7 @@ public class Category {
         return Objects.hash(slug);
     }
 
+    @NonNull
     public String getSlug() {
         return slug;
     }
@@ -40,5 +42,13 @@ public class Category {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

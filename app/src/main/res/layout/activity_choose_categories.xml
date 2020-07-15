@@ -45,35 +45,21 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categoriesRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline45"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline37" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/guideline45"
-        app:layout_constraintEnd_toStartOf="@+id/guideline44"
-        app:layout_constraintStart_toStartOf="@+id/guideline43"
-        app:layout_constraintTop_toTopOf="@+id/guideline37" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline46"
-        app:layout_constraintEnd_toStartOf="@+id/guideline44"
-        app:layout_constraintStart_toStartOf="@+id/guideline43"
-        app:layout_constraintTop_toTopOf="@+id/guideline45"
-        app:tabBackground="@drawable/tutorial_tab_color_selector"
-        app:tabGravity="center"
-        app:tabIndicatorColor="@android:color/transparent"
-        app:tabMaxWidth="5dp" />
+        app:layout_constraintGuide_percent="0.8" />
 
     <Button
         android:id="@+id/nextButton"
@@ -92,13 +78,6 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline44"
         app:layout_constraintStart_toStartOf="@+id/guideline43"
         app:layout_constraintTop_toTopOf="@+id/guideline47" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline46"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline47"

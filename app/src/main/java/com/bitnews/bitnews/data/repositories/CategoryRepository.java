@@ -15,16 +15,12 @@ import io.reactivex.Single;
 
 
 public class CategoryRepository {
-    private static CategoryRepository instance;
     private APIEndpoints apiEndpoints = APIService.getService();
     private CategoryDao categoryDao;
 
-    public static CategoryRepository getInstance(Context context) {
-        if (instance == null) {
-            instance = new CategoryRepository();
-            instance.categoryDao = AppDatabase.getInstance(context).getCategoryDao();
-        }
-        return instance;
+    public CategoryRepository(Context context) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        categoryDao = appDatabase.getCategoryDao();
     }
 
     public Single<APIResponse<ResponseList<Category>>> getAllCategories() {
