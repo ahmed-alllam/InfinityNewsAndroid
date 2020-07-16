@@ -55,13 +55,19 @@ public class LoginFragment extends Fragment implements UserAuthFragmentListener 
         if (isUsernameValid(username) && isPasswordValid(password)) {
             login(username, password);
         } else {
-            errorLabel.setText(R.string.wrong_username_or_password);
+            setErrorMessage(R.string.wrong_username_or_password);
         }
     }
 
     @Override
     public void setErrorMessage(int messageID) {
+        errorLabel.setVisibility(View.VISIBLE);
         errorLabel.setText(messageID);
+    }
+
+    @Override
+    public void setErrorMessageInvisible() {
+        errorLabel.setVisibility(View.INVISIBLE);
     }
 
     private String getUsername() {
@@ -85,7 +91,6 @@ public class LoginFragment extends Fragment implements UserAuthFragmentListener 
 
     private void login(String username, String password) {
         onUserAuthRequestListener.onRequestPending();
-        errorLabel.setText("");
         userViewModel.loginUser(getActivity().getApplicationContext(), username, password);
     }
 
@@ -95,10 +100,10 @@ public class LoginFragment extends Fragment implements UserAuthFragmentListener 
                 onUserAuthRequestListener.onRequestSuccessful();
                 break;
             case BAD_REQUEST:
-                errorLabel.setText(R.string.wrong_username_or_password);
+                setErrorMessage(R.string.wrong_username_or_password);
                 break;
             case NETWORK_FAILED:
-                errorLabel.setText(R.string.network_error);
+                setErrorMessage(R.string.network_error);
         }
     }
 }

@@ -27,4 +27,5 @@
     <string name="invalid_password" translatable="false">Invalid or Not Matching Password</string>
     <string name="choose_topics" translatable="false">Choose at least 3 topics you like</string>
     <string name="next" translatable="false">Next</string>
+    <string name="loading" translatable="false">Loading...</string>
 </resources>

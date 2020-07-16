@@ -35,6 +35,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private Class getNextActivityClass() {
-        return nextActivityClass;
+        return ChooseCategoriesActivity.class;
     }
 }

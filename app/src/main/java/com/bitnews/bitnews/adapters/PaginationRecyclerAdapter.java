@@ -1,5 +1,7 @@
 package com.bitnews.bitnews.adapters;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
@@ -11,18 +13,20 @@ import java.util.List;
 
 public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter {
 
-    private static final int VIEW_TYPE_ITEM = 0;
+    static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_EMPTY_ITEM = 1;
     private static final int VIEW_TYPE_LOADING_BAR = 2;
-    private static final int ITEM_VIEW_HEIGHT = 0;
+    static int ITEM_VIEW_HEIGHT = 0;
 
-    private ArrayList<T> itemsList = new ArrayList<>();
+    ArrayList<T> itemsList = new ArrayList<>();
+    Context context;
     private RecyclerView recyclerView;
     private boolean isLoadingMore;
     private boolean isLoadingInitially;
 
-    public PaginationRecyclerAdapter(RecyclerView recyclerView) {
+    PaginationRecyclerAdapter(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
+        context = recyclerView.getContext();
     }
 
     @NonNull
@@ -50,7 +54,12 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         return VIEW_TYPE_ITEM;
     }
 
-    protected abstract int calculateEmptyItemsCount();
+    int calculateEmptyItemsCount() {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float parentHeight = recyclerView.getHeight() / displayMetrics.density;
+
+        return (int) (parentHeight / ITEM_VIEW_HEIGHT);
+    }
 
     public void addAll(List<T> objects) {
         if (itemsList.size() != 0) {
@@ -74,27 +83,42 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         });
     }
 
-    public void addLoadingBar() {
-        isLoadingMore = true;
+    private void addLoadingBar() {
         recyclerView.post(() -> {
             itemsList.add(null);
             notifyItemInserted(itemsList.size() - 1);
         });
     }
 
-    public void removeLoadingBar() {
-        if (isLoadingMore) {
-            isLoadingMore = false;
-            int position = itemsList.size() - 1;
-            recyclerView.post(() -> {
-                itemsList.remove(position);
-                notifyItemRemoved(position);
-            });
-        }
+    private void removeLoadingBar() {
+        int position = itemsList.size() - 1;
+        recyclerView.post(() -> {
+            itemsList.remove(position);
+            notifyItemRemoved(position);
+        });
     }
 
     public boolean isLoading() {
         return isLoadingInitially || isLoadingMore;
+    }
+
+    public void setLoading(boolean loading) {
+        if (loading) {
+            if (itemsList.isEmpty()) {
+                isLoadingInitially = true;
+                notifyDataSetChanged();
+            } else {
+                isLoadingMore = true;
+                addLoadingBar();
+            }
+        } else {
+            isLoadingInitially = false;
+
+            if (isLoadingMore) {
+                removeLoadingBar();
+                isLoadingMore = false;
+            }
+        }
     }
 
     protected abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent);

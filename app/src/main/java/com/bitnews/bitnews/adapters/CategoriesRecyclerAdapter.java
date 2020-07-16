@@ -11,16 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.data.models.Category;
+import com.bumptech.glide.Glide;
 
 public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Category> {
-
     public CategoriesRecyclerAdapter(RecyclerView recyclerView) {
         super(recyclerView);
-    }
-
-    @Override
-    protected int calculateEmptyItemsCount() {
-        return 0;
+        ITEM_VIEW_HEIGHT = 100;
     }
 
     @Override
@@ -31,15 +27,27 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
 
     @Override
     protected RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent) {
-        CategoryViewHolder categoryViewHolder = new CategoryViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item, parent, false), true);
-        categoryViewHolder.title.setText("Loading...");
-        return categoryViewHolder;
+        return new CategoryViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.category_item, parent, false), true);
+    }
+
+    @Override
+    int calculateEmptyItemsCount() {
+        return super.calculateEmptyItemsCount() * 3;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == VIEW_TYPE_ITEM) {
+            CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
+            Category categoryItem = itemsList.get(position);
 
+            Glide.with(context)
+                    .load(categoryItem.getImage())
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(categoryViewHolder.image);
+            categoryViewHolder.title.setText(categoryItem.getTitle());
+        }
     }
 
     private class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -47,7 +55,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
         private ImageView image;
         private boolean isEmptyItem;
 
-        public CategoryViewHolder(@NonNull View itemView, boolean isEmptyItem) {
+        CategoryViewHolder(@NonNull View itemView, boolean isEmptyItem) {
             super(itemView);
 
             title = itemView.findViewById(R.id.title);

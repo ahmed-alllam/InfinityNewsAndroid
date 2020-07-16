@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Objects;
 
 @Entity
@@ -11,8 +13,11 @@ public class Category {
     @PrimaryKey()
     @NonNull
     private String slug = "";
+    @SerializedName("priority")
+    private int sort;
     private String title;
     private String image;
+    private boolean isFavouritedByUser;
 
     @Override
     public boolean equals(Object o) {
@@ -50,5 +55,21 @@ public class Category {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isFavouritedByUser() {
+        return isFavouritedByUser;
+    }
+
+    public void setFavouritedByUser(boolean favouritedByUser) {
+        isFavouritedByUser = favouritedByUser;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 }

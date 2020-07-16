@@ -14,8 +14,8 @@ import io.reactivex.Single;
 @Dao
 public abstract class CategoryDao {
 
-    @Query("SELECT * FROM category;")
-    public abstract Single<List<Category>> getAllCategories();
+    @Query("SELECT * FROM category WHERE sort > :lastSort;")
+    public abstract Single<List<Category>> getAllCategories(int lastSort);
 
     @Insert
     public abstract void addCategories(List<Category> categories);

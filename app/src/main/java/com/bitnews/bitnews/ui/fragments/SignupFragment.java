@@ -72,11 +72,11 @@ public class SignupFragment extends Fragment implements UserAuthFragmentListener
                 signUp(firstName, lastName, username, password);
             } else {
                 if (!nameValid)
-                    errorLabel.setText(R.string.invalid_name);
+                    setErrorMessage(R.string.invalid_name);
                 else if (!usernameValid)
-                    errorLabel.setText(R.string.invalid_username);
+                    setErrorMessage(R.string.invalid_username);
                 else
-                    errorLabel.setText(R.string.invalid_password);
+                    setErrorMessage(R.string.invalid_password);
             }
         } else {
             login();
@@ -85,7 +85,13 @@ public class SignupFragment extends Fragment implements UserAuthFragmentListener
 
     @Override
     public void setErrorMessage(int messageID) {
+        errorLabel.setVisibility(View.VISIBLE);
         errorLabel.setText(messageID);
+    }
+
+    @Override
+    public void setErrorMessageInvisible() {
+        errorLabel.setVisibility(View.INVISIBLE);
     }
 
     private String getFirstName() {
@@ -143,10 +149,10 @@ public class SignupFragment extends Fragment implements UserAuthFragmentListener
                 login();
                 break;
             case BAD_REQUEST:
-                errorLabel.setText(R.string.username_taken);
+                setErrorMessage(R.string.username_taken);
                 break;
             case NETWORK_FAILED:
-                errorLabel.setText(R.string.network_error);
+                setErrorMessage(R.string.network_error);
         }
 
         if (response.getStatus() != APIResponse.Status.SUCCESFUL) {
@@ -162,7 +168,7 @@ public class SignupFragment extends Fragment implements UserAuthFragmentListener
                 onUserAuthRequestListener.onRequestSuccessful();
                 break;
             case NETWORK_FAILED:
-                errorLabel.setText(R.string.network_error);
+                setErrorMessage(R.string.network_error);
         }
     }
 }

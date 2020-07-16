@@ -1,8 +1,11 @@
 package com.bitnews.bitnews.data.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class ResponseList<T> {
+    @SerializedName("results")
     private List<T> items;
     private int count;
     private String next;

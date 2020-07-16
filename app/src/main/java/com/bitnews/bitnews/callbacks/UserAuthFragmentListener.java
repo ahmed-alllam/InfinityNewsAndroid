@@ -5,4 +5,6 @@ public interface UserAuthFragmentListener {
     void sendAuthRequest();
 
     void setErrorMessage(int messageID);
+
+    void setErrorMessageInvisible();
 }

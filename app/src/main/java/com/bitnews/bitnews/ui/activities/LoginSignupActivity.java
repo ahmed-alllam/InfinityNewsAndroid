@@ -72,6 +72,7 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
                     signupAsGuest();
                 else
                     loginAsGuest();
+                onRequestPending();
             }
         }));
     }
@@ -129,6 +130,7 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
     public void onRequestPending() {
         isRequestPending = true;
         progressBar.setVisibility(View.VISIBLE);
+        currentAuthFragment.setErrorMessageInvisible();
     }
 
     @Override

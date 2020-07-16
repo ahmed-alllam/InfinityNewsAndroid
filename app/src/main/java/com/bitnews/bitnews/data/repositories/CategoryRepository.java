@@ -10,6 +10,7 @@ import com.bitnews.bitnews.data.network.APIEndpoints;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.data.network.APIService;
 import com.bitnews.bitnews.data.network.NetworkBoundResource;
+import com.bitnews.bitnews.utils.PaginationCursorGenerator;
 
 import io.reactivex.Single;
 
@@ -23,7 +24,7 @@ public class CategoryRepository {
         categoryDao = appDatabase.getCategoryDao();
     }
 
-    public Single<APIResponse<ResponseList<Category>>> getAllCategories() {
+    public Single<APIResponse<ResponseList<Category>>> getAllCategories(int lastSort) {
         return new NetworkBoundResource<ResponseList<Category>>() {
             @Override
             protected boolean shouldFetchFromDB() {
@@ -32,10 +33,9 @@ public class CategoryRepository {
 
             @Override
             protected Single<ResponseList<Category>> fetchFromDB() {
-                return categoryDao.getAllCategories().map(categories -> {
+                return categoryDao.getAllCategories(lastSort).map(categories -> {
                     ResponseList<Category> response = new ResponseList<>();
                     response.setItems(categories);
-                    response.setCount(categories.size());
                     return response;
                 });
             }
@@ -47,19 +47,17 @@ public class CategoryRepository {
 
             @Override
             protected Single<ResponseList<Category>> getAPICall() {
-                return apiEndpoints.getAllCategories();
+                return apiEndpoints.getAllCategories(generateCategoryCursor(lastSort));
             }
 
             @Override
             protected void saveToDB(ResponseList<Category> list, boolean isUpdate) {
                 categoryDao.addCategories(list.getItems());
             }
-
-            @Override
-            protected boolean shouldSaveToDB(ResponseList<Category> apiResponse, ResponseList<Category> dbResponse) {
-                apiResponse.getItems().removeAll(dbResponse.getItems());
-                return !apiResponse.getItems().isEmpty();
-            }
         }.asSingle();
+    }
+
+    private String generateCategoryCursor(int lastSort) {
+        return PaginationCursorGenerator.getPositionCursor(lastSort);
     }
 }

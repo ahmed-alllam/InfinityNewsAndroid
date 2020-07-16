@@ -23,13 +23,13 @@ public class CategoryViewModel extends ViewModel {
         return categoryRepository;
     }
 
-    public void getAllCategories(Context context) {
+    public void getAllCategories(Context context, int lastSort) {
         disposable.add(getCategoryRepository(context)
-                .getAllCategories()
+                .getAllCategories(lastSort)
                 .subscribe(categories::setValue));
     }
 
-    public MediatorLiveData<APIResponse<ResponseList<Category>>> getCategories() {
+    public MediatorLiveData<APIResponse<ResponseList<Category>>> getCategoriesLiveData() {
         return categories;
     }
 
