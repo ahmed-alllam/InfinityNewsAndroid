@@ -3,6 +3,7 @@ package com.bitnews.bitnews.data.db.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.bitnews.bitnews.data.models.Category;
@@ -17,7 +18,7 @@ public abstract class CategoryDao {
     @Query("SELECT * FROM category WHERE sort > :lastSort;")
     public abstract Single<List<Category>> getAllCategories(int lastSort);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void addCategories(List<Category> categories);
 
     @Delete

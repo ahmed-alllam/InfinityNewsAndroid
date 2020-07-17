@@ -1,5 +1,6 @@
 package com.bitnews.bitnews.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,25 +11,28 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
+import com.bitnews.bitnews.callbacks.CategoryItemChooseListener;
 import com.bitnews.bitnews.data.models.Category;
-import com.bumptech.glide.Glide;
 
 public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Category> {
-    public CategoriesRecyclerAdapter(RecyclerView recyclerView) {
+    private CategoryItemChooseListener categoryItemChooseListener;
+
+    public CategoriesRecyclerAdapter(RecyclerView recyclerView, CategoryItemChooseListener categoryItemChooseListener) {
         super(recyclerView);
+        this.categoryItemChooseListener = categoryItemChooseListener;
         ITEM_VIEW_HEIGHT = 100;
     }
 
     @Override
     protected RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent) {
         return new CategoryViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.category_item, parent, false), false);
+                .inflate(R.layout.category_item, parent, false));
     }
 
     @Override
     protected RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent) {
         return new CategoryViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.category_item, parent, false), true);
+                .inflate(R.layout.category_item, parent, false));
     }
 
     @Override
@@ -42,32 +46,48 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
             CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
             Category categoryItem = itemsList.get(position);
 
-            Glide.with(context)
-                    .load(categoryItem.getImage())
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(categoryViewHolder.image);
+            // Glide.with(context)
+            //        .load(categoryItem.getImage())
+            //       .placeholder(R.drawable.ic_launcher_background)
+            //        .into(categoryViewHolder.image);
             categoryViewHolder.title.setText(categoryItem.getTitle());
+            categoryViewHolder.itemView.setOnClickListener((v -> {
+                if (!categoryItem.isFavouritedByUser()) {
+                    categoryItem.setFavouritedByUser(true);
+                    categoryViewHolder.highlightView();
+                    categoryItemChooseListener.onCategoryChosen(categoryItem);
+                } else {
+                    categoryItem.setFavouritedByUser(false);
+                    categoryViewHolder.unHighlightView();
+                    categoryItemChooseListener.onCategoryUnchosen(categoryItem);
+                }
+            }));
+
+            if (categoryItem.isFavouritedByUser()) {
+                categoryViewHolder.highlightView();
+            } else {
+                categoryViewHolder.unHighlightView();
+            }
         }
     }
 
-    private class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class CategoryViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private ImageView image;
-        private boolean isEmptyItem;
 
-        CategoryViewHolder(@NonNull View itemView, boolean isEmptyItem) {
+        CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
 
             title = itemView.findViewById(R.id.title);
             image = itemView.findViewById(R.id.image);
-            this.isEmptyItem = isEmptyItem;
         }
 
-        @Override
-        public void onClick(View v) {
-            if (!isEmptyItem) {
+        private void highlightView() {
+            itemView.setBackgroundColor(Color.BLUE);
+        }
 
-            }
+        private void unHighlightView() {
+            itemView.setBackgroundColor(Color.WHITE);
         }
     }
 }

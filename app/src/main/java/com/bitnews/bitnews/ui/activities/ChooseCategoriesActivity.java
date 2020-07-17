@@ -9,14 +9,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.adapters.CategoriesRecyclerAdapter;
+import com.bitnews.bitnews.callbacks.CategoryItemChooseListener;
 import com.bitnews.bitnews.callbacks.PaginationScrollListener;
 import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class ChooseCategoriesActivity extends AppCompatActivity {
+public class ChooseCategoriesActivity extends AppCompatActivity implements CategoryItemChooseListener {
+    private ArrayList<Category> chosenCategories = new ArrayList<>();
     private RecyclerView categoriesRecyclerView;
     private CategoryViewModel categoryViewModel;
     private CategoriesRecyclerAdapter categoriesAdapter;
@@ -30,7 +33,11 @@ public class ChooseCategoriesActivity extends AppCompatActivity {
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, (categories) -> {
-            categoriesAdapter.setLoading(false);
+            if (categoriesAdapter.getItemsList().isEmpty())
+                categoriesAdapter.setLoadingInitially(false);
+            else
+                categoriesAdapter.setLoadingMore(false);
+
             switch (categories.getStatus()) {
                 case SUCCESFUL:
                     List<Category> items = categories.getitem().getItems();
@@ -38,8 +45,11 @@ public class ChooseCategoriesActivity extends AppCompatActivity {
                     if (!items.isEmpty()) {
                         if (count > 0)
                             categoriesCount = count;
+                        else
+                            categoriesCount += items.size();
                         lastSort = items.get(items.size() - 1).getSort();
                         categoriesAdapter.addAll(categories.getitem().getItems());
+                        loadCategories(false);
                     }
                     break;
                 case NETWORK_FAILED:
@@ -49,12 +59,12 @@ public class ChooseCategoriesActivity extends AppCompatActivity {
 
         categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView);
         categoriesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView);
+        categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView, this);
         categoriesRecyclerView.setAdapter(categoriesAdapter);
         categoriesRecyclerView.addOnScrollListener(new PaginationScrollListener(categoriesRecyclerView.getLayoutManager()) {
             @Override
             public boolean isLastPage() {
-                return lastSort >= categoriesCount;
+                return false;
             }
 
             @Override
@@ -64,15 +74,31 @@ public class ChooseCategoriesActivity extends AppCompatActivity {
 
             @Override
             public void loadMoreItems() {
-                loadCategories();
+                loadCategories(false);
             }
         });
 
-        loadCategories();
+        loadCategories(true);
     }
 
-    private void loadCategories() {
-        categoriesAdapter.setLoading(true);
-        categoryViewModel.getAllCategories(getApplicationContext(), lastSort);
+    private void loadCategories(boolean isInitialLoad) {
+        if (!categoriesAdapter.isLoading()) {
+            if (isInitialLoad) {
+                categoriesAdapter.setLoadingInitially(true);
+            } else {
+                categoriesAdapter.setLoadingMore(true);
+            }
+            categoryViewModel.getAllCategories(getApplicationContext(), lastSort);
+        }
+    }
+
+    @Override
+    public void onCategoryChosen(Category category) {
+        chosenCategories.add(category);
+    }
+
+    @Override
+    public void onCategoryUnchosen(Category category) {
+        chosenCategories.remove(category);
     }
 }

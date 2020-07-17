@@ -36,6 +36,7 @@ public abstract class NetworkBoundResource<T> {
     }
 
     private APIResponse<T> handleErrorResponse(Throwable t, T dbResponse) {
+        System.out.println("ahmed" + t.getMessage());
         if (t instanceof HttpException && ((HttpException) t).code() >= 400
                 && ((HttpException) t).code() < 500)
             return APIResponse.invalid(t);

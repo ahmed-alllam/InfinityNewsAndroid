@@ -63,61 +63,54 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
 
     public void addAll(List<T> objects) {
         if (itemsList.size() != 0) {
-            recyclerView.post(() -> {
-                itemsList.addAll(objects);
-                notifyItemRangeInserted(itemsList.size() - objects.size(),
-                        objects.size());
-            });
+            itemsList.addAll(objects);
+            notifyItemRangeInserted(itemsList.size() - objects.size(),
+                    objects.size());
         } else {
-            recyclerView.post(() -> {
-                itemsList.addAll(objects);
-                notifyDataSetChanged();
-            });
+            itemsList.addAll(objects);
+            notifyDataSetChanged();
         }
     }
 
     public void clear() {
-        recyclerView.post(() -> {
-            itemsList.clear();
-            notifyDataSetChanged();
-        });
+        itemsList.clear();
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<T> getItemsList() {
+        return itemsList;
     }
 
     private void addLoadingBar() {
-        recyclerView.post(() -> {
-            itemsList.add(null);
-            notifyItemInserted(itemsList.size() - 1);
-        });
+        itemsList.add(null);
+        notifyItemInserted(itemsList.size() - 1);
     }
 
     private void removeLoadingBar() {
-        int position = itemsList.size() - 1;
-        recyclerView.post(() -> {
-            itemsList.remove(position);
-            notifyItemRemoved(position);
-        });
+        itemsList.remove(null);
+        notifyItemRemoved(itemsList.size() - 1);
     }
 
     public boolean isLoading() {
         return isLoadingInitially || isLoadingMore;
     }
 
-    public void setLoading(boolean loading) {
+    public void setLoadingInitially(boolean loading) {
         if (loading) {
-            if (itemsList.isEmpty()) {
-                isLoadingInitially = true;
-                notifyDataSetChanged();
-            } else {
-                isLoadingMore = true;
-                addLoadingBar();
-            }
+            isLoadingInitially = true;
+            notifyDataSetChanged();
         } else {
             isLoadingInitially = false;
+        }
+    }
 
-            if (isLoadingMore) {
-                removeLoadingBar();
-                isLoadingMore = false;
-            }
+    public void setLoadingMore(boolean loading) {
+        if (loading) {
+            isLoadingMore = true;
+            addLoadingBar();
+        } else {
+            isLoadingMore = false;
+            removeLoadingBar();
         }
     }
 
