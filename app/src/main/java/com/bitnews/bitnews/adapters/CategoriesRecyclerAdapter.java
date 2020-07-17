@@ -25,13 +25,13 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
 
     @Override
     protected RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent) {
-        return new CategoryViewHolder(LayoutInflater.from(parent.getContext())
+        return new CategoryViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.category_item, parent, false));
     }
 
     @Override
     protected RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent) {
-        return new CategoryViewHolder(LayoutInflater.from(parent.getContext())
+        return new CategoryViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.category_item, parent, false));
     }
 

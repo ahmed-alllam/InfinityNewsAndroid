@@ -71,6 +71,7 @@
         android:stateListAnimator="@null"
         android:text="@string/next"
         android:textAllCaps="false"
+        android:alpha="0.5"
         android:textColor="@android:color/white"
         app:autoSizeMaxTextSize="19sp"
         app:autoSizeTextType="uniform"

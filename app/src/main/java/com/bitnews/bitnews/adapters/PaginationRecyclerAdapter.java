@@ -2,11 +2,13 @@ package com.bitnews.bitnews.adapters;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bitnews.bitnews.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +36,11 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM)
             return createItemViewHolder(parent);
-        if (viewType == VIEW_TYPE_LOADING_BAR)
-            return new RecyclerView.ViewHolder(new ProgressBar(parent.getContext())) {
+        if (viewType == VIEW_TYPE_LOADING_BAR) {
+            return new RecyclerView.ViewHolder(LayoutInflater.from(context)
+                    .inflate(R.layout.loading_item, parent, false)) {
             };
+        }
         return createEmptyItemViewHolder(parent);
     }
 
@@ -49,36 +53,40 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public int getItemViewType(int position) {
         if (itemsList.size() == 0)
             return VIEW_TYPE_EMPTY_ITEM;
-        if ((position == itemsList.size() - 1 && isLoadingMore) || itemsList.get(position) == null)
+        if (position == itemsList.size() - 1 && isLoadingMore)
             return VIEW_TYPE_LOADING_BAR;
         return VIEW_TYPE_ITEM;
     }
 
     int calculateEmptyItemsCount() {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float parentHeight = recyclerView.getHeight() / displayMetrics.density;
+        float recyclerViewHeightInDp = recyclerView.getHeight() / displayMetrics.density;
 
-        return (int) (parentHeight / ITEM_VIEW_HEIGHT);
+        return (int) Math.ceil(recyclerViewHeightInDp / ITEM_VIEW_HEIGHT);
     }
 
     public void addAll(List<T> objects) {
-        if (itemsList.size() != 0) {
-            itemsList.addAll(objects);
-            notifyItemRangeInserted(itemsList.size() - objects.size(),
-                    objects.size());
-        } else {
-            itemsList.addAll(objects);
-            notifyDataSetChanged();
-        }
+        recyclerView.post(() -> {
+            if (itemsList.size() != 0) {
+                removeLoadingBar();
+                itemsList.addAll(objects);
+                notifyItemRangeInserted(itemsList.size() - objects.size(),
+                        objects.size());
+            } else {
+                itemsList.addAll(objects);
+                notifyDataSetChanged();
+            }
+
+            recyclerView.post(() -> {
+                isLoadingInitially = false;
+                isLoadingMore = false;
+            });
+        });
     }
 
     public void clear() {
         itemsList.clear();
         notifyDataSetChanged();
-    }
-
-    public ArrayList<T> getItemsList() {
-        return itemsList;
     }
 
     private void addLoadingBar() {
@@ -88,30 +96,21 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
 
     private void removeLoadingBar() {
         itemsList.remove(null);
-        notifyItemRemoved(itemsList.size() - 1);
+        notifyItemRemoved(itemsList.size());
     }
 
     public boolean isLoading() {
         return isLoadingInitially || isLoadingMore;
     }
 
-    public void setLoadingInitially(boolean loading) {
-        if (loading) {
-            isLoadingInitially = true;
-            notifyDataSetChanged();
-        } else {
-            isLoadingInitially = false;
-        }
+    public void setLoadingInitially() {
+        isLoadingInitially = true;
+        recyclerView.post(this::notifyDataSetChanged);
     }
 
-    public void setLoadingMore(boolean loading) {
-        if (loading) {
-            isLoadingMore = true;
-            addLoadingBar();
-        } else {
-            isLoadingMore = false;
-            removeLoadingBar();
-        }
+    public void setLoadingMore() {
+        isLoadingMore = true;
+        recyclerView.post(this::addLoadingBar);
     }
 
     protected abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent);
