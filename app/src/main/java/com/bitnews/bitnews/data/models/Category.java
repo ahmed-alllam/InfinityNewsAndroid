@@ -17,6 +17,7 @@ public class Category {
     private int sort;
     private String title;
     private String image;
+    @SerializedName("is_favourited_by_user")
     private boolean isFavouritedByUser;
 
     @Override
