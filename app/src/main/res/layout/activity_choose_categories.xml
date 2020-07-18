@@ -45,8 +45,8 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/categoriesRecyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline45"
@@ -54,7 +54,12 @@
         app:layout_constraintStart_toStartOf="@+id/guideline43"
         app:layout_constraintTop_toTopOf="@+id/guideline37">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoriesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline45"
@@ -78,7 +83,6 @@
         android:textAlignment="center"
         android:textColor="@android:color/holo_red_light"
         android:visibility="invisible"
-        app:autoSizeMaxTextSize="10sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/guideline54"
         app:layout_constraintEnd_toStartOf="@+id/guideline44"
@@ -89,13 +93,13 @@
         android:id="@+id/nextButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:alpha="0.5"
         android:background="@drawable/get_started_button_shape"
         android:backgroundTint="@color/colorPrimary"
         android:fontFamily="@font/roboto_medium"
         android:stateListAnimator="@null"
         android:text="@string/next"
         android:textAllCaps="false"
-        android:alpha="0.5"
         android:textColor="@android:color/white"
         app:autoSizeMaxTextSize="19sp"
         app:autoSizeTextType="uniform"
@@ -109,21 +113,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.46" />
+        app:layout_constraintGuide_percent="0.47" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline47"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.88" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline48"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.94" />
+        app:layout_constraintGuide_percent="0.92" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline50"
@@ -139,7 +143,6 @@
         android:fontFamily="@font/roboto_medium"
         android:textColor="@android:color/holo_red_light"
         android:visibility="invisible"
-        app:autoSizeMaxTextSize="10sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/guideline51"
         app:layout_constraintEnd_toStartOf="@+id/guideline44"
@@ -151,7 +154,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.79" />
+        app:layout_constraintGuide_percent="0.78" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline52"

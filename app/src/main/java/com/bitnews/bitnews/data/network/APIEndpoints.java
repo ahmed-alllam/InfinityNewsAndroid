@@ -5,11 +5,15 @@ import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.data.models.ResponseList;
 import com.bitnews.bitnews.data.models.User;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface APIEndpoints {
@@ -39,4 +43,7 @@ public interface APIEndpoints {
 
     @GET("news/categories/")
     Single<ResponseList<Category>> getAllCategories(@Query("cursor") String cursor);
+
+    @PUT("users/me/favourite-categories")
+    Completable updateFavouriteCategories(@Body RequestBody requestBody);
 }

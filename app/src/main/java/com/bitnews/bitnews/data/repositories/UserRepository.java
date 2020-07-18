@@ -19,7 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class UserRepository {
-    private APIEndpoints apiEndpoints = APIService.getService();
+    private APIEndpoints apiEndpoints;
     private UserDao userDao;
     private AuthTokenDao authTokenDao;
 
@@ -27,6 +27,7 @@ public class UserRepository {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         userDao = appDatabase.getUserDao();
         authTokenDao = appDatabase.getAuthTokenDao();
+        apiEndpoints = APIService.getService(context);
     }
 
     public Single<APIResponse<User>> getCurrentUser() {

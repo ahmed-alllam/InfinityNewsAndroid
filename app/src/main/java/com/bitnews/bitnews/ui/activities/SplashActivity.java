@@ -11,7 +11,7 @@ import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 
 public class SplashActivity extends AppCompatActivity {
-    private Class nextActivityClass;
+    private Class nextActivityClass = TutorialActivity.class;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private Class getNextActivityClass() {
-        return ChooseCategoriesActivity.class;
+        return nextActivityClass;
     }
 }
