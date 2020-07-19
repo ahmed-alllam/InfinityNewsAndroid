@@ -19,7 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class UserRepository {
-    private APIEndpoints apiEndpoints;
+    private APIEndpoints apiEndpoints = APIService.getService();
     private UserDao userDao;
     private AuthTokenDao authTokenDao;
 
@@ -27,7 +27,6 @@ public class UserRepository {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         userDao = appDatabase.getUserDao();
         authTokenDao = appDatabase.getAuthTokenDao();
-        apiEndpoints = APIService.getService(context);
     }
 
     public Single<APIResponse<User>> getCurrentUser() {
@@ -132,6 +131,7 @@ public class UserRepository {
             @Override
             protected void saveToDB(AuthToken token, boolean isUpdate) {
                 authTokenDao.addAuthToken(token);
+                AuthTokenDao.setToken(token.getToken());
             }
 
             @Override
@@ -162,6 +162,7 @@ public class UserRepository {
         return Single.fromCallable(() -> {
             userDao.deleteCurrentUser();
             authTokenDao.deleteAuthToken();
+            AuthTokenDao.setToken("");
 
             return null;
         }).subscribeOn(Schedulers.io())
@@ -169,7 +170,9 @@ public class UserRepository {
     }
 
     public Single<Boolean> isUserAuthenticated() {
-        return authTokenDao.isUserAuthenticated()
+        return authTokenDao.getAuthToken()
+                .doOnSuccess((authToken -> AuthTokenDao.setToken(authToken.getToken())))
+                .map(token -> !token.getToken().isEmpty())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

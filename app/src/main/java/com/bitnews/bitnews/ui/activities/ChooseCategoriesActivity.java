@@ -1,5 +1,6 @@
 package com.bitnews.bitnews.ui.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +39,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
     private Button nextButton;
     private TextView nextErrorLabel;
     private int categoriesCount;
-    private int lastSort;
+    private int offset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
                     if (!items.isEmpty()) {
                         if (count > 0)
                             categoriesCount = count;
-                        lastSort = items.get(items.size() - 1).getSort();
+                        offset = items.get(items.size() - 1).getSort();
                         categoriesAdapter.addAll(categories.getitem().getItems());
                         onNewCategoriesAdded(items);
                     }
@@ -81,7 +82,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         categoriesRecyclerView.addOnScrollListener(new PaginationScrollListener(categoriesRecyclerView.getLayoutManager()) {
             @Override
             public boolean isLastPage() {
-                return lastSort >= categoriesCount;
+                return offset >= categoriesCount;
             }
 
             @Override
@@ -99,7 +100,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         swipeRefreshLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (!categoriesAdapter.isLoading()) {
-                lastSort = 0;
+                offset = 0;
                 categoriesCount = 0;
                 categoriesAdapter.clear();
                 loadCategories(true);
@@ -121,7 +122,9 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
                 switch (response.getStatus()) {
                     case SUCCESFUL:
-                        //todo: start next activity
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
                         break;
                     case NETWORK_FAILED:
                         nextButton.setEnabled(true);
@@ -146,7 +149,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             } else {
                 categoriesAdapter.setLoadingMore();
             }
-            categoryViewModel.getAllCategories(getApplicationContext(), lastSort);
+            categoryViewModel.getAllCategories(getApplicationContext(), offset);
         }
     }
 

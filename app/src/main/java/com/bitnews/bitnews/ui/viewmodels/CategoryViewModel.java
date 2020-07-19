@@ -41,6 +41,13 @@ public class CategoryViewModel extends ViewModel {
         return responseLiveData;
     }
 
+    public LiveData<Boolean> hasFavouriteCategories(Context context) {
+        MutableLiveData<Boolean> responseLiveData = new MutableLiveData<>();
+        disposable.add(getCategoryRepository(context)
+                .hasFavouriteCategories().subscribe(responseLiveData::setValue));
+        return responseLiveData;
+    }
+
     public MediatorLiveData<APIResponse<ResponseList<Category>>> getCategoriesLiveData() {
         return categories;
     }

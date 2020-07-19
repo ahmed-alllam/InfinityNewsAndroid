@@ -10,16 +10,22 @@ import io.reactivex.Single;
 
 @Dao
 public abstract class AuthTokenDao {
+    private static String token;
 
     @Insert
     public abstract void addAuthToken(AuthToken authToken);
 
-    @Query("DELETE FROM authtoken;")
+    public static String getToken() {
+        return token;
+    }
+
+    public static void setToken(String token) {
+        AuthTokenDao.token = token;
+    }
+
+    @Query("DELETE FROM authtoken")
     public abstract void deleteAuthToken();
 
-    @Query("SELECT * FROM authtoken;")
+    @Query("SELECT * FROM authtoken")
     public abstract Single<AuthToken> getAuthToken();
-
-    @Query("SELECT EXISTS(SELECT * FROM authtoken);")
-    public abstract Single<Boolean> isUserAuthenticated();
 }

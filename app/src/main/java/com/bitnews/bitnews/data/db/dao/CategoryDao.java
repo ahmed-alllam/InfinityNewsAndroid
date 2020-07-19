@@ -15,17 +15,24 @@ import io.reactivex.Single;
 @Dao
 public abstract class CategoryDao {
 
-    @Query("SELECT * FROM category WHERE sort > :lastSort;")
+    @Query("SELECT * FROM category WHERE sort > :lastSort")
     public abstract Single<List<Category>> getAllCategories(int lastSort);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void addCategories(List<Category> categories);
 
+    @Query("SELECT CASE WHEN " +
+            "COUNT((SELECT * FROM category WHERE isFavouritedByUser = 1)) >= 3 " +
+            "THEN 1 " +
+            "ELSE 0 " +
+            "END")
+    public abstract boolean hasFavouriteCategories();
+
     @Query("UPDATE category " +
             "SET isFavouritedByUser = CASE " +
             "WHEN slug IN (:slugs) THEN 1 " +
             "ELSE 0 " +
-            "END;")
+            "END")
     public abstract void setFavouriteCategoriesBySlug(List<String> slugs);
 
     public void setFavouriteCategories(List<Category> categories) {

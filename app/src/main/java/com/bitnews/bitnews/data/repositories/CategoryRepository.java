@@ -24,13 +24,12 @@ import okhttp3.RequestBody;
 
 
 public class CategoryRepository {
-    private APIEndpoints apiEndpoints;
+    private APIEndpoints apiEndpoints = APIService.getService();
     private CategoryDao categoryDao;
 
     public CategoryRepository(Context context) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         categoryDao = appDatabase.getCategoryDao();
-        apiEndpoints = APIService.getService(context);
     }
 
     public Single<APIResponse<ResponseList<Category>>> getAllCategories(int lastSort) {
@@ -71,34 +70,38 @@ public class CategoryRepository {
         }.asSingle();
     }
 
-    public Single<APIResponse<Integer>> updateFavouriteCategories(List<Category> categories) {
-        return new NetworkBoundResource<Integer>() {
+    public Single<APIResponse<Object>> updateFavouriteCategories(List<Category> categories) {
+        return new NetworkBoundResource<Object>() {
             @Override
             protected boolean shouldFetchFromDB() {
                 return false;
             }
 
             @Override
-            protected Single<Integer> fetchFromDB() {
+            protected Single<Object> fetchFromDB() {
                 return null;
             }
 
             @Override
-            protected boolean shouldFetchFromAPI(Integer data) {
+            protected boolean shouldFetchFromAPI(Object data) {
                 return true;
             }
 
             @Override
-            protected Single<Integer> getAPICall() {
+            protected Single<Object> getAPICall() {
                 return apiEndpoints.updateFavouriteCategories(generateCategoriesRequestBody(categories))
-                        .toSingleDefault(0);
+                        .toSingleDefault(new Object());
             }
 
             @Override
-            protected void saveToDB(Integer item, boolean isUpdate) {
+            protected void saveToDB(Object item, boolean isUpdate) {
                 categoryDao.setFavouriteCategories(categories);
             }
         }.asSingle();
+    }
+
+    public Single<Boolean> hasFavouriteCategories() {
+        return Single.fromCallable(categoryDao::hasFavouriteCategories);
     }
 
     private RequestBody generateCategoriesRequestBody(List<Category> categories) {
