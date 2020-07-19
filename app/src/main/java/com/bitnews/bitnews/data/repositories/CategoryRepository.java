@@ -19,6 +19,8 @@ import org.json.JSONObject;
 import java.util.List;
 
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
@@ -101,7 +103,9 @@ public class CategoryRepository {
     }
 
     public Single<Boolean> hasFavouriteCategories() {
-        return Single.fromCallable(categoryDao::hasFavouriteCategories);
+        return Single.fromCallable(categoryDao::hasFavouriteCategories)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     private RequestBody generateCategoriesRequestBody(List<Category> categories) {

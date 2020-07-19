@@ -22,7 +22,7 @@ public abstract class CategoryDao {
     public abstract void addCategories(List<Category> categories);
 
     @Query("SELECT CASE WHEN " +
-            "COUNT((SELECT * FROM category WHERE isFavouritedByUser = 1)) >= 3 " +
+            "(SELECT COUNT(*) FROM category WHERE isFavouritedByUser = 1) >= 3 " +
             "THEN 1 " +
             "ELSE 0 " +
             "END")

@@ -10,7 +10,7 @@ import io.reactivex.Single;
 
 @Dao
 public abstract class AuthTokenDao {
-    private static String token;
+    private static String token = "";
 
     @Insert
     public abstract void addAuthToken(AuthToken authToken);

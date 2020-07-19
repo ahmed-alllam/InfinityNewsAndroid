@@ -52,13 +52,14 @@ public class UserViewModel extends ViewModel {
     public LiveData<Boolean> isUserAuthenticated(Context context) {
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
         disposable.add(getUserRepository(context).isUserAuthenticated()
+                .onErrorReturn(t -> false)
                 .subscribe(liveData::setValue));
         return liveData;
     }
 
     public LiveData<Boolean> isUserAuthenticatedAndNotGuest(Context context) {
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
-        disposable.add(getUserRepository(context).isUserAuthenticated()
+        disposable.add(getUserRepository(context).isUserAuthenticatedAndNotGuest()
                 .subscribe(liveData::setValue));
         return liveData;
     }

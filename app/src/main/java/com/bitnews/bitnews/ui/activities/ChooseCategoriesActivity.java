@@ -68,6 +68,8 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
                     }
                     break;
                 case NETWORK_FAILED:
+                    categoriesAdapter.setLoadingInitially(false);
+                    categoriesAdapter.setLoadingMore(false);
                     categoriesRecyclerView.setVisibility(View.INVISIBLE);
                     categoriesErrorLabel.setVisibility(View.VISIBLE);
                     categoriesErrorLabel.setText(R.string.network_error);
@@ -144,10 +146,10 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
         if (!categoriesAdapter.isLoading()) {
             if (isInitialLoad) {
-                categoriesAdapter.setLoadingInitially();
+                categoriesAdapter.setLoadingInitially(true);
                 categoriesRecyclerView.suppressLayout(true);
             } else {
-                categoriesAdapter.setLoadingMore();
+                categoriesAdapter.setLoadingMore(true);
             }
             categoryViewModel.getAllCategories(getApplicationContext(), offset);
         }

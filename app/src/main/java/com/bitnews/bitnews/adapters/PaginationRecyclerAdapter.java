@@ -53,7 +53,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public int getItemViewType(int position) {
         if (itemsList.size() == 0)
             return VIEW_TYPE_EMPTY_ITEM;
-        if (position == itemsList.size() - 1 && isLoadingMore)
+        if (position == itemsList.size() - 1 && isLoadingMore && itemsList.get(position) == null)
             return VIEW_TYPE_LOADING_BAR;
         return VIEW_TYPE_ITEM;
     }
@@ -103,14 +103,22 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         return isLoadingInitially || isLoadingMore;
     }
 
-    public void setLoadingInitially() {
-        isLoadingInitially = true;
-        recyclerView.post(this::notifyDataSetChanged);
+    public void setLoadingInitially(boolean loadingInitially) {
+        if (loadingInitially) {
+            isLoadingInitially = true;
+            recyclerView.post(this::notifyDataSetChanged);
+        } else
+            isLoadingInitially = false;
     }
 
-    public void setLoadingMore() {
-        isLoadingMore = true;
-        recyclerView.post(this::addLoadingBar);
+    public void setLoadingMore(boolean loadingMore) {
+        if (loadingMore) {
+            isLoadingMore = true;
+            recyclerView.post(this::addLoadingBar);
+        } else {
+            removeLoadingBar();
+            recyclerView.post(() -> isLoadingMore = false);
+        }
     }
 
     protected abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent);

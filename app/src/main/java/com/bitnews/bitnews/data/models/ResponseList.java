@@ -3,6 +3,7 @@ package com.bitnews.bitnews.data.models;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ResponseList<T> {
     @SerializedName("results")
@@ -10,6 +11,19 @@ public class ResponseList<T> {
     private int count;
     private String next;
     private String previous;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResponseList<?> that = (ResponseList<?>) o;
+        return Objects.equals(items, that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(items);
+    }
 
     public List<T> getItems() {
         return items;
