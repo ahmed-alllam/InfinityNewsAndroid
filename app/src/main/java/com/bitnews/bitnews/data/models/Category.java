@@ -13,7 +13,6 @@ public class Category {
     @PrimaryKey()
     @NonNull
     private String slug = "";
-    @SerializedName("sort")
     private int sort;
     private String title;
     private String image;

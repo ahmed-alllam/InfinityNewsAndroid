@@ -1,6 +1,6 @@
 package com.bitnews.bitnews.adapters;
 
-import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
@@ -16,11 +17,14 @@ import com.bitnews.bitnews.data.models.Category;
 
 public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Category> {
     private CategoryItemChooseListener categoryItemChooseListener;
+    private int selectedColor;
 
     public CategoriesRecyclerAdapter(RecyclerView recyclerView, CategoryItemChooseListener categoryItemChooseListener) {
         super(recyclerView);
         this.categoryItemChooseListener = categoryItemChooseListener;
         ITEM_VIEW_HEIGHT = 100;
+
+        selectedColor = ContextCompat.getColor(context, R.color.colorAccent);
     }
 
     @Override
@@ -74,20 +78,24 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
     private class CategoryViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private ImageView image;
+        private ImageView selectedIcon;
 
         CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
 
             title = itemView.findViewById(R.id.title);
             image = itemView.findViewById(R.id.image);
+            selectedIcon = itemView.findViewById(R.id.selectedIcon);
         }
 
         private void highlightView() {
-            itemView.setBackgroundColor(Color.BLUE);
+            image.setColorFilter(selectedColor, PorterDuff.Mode.OVERLAY);
+            selectedIcon.setVisibility(View.VISIBLE);
         }
 
         private void unHighlightView() {
-            itemView.setBackgroundColor(Color.WHITE);
+            image.setColorFilter(null);
+            selectedIcon.setVisibility(View.INVISIBLE);
         }
     }
 }

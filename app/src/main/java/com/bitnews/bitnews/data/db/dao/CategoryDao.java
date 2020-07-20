@@ -15,7 +15,7 @@ import io.reactivex.Single;
 @Dao
 public abstract class CategoryDao {
 
-    @Query("SELECT * FROM category WHERE sort > :lastSort")
+    @Query("SELECT * FROM category WHERE sort > :lastSort order by sort")
     public abstract Single<List<Category>> getAllCategories(int lastSort);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
