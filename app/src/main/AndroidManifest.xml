@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustResize"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activities.ChooseCategoriesActivity"></activity>
+        <activity android:name=".ui.activities.ChooseCategoriesActivity" />
         <activity android:name=".ui.activities.LoginSignupActivity" />
         <activity android:name=".ui.activities.TutorialActivity" />
         <activity android:name=".ui.activities.MainActivity" />
