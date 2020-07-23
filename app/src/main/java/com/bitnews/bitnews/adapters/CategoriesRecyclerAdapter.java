@@ -16,12 +16,16 @@ import com.bitnews.bitnews.callbacks.CategoryItemChooseListener;
 import com.bitnews.bitnews.data.models.Category;
 
 public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Category> {
+    public static final int ITEMS_PER_ROW = 3;
+
     private CategoryItemChooseListener categoryItemChooseListener;
     private int selectedColor;
 
-    public CategoriesRecyclerAdapter(RecyclerView recyclerView, CategoryItemChooseListener categoryItemChooseListener) {
+    public CategoriesRecyclerAdapter(RecyclerView recyclerView, CategoryItemChooseListener categoryItemChooseListener,
+                                     View.OnClickListener retryOnClickListener) {
         super(recyclerView);
         this.categoryItemChooseListener = categoryItemChooseListener;
+        this.retryOnClickListener = retryOnClickListener;
         ITEM_VIEW_HEIGHT = 100;
 
         selectedColor = ContextCompat.getColor(context, R.color.colorAccent);
@@ -41,7 +45,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
 
     @Override
     int calculateEmptyItemsCount() {
-        return super.calculateEmptyItemsCount() * 3;
+        return super.calculateEmptyItemsCount() * ITEMS_PER_ROW;
     }
 
     @Override

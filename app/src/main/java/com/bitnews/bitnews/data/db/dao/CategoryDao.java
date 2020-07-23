@@ -15,8 +15,8 @@ import io.reactivex.Single;
 @Dao
 public abstract class CategoryDao {
 
-    @Query("SELECT * FROM category WHERE sort > :lastSort order by sort")
-    public abstract Single<List<Category>> getAllCategories(int lastSort);
+    @Query("SELECT * FROM category WHERE sort > :offset order by sort")
+    public abstract Single<List<Category>> getAllCategories(int offset);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void addCategories(List<Category> categories);
@@ -26,7 +26,10 @@ public abstract class CategoryDao {
             "THEN 1 " +
             "ELSE 0 " +
             "END")
-    public abstract boolean hasFavouriteCategories();
+    public abstract Single<Boolean> hasFavouriteCategories();
+
+    @Query("SELECT * FROM category WHERE isFavouritedByUser = 1 order by sort")
+    public abstract Single<List<Category>> getFavouriteCategories();
 
     @Query("UPDATE category " +
             "SET isFavouritedByUser = CASE " +

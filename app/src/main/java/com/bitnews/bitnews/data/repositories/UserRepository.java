@@ -170,7 +170,7 @@ public class UserRepository {
     }
 
     public Single<Boolean> isUserAuthenticated() {
-        return authTokenDao.getAuthToken()
+        return authTokenDao.getAuthTokenFromDB()
                 .doOnSuccess((authToken -> AuthTokenDao.setToken(authToken.getToken())))
                 .map(token -> !token.getToken().isEmpty())
                 .subscribeOn(Schedulers.io())

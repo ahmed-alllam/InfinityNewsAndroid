@@ -27,5 +27,5 @@ public abstract class AuthTokenDao {
     public abstract void deleteAuthToken();
 
     @Query("SELECT * FROM authtoken")
-    public abstract Single<AuthToken> getAuthToken();
+    public abstract Single<AuthToken> getAuthTokenFromDB();
 }

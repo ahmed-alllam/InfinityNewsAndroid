@@ -27,9 +27,20 @@ public class CategoryViewModel extends ViewModel {
         return categoryRepository;
     }
 
-    public void getAllCategories(Context context, int lastSort) {
+    public void getAllCategories(Context context, int offset) {
         disposable.add(getCategoryRepository(context)
-                .getAllCategories(lastSort)
+                .getAllCategories(offset)
+                .subscribe(categories::setValue));
+    }
+
+    public void getFavouriteCategories(Context context) {
+        disposable.add(getCategoryRepository(context)
+                .getFavouriteCategories()
+                .map(response -> {
+                    ResponseList<Category> responseList = new ResponseList<>();
+                    responseList.setItems(response.getitem());
+                    return APIResponse.success(responseList);
+                })
                 .subscribe(categories::setValue));
     }
 

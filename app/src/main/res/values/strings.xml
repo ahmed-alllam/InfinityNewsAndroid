@@ -29,4 +29,5 @@
     <string name="next" translatable="false">Next</string>
     <string name="loading" translatable="false">Loading...</string>
     <string name="news" translatable="false">News</string>
+    <string name="retry" translatable="false">Retry</string>
 </resources>

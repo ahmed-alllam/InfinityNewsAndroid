@@ -3,6 +3,7 @@ package com.bitnews.bitnews.adapters;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -18,12 +19,16 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_EMPTY_ITEM = 1;
     private static final int VIEW_TYPE_LOADING_BAR = 2;
+    private static final int VIEW_TYPE_LOADING_FAILED = 3;
+
     static int ITEM_VIEW_HEIGHT = 0;
 
     ArrayList<T> itemsList = new ArrayList<>();
     Context context;
     private RecyclerView recyclerView;
+    View.OnClickListener retryOnClickListener;
     private boolean isLoadingMore;
+    private boolean isLoadingFailed;
     private boolean isLoadingInitially;
 
     PaginationRecyclerAdapter(RecyclerView recyclerView) {
@@ -36,11 +41,18 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM)
             return createItemViewHolder(parent);
-        if (viewType == VIEW_TYPE_LOADING_BAR) {
+        if (viewType == VIEW_TYPE_LOADING_BAR)
             return new RecyclerView.ViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.loading_item, parent, false)) {
             };
+        if (viewType == VIEW_TYPE_LOADING_FAILED) {
+            View loadingFailedView = LayoutInflater.from(context)
+                    .inflate(R.layout.loading_failed_item, parent, false);
+            loadingFailedView.findViewById(R.id.retryButton).setOnClickListener(retryOnClickListener);
+            return new RecyclerView.ViewHolder(loadingFailedView) {
+            };
         }
+
         return createEmptyItemViewHolder(parent);
     }
 
@@ -53,8 +65,12 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public int getItemViewType(int position) {
         if (itemsList.size() == 0)
             return VIEW_TYPE_EMPTY_ITEM;
-        if (position == itemsList.size() - 1 && isLoadingMore && itemsList.get(position) == null)
-            return VIEW_TYPE_LOADING_BAR;
+        if (position == itemsList.size() - 1 && itemsList.get(position) == null) {
+            if (isLoadingMore)
+                return VIEW_TYPE_LOADING_BAR;
+            if (isLoadingFailed)
+                return VIEW_TYPE_LOADING_FAILED;
+        }
         return VIEW_TYPE_ITEM;
     }
 
@@ -68,7 +84,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public void addAll(List<T> objects) {
         recyclerView.post(() -> {
             if (itemsList.size() != 0) {
-                removeLoadingBar();
+                removeFooterItem();
                 itemsList.addAll(objects);
                 notifyItemRangeInserted(itemsList.size() - objects.size(),
                         objects.size());
@@ -78,6 +94,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
             }
 
             recyclerView.post(() -> {
+                isLoadingFailed = false;
                 isLoadingInitially = false;
                 isLoadingMore = false;
             });
@@ -89,12 +106,12 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         notifyDataSetChanged();
     }
 
-    private void addLoadingBar() {
+    private void addFooterItem() {
         itemsList.add(null);
         notifyItemInserted(itemsList.size() - 1);
     }
 
-    private void removeLoadingBar() {
+    private void removeFooterItem() {
         itemsList.remove(null);
         notifyItemRemoved(itemsList.size());
     }
@@ -104,21 +121,37 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     }
 
     public void setLoadingInitially(boolean loadingInitially) {
-        if (loadingInitially) {
-            isLoadingInitially = true;
-            recyclerView.post(this::notifyDataSetChanged);
-        } else
-            isLoadingInitially = false;
+        isLoadingInitially = loadingInitially;
+        recyclerView.post(this::notifyDataSetChanged);
     }
 
     public void setLoadingMore(boolean loadingMore) {
+        isLoadingMore = loadingMore;
+
         if (loadingMore) {
-            isLoadingMore = true;
-            recyclerView.post(this::addLoadingBar);
-        } else {
-            removeLoadingBar();
-            recyclerView.post(() -> isLoadingMore = false);
+            if (!isLoadingFailed)
+                recyclerView.post(this::addFooterItem);
+            else {
+                isLoadingFailed = false;
+                notifyItemChanged(itemsList.size() - 1);
+            }
+        } else
+            recyclerView.post(this::removeFooterItem);
+    }
+
+    public void setLoadingFailed(boolean loadingFailed) {
+        isLoadingFailed = loadingFailed;
+
+        if (isLoadingFailed) {
+            if (isLoadingMore) {
+                isLoadingMore = false;
+                recyclerView.post(() -> notifyItemChanged(itemsList.size()));
+            }
         }
+    }
+
+    public boolean isEmpty() {
+        return itemsList.isEmpty();
     }
 
     protected abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent);

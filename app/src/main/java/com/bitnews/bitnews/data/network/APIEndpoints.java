@@ -5,6 +5,8 @@ import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.data.models.ResponseList;
 import com.bitnews.bitnews.data.models.User;
 
+import java.util.List;
+
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.RequestBody;
@@ -43,6 +45,9 @@ public interface APIEndpoints {
 
     @GET("news/categories/")
     Single<ResponseList<Category>> getAllCategories(@Query("cursor") String cursor);
+
+    @GET("users/me/favourite-categories")
+    Single<List<Category>> getFavouriteCategories();
 
     @PUT("users/me/favourite-categories")
     Completable updateFavouriteCategories(@Body RequestBody requestBody);

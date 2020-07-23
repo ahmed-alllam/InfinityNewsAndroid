@@ -34,7 +34,7 @@ public class CategoryRepository {
         categoryDao = appDatabase.getCategoryDao();
     }
 
-    public Single<APIResponse<ResponseList<Category>>> getAllCategories(int lastSort) {
+    public Single<APIResponse<ResponseList<Category>>> getAllCategories(int offset) {
         return new NetworkBoundResource<ResponseList<Category>>() {
             @Override
             protected boolean shouldFetchFromDB() {
@@ -43,7 +43,7 @@ public class CategoryRepository {
 
             @Override
             protected Single<ResponseList<Category>> fetchFromDB() {
-                return categoryDao.getAllCategories(lastSort).map(categories -> {
+                return categoryDao.getAllCategories(offset).map(categories -> {
                     ResponseList<Category> response = new ResponseList<>();
                     response.setItems(categories);
                     return response;
@@ -57,7 +57,7 @@ public class CategoryRepository {
 
             @Override
             protected Single<ResponseList<Category>> getAPICall() {
-                return apiEndpoints.getAllCategories(generateCategoryCursor(lastSort));
+                return apiEndpoints.getAllCategories(generateCategoryCursor(offset));
             }
 
             @Override
@@ -68,6 +68,35 @@ public class CategoryRepository {
             @Override
             protected boolean shouldReturnDbResponseOnError(ResponseList<Category> dbResponse) {
                 return !dbResponse.getItems().isEmpty();
+            }
+        }.asSingle();
+    }
+
+    public Single<APIResponse<List<Category>>> getFavouriteCategories() {
+        return new NetworkBoundResource<List<Category>>() {
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return true;
+            }
+
+            @Override
+            protected Single<List<Category>> fetchFromDB() {
+                return categoryDao.getFavouriteCategories();
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI(List<Category> data) {
+                return true;
+            }
+
+            @Override
+            protected Single<List<Category>> getAPICall() {
+                return apiEndpoints.getFavouriteCategories();
+            }
+
+            @Override
+            protected void saveToDB(List<Category> item, boolean isUpdate) {
+                categoryDao.setFavouriteCategories(item);
             }
         }.asSingle();
     }
@@ -103,7 +132,7 @@ public class CategoryRepository {
     }
 
     public Single<Boolean> hasFavouriteCategories() {
-        return Single.fromCallable(categoryDao::hasFavouriteCategories)
+        return categoryDao.hasFavouriteCategories()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -125,7 +154,7 @@ public class CategoryRepository {
         return RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
     }
 
-    private String generateCategoryCursor(int lastSort) {
-        return PaginationCursorGenerator.getPositionCursor(lastSort);
+    private String generateCategoryCursor(int offset) {
+        return PaginationCursorGenerator.getPositionCursor(offset);
     }
 }
