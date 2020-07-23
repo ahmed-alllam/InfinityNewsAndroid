@@ -12,8 +12,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitnews.bitnews.R;
+import com.bitnews.bitnews.adapters.MainViewPagerAdapter;
+import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     CategoryViewModel categoryViewModel;
@@ -28,11 +34,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout = findViewById(R.id.drawerLayout);
         ViewPager2 mainViewPager = findViewById(R.id.mainViewPager);
+        TabLayout categoriesTabLayout = findViewById(R.id.categoriesTabLayout);
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, response -> {
             switch (response.getStatus()) {
                 case SUCCESFUL:
+                    List<Category> categories = response.getitem().getItems();
+                    MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(this, categories);
+                    mainViewPager.setAdapter(mainViewPagerAdapter);
+                    new TabLayoutMediator(categoriesTabLayout, mainViewPager, true, ((tab, position) -> {
+                        tab.setText(categories.get(position).getTitle());
+                    })).attach();
+
+                    dynamicSetTabLayoutMode(categoriesTabLayout);
                     break;
                 case NETWORK_FAILED:
                     break;
@@ -51,6 +66,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // start search activity
                 break;
         }
+    }
+
+    private void dynamicSetTabLayoutMode(TabLayout tabLayout) {
+        int tabsWidth = calculateTotalTabsWidth(tabLayout);
+        int layoutWidth = tabLayout.getWidth();
+        if (tabsWidth <= layoutWidth) {
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        } else {
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        }
+    }
+
+    private int calculateTotalTabsWidth(TabLayout tabLayout) {
+        int tabWidth = 0;
+        for (int i = 0; i < tabLayout.getChildCount(); i++) {
+            final View view = tabLayout.getChildAt(i);
+            view.measure(0, 0);
+            tabWidth += view.getMeasuredWidth();
+        }
+        return tabWidth;
     }
 
     @Override
