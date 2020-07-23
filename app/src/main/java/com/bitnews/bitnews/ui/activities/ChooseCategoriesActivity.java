@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.adapters.CategoriesRecyclerAdapter;
+import com.bitnews.bitnews.adapters.PaginationRecyclerAdapter;
 import com.bitnews.bitnews.callbacks.CategoryItemChooseListener;
 import com.bitnews.bitnews.callbacks.PaginationScrollListener;
 import com.bitnews.bitnews.data.models.Category;
@@ -81,9 +82,23 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         });
 
         categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView);
-        categoriesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView, this, (v) -> loadCategories(false));
         categoriesRecyclerView.setAdapter(categoriesAdapter);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (categoriesAdapter.getItemViewType(position)) {
+                    case PaginationRecyclerAdapter.VIEW_TYPE_LOADING_BAR:
+                    case PaginationRecyclerAdapter.VIEW_TYPE_LOADING_FAILED:
+                        return 3;
+                    default:
+                        return 1;
+                }
+            }
+        });
+
+        categoriesRecyclerView.setLayoutManager(layoutManager);
         categoriesRecyclerView.addOnScrollListener(new PaginationScrollListener(categoriesRecyclerView.getLayoutManager()) {
             @Override
             public boolean isLastPage() {

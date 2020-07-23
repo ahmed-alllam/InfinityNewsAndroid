@@ -18,8 +18,8 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
 
     static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_EMPTY_ITEM = 1;
-    private static final int VIEW_TYPE_LOADING_BAR = 2;
-    private static final int VIEW_TYPE_LOADING_FAILED = 3;
+    public static final int VIEW_TYPE_LOADING_BAR = 2;
+    public static final int VIEW_TYPE_LOADING_FAILED = 3;
 
     static int ITEM_VIEW_HEIGHT = 0;
 
