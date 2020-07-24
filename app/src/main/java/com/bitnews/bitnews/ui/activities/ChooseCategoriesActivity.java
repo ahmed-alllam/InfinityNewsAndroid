@@ -163,6 +163,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             if (isInitialLoad) {
                 offset = 0;
                 categoriesCount = 0;
+                chosenCategories.clear();
                 categoriesAdapter.clear();
                 categoriesAdapter.setLoadingInitially(true);
                 categoriesRecyclerView.suppressLayout(true);
@@ -175,6 +176,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
     @Override
     public void onCategoryChosen(Category category) {
+        System.out.println("ahmed" + chosenCategories.size());
         chosenCategories.add(category);
         updateNextButton();
     }

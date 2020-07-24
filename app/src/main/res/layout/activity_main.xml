@@ -96,6 +96,17 @@
             app:tabMinWidth="92dp"
             app:tabRippleColor="@android:color/transparent" />
 
+        <ProgressBar
+            android:id="@+id/progressBar3"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline60"
+            app:layout_constraintStart_toStartOf="@+id/mainViewPager"
+            app:layout_constraintTop_toTopOf="@+id/guideline62" />
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/mainViewPager"
             android:layout_width="0dp"

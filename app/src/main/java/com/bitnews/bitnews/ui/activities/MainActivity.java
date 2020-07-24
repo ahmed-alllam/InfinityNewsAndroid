@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.adapters.MainViewPagerAdapter;
 import com.bitnews.bitnews.data.models.Category;
+import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -38,19 +39,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, response -> {
-            switch (response.getStatus()) {
-                case SUCCESFUL:
-                    List<Category> categories = response.getitem().getItems();
-                    MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(this, categories);
-                    mainViewPager.setAdapter(mainViewPagerAdapter);
-                    new TabLayoutMediator(categoriesTabLayout, mainViewPager, true, ((tab, position) -> {
-                        tab.setText(categories.get(position).getTitle());
-                    })).attach();
+            findViewById(R.id.progressBar3).setVisibility(View.INVISIBLE);
 
-                    dynamicSetTabLayoutMode(categoriesTabLayout);
-                    break;
-                case NETWORK_FAILED:
-                    break;
+            if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
+                List<Category> categories = response.getitem().getItems();
+                MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(this, categories);
+                mainViewPager.setAdapter(mainViewPagerAdapter);
+                new TabLayoutMediator(categoriesTabLayout, mainViewPager, true, ((tab, position) -> {
+                    tab.setText(categories.get(position).getTitle());
+                })).attach();
+
+                dynamicSetTabLayoutMode(categoriesTabLayout);
             }
         });
 
