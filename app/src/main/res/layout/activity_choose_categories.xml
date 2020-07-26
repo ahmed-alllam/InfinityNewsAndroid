@@ -86,6 +86,8 @@
         android:text="@string/next"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
+        android:enabled="false"
+        android:onClick="onNextButtonClicked"
         app:autoSizeMaxTextSize="19sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/guideline48"

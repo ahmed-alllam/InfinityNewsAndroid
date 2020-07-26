@@ -58,35 +58,10 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
             switch (response.getStatus()) {
                 case SUCCESFUL:
-                    List<Category> categories = response.getitem().getItems();
-                    int count = response.getitem().getCount();
-                    if (!categories.isEmpty()) {
-                        if (count > 0)
-                            categoriesCount = count;
-                        else
-                            categoriesCount = -1;
-                        offset = categories.get(categories.size() - 1).getSort();
-                        categoriesAdapter.addAll(categories);
-                        onNewCategoriesAdded(categories);
-                    } else {
-                        if (categoriesAdapter.isEmpty()) {
-                            categoriesRecyclerView.setVisibility(View.INVISIBLE);
-                            categoriesErrorLabel.setVisibility(View.VISIBLE);
-                            categoriesErrorLabel.setText(R.string.no_feed);
-                        } else {
-                            categoriesAdapter.setLoadingFailed(true);
-                        }
-                    }
+                    onSuccessfulResponse(response.getitem().getItems(), response.getitem().getCount());
                     break;
                 case NETWORK_FAILED:
-                    if (categoriesAdapter.isEmpty()) {
-                        categoriesAdapter.setLoadingInitially(false);
-                        categoriesRecyclerView.setVisibility(View.INVISIBLE);
-                        categoriesErrorLabel.setVisibility(View.VISIBLE);
-                        categoriesErrorLabel.setText(R.string.network_error);
-                    } else
-                        categoriesAdapter.setLoadingFailed(true);
-                    break;
+                    onErrorResponse();
             }
         });
 
@@ -96,6 +71,49 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
                 loadCategories(false);
         });
         categoriesRecyclerView.setAdapter(categoriesAdapter);
+        categoriesRecyclerView.setLayoutManager(getListLayoutManager());
+        categoriesRecyclerView.addOnScrollListener(getOnScrollListener());
+
+        categoriesSwipeLayout = findViewById(R.id.swipeRefreshLayout);
+        categoriesSwipeLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
+        categoriesSwipeLayout.setOnRefreshListener(this::onSwipeLayoutListener);
+
+        nextButton = findViewById(R.id.nextButton);
+
+        loadCategories(true);
+    }
+
+    private void onSuccessfulResponse(List<Category> categories, int count) {
+        if (!categories.isEmpty()) {
+            if (count > 0)
+                categoriesCount = count;
+            else
+                categoriesCount = -1;
+            offset = categories.get(categories.size() - 1).getSort();
+            categoriesAdapter.addAll(categories);
+            onNewCategoriesAdded(categories);
+        } else {
+            if (categoriesAdapter.isEmpty()) {
+                categoriesRecyclerView.setVisibility(View.INVISIBLE);
+                categoriesErrorLabel.setVisibility(View.VISIBLE);
+                categoriesErrorLabel.setText(R.string.no_feed);
+            } else {
+                categoriesAdapter.setLoadingFailed(true);
+            }
+        }
+    }
+
+    private void onErrorResponse() {
+        if (categoriesAdapter.isEmpty()) {
+            categoriesAdapter.setLoadingInitially(false);
+            categoriesRecyclerView.setVisibility(View.INVISIBLE);
+            categoriesErrorLabel.setVisibility(View.VISIBLE);
+            categoriesErrorLabel.setText(R.string.network_error);
+        } else
+            categoriesAdapter.setLoadingFailed(true);
+    }
+
+    private RecyclerView.LayoutManager getListLayoutManager() {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -107,8 +125,11 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             }
         });
 
-        categoriesRecyclerView.setLayoutManager(layoutManager);
-        categoriesRecyclerView.addOnScrollListener(new PaginationScrollListener(categoriesRecyclerView.getLayoutManager()) {
+        return layoutManager;
+    }
+
+    private PaginationScrollListener getOnScrollListener() {
+        return new PaginationScrollListener(categoriesRecyclerView.getLayoutManager()) {
             @Override
             public boolean isLastPage() {
                 return offset >= categoriesCount && categoriesCount != -1;
@@ -123,45 +144,14 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             public void loadMoreItems() {
                 loadCategories(false);
             }
-        });
+        };
+    }
 
-        categoriesSwipeLayout = findViewById(R.id.swipeRefreshLayout);
-        categoriesSwipeLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
-        categoriesSwipeLayout.setOnRefreshListener(() -> {
-            if (!categoriesAdapter.isLoading()) {
-                loadCategories(true);
-            } else
-                categoriesSwipeLayout.setRefreshing(false);
-        });
-
-        nextButton = findViewById(R.id.nextButton);
-        nextButton.setEnabled(false);
-        nextButton.setOnClickListener((v) -> {
-            LiveData<APIResponse> responseLiveData = categoryViewModel.updateFavouriteCategories(
-                    getApplicationContext(), chosenCategories);
-            nextButton.setEnabled(false);
-            nextErrorLabel.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
-
-            responseLiveData.observe(this, (response) -> {
-                progressBar.setVisibility(View.INVISIBLE);
-
-                switch (response.getStatus()) {
-                    case SUCCESFUL:
-                        Intent intent = new Intent(this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                        break;
-                    case NETWORK_FAILED:
-                        nextButton.setEnabled(true);
-                        nextErrorLabel.setVisibility(View.VISIBLE);
-                        nextErrorLabel.setText(R.string.network_error);
-                }
-            });
-
-        });
-
-        loadCategories(true);
+    private void onSwipeLayoutListener() {
+        if (!categoriesAdapter.isLoading()) {
+            loadCategories(true);
+        } else
+            categoriesSwipeLayout.setRefreshing(false);
     }
 
     private void loadCategories(boolean isInitialLoad) {
@@ -179,6 +169,30 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             categoriesAdapter.setLoadingMore(true);
         }
         categoryViewModel.getAllCategories(getApplicationContext(), offset);
+    }
+
+    public void onNextButtonClicked(View view) {
+        LiveData<APIResponse> responseLiveData = categoryViewModel.updateFavouriteCategories(
+                getApplicationContext(), chosenCategories);
+        nextButton.setEnabled(false);
+        nextErrorLabel.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        responseLiveData.observe(this, (response) -> {
+            progressBar.setVisibility(View.INVISIBLE);
+
+            switch (response.getStatus()) {
+                case SUCCESFUL:
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    break;
+                case NETWORK_FAILED:
+                    nextButton.setEnabled(true);
+                    nextErrorLabel.setVisibility(View.VISIBLE);
+                    nextErrorLabel.setText(R.string.network_error);
+            }
+        });
     }
 
     @Override

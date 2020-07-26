@@ -60,41 +60,10 @@ public class PostsFragment extends Fragment {
 
             switch (response.getStatus()) {
                 case SUCCESFUL:
-                    List<Post> posts = response.getitem().getItems();
-                    int count = response.getitem().getCount();
-                    if (!posts.isEmpty()) {
-                        if (count > 0)
-                            totalPostsCount = count;
-                        else
-                            totalPostsCount = -1;
-                        fetchedPostsCount += posts.size();
-                        lastTimestamp = posts.get(posts.size() - 1).getTimestamp();
-                        if (isRefreshing || postsRecyclerAdapter.isEmpty())
-                            firstTimestamp = posts.get(0).getTimestamp();
-
-                        if (isRefreshing)
-                            postsRecyclerAdapter.addAll(0, posts);
-                        else
-                            postsRecyclerAdapter.addAll(posts);
-                    } else {
-                        if (postsRecyclerAdapter.isEmpty()) {
-                            postsRecyclerAdapter.setLoadingInitially(false);
-                            postsRecyclerView.setVisibility(View.INVISIBLE);
-                            postsErrorLabel.setVisibility(View.VISIBLE);
-                            postsErrorLabel.setText(R.string.no_feed);
-                        } else
-                            postsRecyclerAdapter.setLoadingFailed(true);
-                    }
+                    onSuccessfulResponse(response.getitem().getItems(), response.getitem().getCount());
                     break;
                 case NETWORK_FAILED:
-                    if (postsRecyclerAdapter.isEmpty()) {
-                        postsRecyclerAdapter.setLoadingInitially(false);
-                        postsRecyclerView.setVisibility(View.INVISIBLE);
-                        postsErrorLabel.setVisibility(View.VISIBLE);
-                        postsErrorLabel.setText(R.string.network_error);
-                    } else {
-                        postsRecyclerAdapter.setLoadingFailed(true);
-                    }
+                    onErrorResponse();
                     break;
             }
         });
@@ -106,7 +75,56 @@ public class PostsFragment extends Fragment {
         }));
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         postsRecyclerView.setAdapter(postsRecyclerAdapter);
-        postsRecyclerView.addOnScrollListener(new PaginationScrollListener(postsRecyclerView.getLayoutManager()) {
+        postsRecyclerView.addOnScrollListener(getOnScrollListener());
+
+        postsSwipeLayout = view.findViewById(R.id.postSwipeRefreshLayout);
+        postsSwipeLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
+        postsSwipeLayout.setOnRefreshListener(this::onSwipeLayoutListener);
+
+        postsErrorLabel = view.findViewById(R.id.postsErrorLabel);
+
+        loadPosts(true, false);
+    }
+
+    private void onSuccessfulResponse(List<Post> posts, int count) {
+        if (!posts.isEmpty()) {
+            if (count > 0)
+                totalPostsCount = count;
+            else
+                totalPostsCount = -1;
+            fetchedPostsCount += posts.size();
+            lastTimestamp = posts.get(posts.size() - 1).getTimestamp();
+            if (isRefreshing || postsRecyclerAdapter.isEmpty())
+                firstTimestamp = posts.get(0).getTimestamp();
+
+            if (isRefreshing)
+                postsRecyclerAdapter.addAll(0, posts);
+            else
+                postsRecyclerAdapter.addAll(posts);
+        } else {
+            if (postsRecyclerAdapter.isEmpty()) {
+                postsRecyclerAdapter.setLoadingInitially(false);
+                postsRecyclerView.setVisibility(View.INVISIBLE);
+                postsErrorLabel.setVisibility(View.VISIBLE);
+                postsErrorLabel.setText(R.string.no_feed);
+            } else
+                postsRecyclerAdapter.setLoadingFailed(true);
+        }
+    }
+
+    private void onErrorResponse() {
+        if (postsRecyclerAdapter.isEmpty()) {
+            postsRecyclerAdapter.setLoadingInitially(false);
+            postsRecyclerView.setVisibility(View.INVISIBLE);
+            postsErrorLabel.setVisibility(View.VISIBLE);
+            postsErrorLabel.setText(R.string.network_error);
+        } else {
+            postsRecyclerAdapter.setLoadingFailed(true);
+        }
+    }
+
+    private PaginationScrollListener getOnScrollListener() {
+        return new PaginationScrollListener(postsRecyclerView.getLayoutManager()) {
             @Override
             public boolean isLastPage() {
                 return fetchedPostsCount >= totalPostsCount && totalPostsCount != -1;
@@ -121,23 +139,17 @@ public class PostsFragment extends Fragment {
             public void loadMoreItems() {
                 loadPosts(false, false);
             }
-        });
+        };
+    }
 
-        postsSwipeLayout = view.findViewById(R.id.postSwipeRefreshLayout);
-        postsSwipeLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
-        postsSwipeLayout.setOnRefreshListener(() -> {
-            if (!postsRecyclerAdapter.isLoading()) {
-                isRefreshing = true;
-                boolean before = !postsRecyclerAdapter.isEmpty();
-                loadPosts(true, before);
-            } else {
-                postsSwipeLayout.setRefreshing(false);
-            }
-        });
-
-        postsErrorLabel = view.findViewById(R.id.postsErrorLabel);
-
-        loadPosts(true, false);
+    private void onSwipeLayoutListener() {
+        if (!postsRecyclerAdapter.isLoading()) {
+            isRefreshing = true;
+            boolean before = !postsRecyclerAdapter.isEmpty();
+            loadPosts(true, before);
+        } else {
+            postsSwipeLayout.setRefreshing(false);
+        }
     }
 
     private void loadPosts(boolean isLoadingInitally, boolean before) {
