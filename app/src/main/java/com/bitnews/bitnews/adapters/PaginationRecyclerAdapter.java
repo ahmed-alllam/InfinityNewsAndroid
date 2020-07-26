@@ -5,6 +5,8 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,22 +20,23 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
 
     static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_EMPTY_ITEM = 1;
-    public static final int VIEW_TYPE_LOADING_BAR = 2;
-    public static final int VIEW_TYPE_LOADING_FAILED = 3;
+    public static final int VIEW_TYPE_FOOTER = 2;
 
     static int ITEM_VIEW_HEIGHT = 0;
 
     ArrayList<T> itemsList = new ArrayList<>();
     Context context;
     private RecyclerView recyclerView;
-    View.OnClickListener retryOnClickListener;
+    private FooterItemViewHolder footerItemViewHolder;
+    private View.OnClickListener retryOnClickListener;
     private boolean isLoadingMore;
     private boolean isLoadingFailed;
     private boolean isLoadingInitially;
 
-    PaginationRecyclerAdapter(RecyclerView recyclerView) {
+    PaginationRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
         this.recyclerView = recyclerView;
         context = recyclerView.getContext();
+        this.retryOnClickListener = retryOnClickListener;
     }
 
     @NonNull
@@ -41,19 +44,21 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM)
             return createItemViewHolder(parent);
-        if (viewType == VIEW_TYPE_LOADING_BAR)
-            return new RecyclerView.ViewHolder(LayoutInflater.from(context)
-                    .inflate(R.layout.loading_item, parent, false)) {
-            };
-        if (viewType == VIEW_TYPE_LOADING_FAILED) {
-            View loadingFailedView = LayoutInflater.from(context)
-                    .inflate(R.layout.loading_failed_item, parent, false);
-            loadingFailedView.findViewById(R.id.retryButton).setOnClickListener(retryOnClickListener);
-            return new RecyclerView.ViewHolder(loadingFailedView) {
-            };
+        if (viewType == VIEW_TYPE_FOOTER) {
+            footerItemViewHolder = new FooterItemViewHolder(LayoutInflater.from(context)
+                    .inflate(R.layout.loading_footer, parent, false), retryOnClickListener);
+            return footerItemViewHolder;
         }
 
         return createEmptyItemViewHolder(parent);
+    }
+
+    void bindFooterViewHolder(RecyclerView.ViewHolder holder) {
+        FooterItemViewHolder footerItemViewHolder = (FooterItemViewHolder) holder;
+        if (isLoadingMore)
+            footerItemViewHolder.showProgressBar();
+        if (isLoadingFailed)
+            footerItemViewHolder.showRetryButton();
     }
 
     @Override
@@ -66,10 +71,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         if (itemsList.size() == 0)
             return VIEW_TYPE_EMPTY_ITEM;
         if (position == itemsList.size() - 1 && itemsList.get(position) == null) {
-            if (isLoadingMore)
-                return VIEW_TYPE_LOADING_BAR;
-            if (isLoadingFailed)
-                return VIEW_TYPE_LOADING_FAILED;
+            return VIEW_TYPE_FOOTER;
         }
         return VIEW_TYPE_ITEM;
     }
@@ -82,12 +84,17 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     }
 
     public void addAll(List<T> objects) {
+        addAll(itemsList.size() - 1, objects);
+    }
+
+    public void addAll(int index, List<T> objects) {
         recyclerView.post(() -> {
-            if (itemsList.size() != 0) {
+            if (isLoadingMore || isLoadingFailed)
                 removeFooterItem();
-                itemsList.addAll(objects);
-                notifyItemRangeInserted(itemsList.size() - objects.size(),
-                        objects.size());
+
+            if (itemsList.size() != 0) {
+                itemsList.addAll(index, objects);
+                notifyItemRangeInserted(index, objects.size());
             } else {
                 itemsList.addAll(objects);
                 notifyDataSetChanged();
@@ -120,6 +127,10 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         return isLoadingInitially || isLoadingMore;
     }
 
+    public boolean isLoadingFailedAdded() {
+        return isLoadingFailed;
+    }
+
     public void setLoadingInitially(boolean loadingInitially) {
         isLoadingInitially = loadingInitially;
         recyclerView.post(this::notifyDataSetChanged);
@@ -129,14 +140,16 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         isLoadingMore = loadingMore;
 
         if (loadingMore) {
-            if (!isLoadingFailed)
+            if (!isLoadingFailed) {
                 recyclerView.post(this::addFooterItem);
+            }
             else {
                 isLoadingFailed = false;
-                notifyItemChanged(itemsList.size() - 1);
+                bindFooterViewHolder(footerItemViewHolder);
             }
-        } else
+        } else {
             recyclerView.post(this::removeFooterItem);
+        }
     }
 
     public void setLoadingFailed(boolean loadingFailed) {
@@ -145,7 +158,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         if (isLoadingFailed) {
             if (isLoadingMore) {
                 isLoadingMore = false;
-                recyclerView.post(() -> notifyItemChanged(itemsList.size()));
+                bindFooterViewHolder(footerItemViewHolder);
             }
         }
     }
@@ -157,4 +170,28 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     protected abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent);
 
     protected abstract RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent);
+
+    public class FooterItemViewHolder extends RecyclerView.ViewHolder {
+        private ProgressBar progressBar;
+        private Button retryButton;
+
+        FooterItemViewHolder(@NonNull View itemView, View.OnClickListener retryOnClickListener) {
+            super(itemView);
+
+            progressBar = itemView.findViewById(R.id.progressBar2);
+            retryButton = itemView.findViewById(R.id.retryButton);
+
+            retryButton.setOnClickListener(retryOnClickListener);
+        }
+
+        private void showProgressBar() {
+            progressBar.setVisibility(View.VISIBLE);
+            retryButton.setVisibility(View.GONE);
+        }
+
+        private void showRetryButton() {
+            retryButton.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 }

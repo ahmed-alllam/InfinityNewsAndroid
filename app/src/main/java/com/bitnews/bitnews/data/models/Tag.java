@@ -25,11 +25,12 @@ public class Tag {
         return Objects.hash(tag);
     }
 
+    @NonNull
     public String getTag() {
         return tag;
     }
 
-    public void setTag(String tag) {
+    public void setTag(@NonNull String tag) {
         this.tag = tag;
     }
 }

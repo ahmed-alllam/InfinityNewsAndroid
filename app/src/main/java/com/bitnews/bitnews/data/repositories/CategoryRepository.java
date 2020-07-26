@@ -57,7 +57,8 @@ public class CategoryRepository {
 
             @Override
             protected Single<ResponseList<Category>> getAPICall() {
-                return apiEndpoints.getAllCategories(generateCategoryCursor(offset));
+                return apiEndpoints.getAllCategories(
+                        PaginationCursorGenerator.getPositionCursor(String.valueOf(offset)));
             }
 
             @Override
@@ -152,9 +153,5 @@ public class CategoryRepository {
         }
 
         return RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
-    }
-
-    private String generateCategoryCursor(int offset) {
-        return PaginationCursorGenerator.getPositionCursor(offset);
     }
 }

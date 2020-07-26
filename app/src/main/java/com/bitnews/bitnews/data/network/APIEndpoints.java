@@ -2,6 +2,7 @@ package com.bitnews.bitnews.data.network;
 
 import com.bitnews.bitnews.data.models.AuthToken;
 import com.bitnews.bitnews.data.models.Category;
+import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.ResponseList;
 import com.bitnews.bitnews.data.models.User;
 
@@ -16,6 +17,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIEndpoints {
@@ -51,4 +53,8 @@ public interface APIEndpoints {
 
     @PUT("users/me/favourite-categories")
     Completable updateFavouriteCategories(@Body RequestBody requestBody);
+
+    @GET("news/categories/{slug}/posts")
+    Single<ResponseList<Post>> getPostsByCategory(@Path("slug") String categorySlug,
+                                                  @Query("cursor") String cursor);
 }

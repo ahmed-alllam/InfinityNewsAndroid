@@ -23,9 +23,8 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
 
     public CategoriesRecyclerAdapter(RecyclerView recyclerView, CategoryItemChooseListener categoryItemChooseListener,
                                      View.OnClickListener retryOnClickListener) {
-        super(recyclerView);
+        super(recyclerView, retryOnClickListener);
         this.categoryItemChooseListener = categoryItemChooseListener;
-        this.retryOnClickListener = retryOnClickListener;
         ITEM_VIEW_HEIGHT = 100;
 
         selectedColor = ContextCompat.getColor(context, R.color.colorAccent);
@@ -50,32 +49,36 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == VIEW_TYPE_ITEM) {
-            CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
-            Category categoryItem = itemsList.get(position);
+        switch (getItemViewType(position)) {
+            case VIEW_TYPE_ITEM:
+                CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
+                Category categoryItem = itemsList.get(position);
 
-            // Glide.with(context)
-            //        .load(categoryItem.getImage())
-            //       .placeholder(R.drawable.ic_launcher_background)
-            //        .into(categoryViewHolder.image);
-            categoryViewHolder.title.setText(categoryItem.getTitle());
-            categoryViewHolder.itemView.setOnClickListener((v -> {
-                if (!categoryItem.isFavouritedByUser()) {
-                    categoryItem.setFavouritedByUser(true);
+                // Glide.with(context)
+                //        .load(categoryItem.getImage())
+                //       .placeholder(R.drawable.ic_launcher_background)
+                //        .into(categoryViewHolder.image);
+                categoryViewHolder.title.setText(categoryItem.getTitle());
+                categoryViewHolder.itemView.setOnClickListener((v -> {
+                    if (!categoryItem.isFavouritedByUser()) {
+                        categoryItem.setFavouritedByUser(true);
+                        categoryViewHolder.highlightView();
+                        categoryItemChooseListener.onCategoryChosen(categoryItem);
+                    } else {
+                        categoryItem.setFavouritedByUser(false);
+                        categoryViewHolder.unHighlightView();
+                        categoryItemChooseListener.onCategoryUnchosen(categoryItem);
+                    }
+                }));
+
+                if (categoryItem.isFavouritedByUser()) {
                     categoryViewHolder.highlightView();
-                    categoryItemChooseListener.onCategoryChosen(categoryItem);
                 } else {
-                    categoryItem.setFavouritedByUser(false);
                     categoryViewHolder.unHighlightView();
-                    categoryItemChooseListener.onCategoryUnchosen(categoryItem);
                 }
-            }));
-
-            if (categoryItem.isFavouritedByUser()) {
-                categoryViewHolder.highlightView();
-            } else {
-                categoryViewHolder.unHighlightView();
-            }
+                break;
+            case VIEW_TYPE_FOOTER:
+                bindFooterViewHolder(holder);
         }
     }
 

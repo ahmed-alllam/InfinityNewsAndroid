@@ -30,4 +30,5 @@
     <string name="loading" translatable="false">Loading...</string>
     <string name="news" translatable="false">News</string>
     <string name="retry" translatable="false">Retry</string>
+    <string name="no_feed" translatable="false">Your Feed is Empty</string>
 </resources>

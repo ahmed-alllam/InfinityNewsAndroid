@@ -1,11 +1,12 @@
 package com.bitnews.bitnews.data.models;
 
 import androidx.annotation.NonNull;
-import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.Junction;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
-import androidx.room.Relation;
+import androidx.room.TypeConverters;
+
+import com.bitnews.bitnews.utils.ListToStringConverter;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,59 +15,71 @@ import java.util.Objects;
 public class Post {
     @PrimaryKey
     @NonNull
-    private String postSlug = "";
+    private String slug = "";
     private String title;
     private String description;
     private String timestamp;
-    @Embedded
-    private Source source;
-    @Embedded
-    private Category category;
-    @Relation(parentColumn = "postSlug", entityColumn = "tag",
-            associateBy = @Junction(PostTags.class))
-    private List<Tag> tags;
+    @ForeignKey(entity = Source.class, parentColumns = "slug", childColumns = "sourceSlug")
+    private String sourceSlug;
+    @ForeignKey(entity = Category.class, parentColumns = "slug", childColumns = "categorySlug")
+    private String categorySlug;
+    @TypeConverters(ListToStringConverter.class)
+    private List<String> tags;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return postSlug.equals(post.postSlug) &&
+        return slug.equals(post.slug) &&
                 Objects.equals(title, post.title) &&
                 Objects.equals(description, post.description) &&
                 Objects.equals(timestamp, post.timestamp) &&
-                Objects.equals(source, post.source) &&
-                Objects.equals(category, post.category) &&
+                Objects.equals(sourceSlug, post.sourceSlug) &&
+                Objects.equals(categorySlug, post.categorySlug) &&
                 Objects.equals(tags, post.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(postSlug, title, description, timestamp, source, category, tags);
+        return Objects.hash(slug, title, description, timestamp, sourceSlug, categorySlug, tags);
     }
 
-    public Source getSource() {
-        return source;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setSource(Source source) {
-        this.source = source;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Category getCategory() {
-        return category;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public String getSourceSlug() {
+        return sourceSlug;
     }
 
-    public String getPostSlug() {
-        return postSlug;
+    public void setSourceSlug(String sourceSlug) {
+        this.sourceSlug = sourceSlug;
     }
 
-    public void setPostSlug(@NonNull String postSlug) {
-        this.postSlug = postSlug;
+    public String getCategorySlug() {
+        return categorySlug;
+    }
+
+    public void setCategorySlug(String categorySlug) {
+        this.categorySlug = categorySlug;
+    }
+
+    @NonNull
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(@NonNull String slug) {
+        this.slug = slug;
     }
 
     public String getTitle() {
@@ -81,11 +94,11 @@ public class Post {
         return timestamp;
     }
 
-    public List<Tag> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 }

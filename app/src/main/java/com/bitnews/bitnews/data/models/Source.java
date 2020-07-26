@@ -1,10 +1,12 @@
 package com.bitnews.bitnews.data.models;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
+@Entity
 public class Source {
     @PrimaryKey()
     @NonNull
@@ -12,15 +14,13 @@ public class Source {
     private String name;
     private String description;
     private String photo;
-    private boolean isFavouritedByUser;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Source source = (Source) o;
-        return isFavouritedByUser == source.isFavouritedByUser &&
-                Objects.equals(slug, source.slug) &&
+        return Objects.equals(slug, source.slug) &&
                 Objects.equals(name, source.name) &&
                 Objects.equals(description, source.description) &&
                 Objects.equals(photo, source.photo);
@@ -28,7 +28,7 @@ public class Source {
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, name, description, photo, isFavouritedByUser);
+        return Objects.hash(slug, name, description, photo);
     }
 
     public String getSlug() {
@@ -51,7 +51,15 @@ public class Source {
         return photo;
     }
 
-    public boolean isFavouritedByUser() {
-        return isFavouritedByUser;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }

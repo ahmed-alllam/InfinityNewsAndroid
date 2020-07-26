@@ -32,7 +32,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
     public static final int MIN_CHOSEN_CATEGORIES = 3;
     private ArrayList<Category> chosenCategories = new ArrayList<>();
     private RecyclerView categoriesRecyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout categoriesSwipeLayout;
     private CategoryViewModel categoryViewModel;
     private CategoriesRecyclerAdapter categoriesAdapter;
     private ProgressBar progressBar;
@@ -52,20 +52,30 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         nextErrorLabel = findViewById(R.id.nextErrorLabel);
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
-        categoryViewModel.getCategoriesLiveData().observe(this, (categories) -> {
+        categoryViewModel.getCategoriesLiveData().observe(this, (response) -> {
             categoriesRecyclerView.suppressLayout(false);
-            swipeRefreshLayout.setRefreshing(false);
+            categoriesSwipeLayout.setRefreshing(false);
 
-            switch (categories.getStatus()) {
+            switch (response.getStatus()) {
                 case SUCCESFUL:
-                    List<Category> items = categories.getitem().getItems();
-                    int count = categories.getitem().getCount();
-                    if (!items.isEmpty()) {
+                    List<Category> categories = response.getitem().getItems();
+                    int count = response.getitem().getCount();
+                    if (!categories.isEmpty()) {
                         if (count > 0)
                             categoriesCount = count;
-                        offset = items.get(items.size() - 1).getSort();
-                        categoriesAdapter.addAll(categories.getitem().getItems());
-                        onNewCategoriesAdded(items);
+                        else
+                            categoriesCount = -1;
+                        offset = categories.get(categories.size() - 1).getSort();
+                        categoriesAdapter.addAll(categories);
+                        onNewCategoriesAdded(categories);
+                    } else {
+                        if (categoriesAdapter.isEmpty()) {
+                            categoriesRecyclerView.setVisibility(View.INVISIBLE);
+                            categoriesErrorLabel.setVisibility(View.VISIBLE);
+                            categoriesErrorLabel.setText(R.string.no_feed);
+                        } else {
+                            categoriesAdapter.setLoadingFailed(true);
+                        }
                     }
                     break;
                 case NETWORK_FAILED:
@@ -74,27 +84,26 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
                         categoriesRecyclerView.setVisibility(View.INVISIBLE);
                         categoriesErrorLabel.setVisibility(View.VISIBLE);
                         categoriesErrorLabel.setText(R.string.network_error);
-                    } else {
+                    } else
                         categoriesAdapter.setLoadingFailed(true);
-                    }
                     break;
             }
         });
 
         categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView);
-        categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView, this, (v) -> loadCategories(false));
+        categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView, this, (v) -> {
+            if (!categoriesAdapter.isLoading())
+                loadCategories(false);
+        });
         categoriesRecyclerView.setAdapter(categoriesAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch (categoriesAdapter.getItemViewType(position)) {
-                    case PaginationRecyclerAdapter.VIEW_TYPE_LOADING_BAR:
-                    case PaginationRecyclerAdapter.VIEW_TYPE_LOADING_FAILED:
-                        return 3;
-                    default:
-                        return 1;
+                if (categoriesAdapter.getItemViewType(position) == PaginationRecyclerAdapter.VIEW_TYPE_FOOTER) {
+                    return 3;
                 }
+                return 1;
             }
         });
 
@@ -102,12 +111,12 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         categoriesRecyclerView.addOnScrollListener(new PaginationScrollListener(categoriesRecyclerView.getLayoutManager()) {
             @Override
             public boolean isLastPage() {
-                return offset >= categoriesCount;
+                return offset >= categoriesCount && categoriesCount != -1;
             }
 
             @Override
             public boolean isLoading() {
-                return categoriesAdapter.isLoading();
+                return categoriesAdapter.isLoading() || categoriesAdapter.isLoadingFailedAdded();
             }
 
             @Override
@@ -116,13 +125,13 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             }
         });
 
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
+        categoriesSwipeLayout = findViewById(R.id.swipeRefreshLayout);
+        categoriesSwipeLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
+        categoriesSwipeLayout.setOnRefreshListener(() -> {
             if (!categoriesAdapter.isLoading()) {
                 loadCategories(true);
             } else
-                swipeRefreshLayout.setRefreshing(false);
+                categoriesSwipeLayout.setRefreshing(false);
         });
 
         nextButton = findViewById(R.id.nextButton);
@@ -159,24 +168,21 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         categoriesRecyclerView.setVisibility(View.VISIBLE);
         categoriesErrorLabel.setVisibility(View.INVISIBLE);
 
-        if (!categoriesAdapter.isLoading()) {
-            if (isInitialLoad) {
-                offset = 0;
-                categoriesCount = 0;
-                chosenCategories.clear();
-                categoriesAdapter.clear();
-                categoriesAdapter.setLoadingInitially(true);
-                categoriesRecyclerView.suppressLayout(true);
-            } else {
-                categoriesAdapter.setLoadingMore(true);
-            }
-            categoryViewModel.getAllCategories(getApplicationContext(), offset);
+        if (isInitialLoad) {
+            offset = 0;
+            categoriesCount = 0;
+            chosenCategories.clear();
+            categoriesAdapter.clear();
+            categoriesAdapter.setLoadingInitially(true);
+            categoriesRecyclerView.suppressLayout(true);
+        } else {
+            categoriesAdapter.setLoadingMore(true);
         }
+        categoryViewModel.getAllCategories(getApplicationContext(), offset);
     }
 
     @Override
     public void onCategoryChosen(Category category) {
-        System.out.println("ahmed" + chosenCategories.size());
         chosenCategories.add(category);
         updateNextButton();
     }
