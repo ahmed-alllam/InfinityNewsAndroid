@@ -52,10 +52,11 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
     void bindItemViewHolder(RecyclerView.ViewHolder holder, Category category) {
         CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
 
-        Glide.with(context)
-                .load(category.getImage())
-                .placeholder(R.drawable.ic_launcher_background)
-                .into(categoryViewHolder.image);
+        if (category.getImage() != null)
+            Glide.with(context)
+                    .load(category.getImage())
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(categoryViewHolder.image);
         categoryViewHolder.title.setText(category.getTitle());
         categoryViewHolder.itemView.setOnClickListener((v -> {
             if (!category.isFavouritedByUser()) {

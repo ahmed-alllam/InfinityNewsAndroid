@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.data.models.Post;
+import com.bumptech.glide.Glide;
 
 public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     public PostsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
@@ -33,6 +34,11 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     void bindItemViewHolder(RecyclerView.ViewHolder holder, Post post) {
         PostViewHolder postViewHolder = (PostViewHolder) holder;
 
+        if (post.getImage() != null && false)
+            Glide.with(context)
+                    .load(post.getImage())
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(postViewHolder.postImage);
         postViewHolder.postTitle.setText(post.getTitle());
         postViewHolder.postDescription.setText(post.getDescription());
     }

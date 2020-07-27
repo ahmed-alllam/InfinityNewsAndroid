@@ -98,7 +98,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
                 categoriesErrorLabel.setVisibility(View.VISIBLE);
                 categoriesErrorLabel.setText(R.string.no_feed);
             } else {
-                categoriesAdapter.setLoadingFailed(true);
+                categoriesAdapter.setLoadingMore(false);
             }
         }
     }

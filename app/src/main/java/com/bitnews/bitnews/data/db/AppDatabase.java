@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import com.bitnews.bitnews.data.db.dao.AuthTokenDao;
 import com.bitnews.bitnews.data.db.dao.CategoryDao;
 import com.bitnews.bitnews.data.db.dao.PostDao;
+import com.bitnews.bitnews.data.db.dao.SourceDao;
 import com.bitnews.bitnews.data.db.dao.UserDao;
 import com.bitnews.bitnews.data.models.AuthToken;
 import com.bitnews.bitnews.data.models.Category;
@@ -44,4 +45,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CategoryDao getCategoryDao();
 
     public abstract PostDao getPostsDao();
+
+    public abstract SourceDao getSourceDao();
 }

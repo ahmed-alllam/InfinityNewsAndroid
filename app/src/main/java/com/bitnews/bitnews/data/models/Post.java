@@ -3,6 +3,7 @@ package com.bitnews.bitnews.data.models;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -16,6 +17,7 @@ public class Post {
     @PrimaryKey
     @NonNull
     private String slug = "";
+    private String image;
     private String title;
     private String description;
     private String timestamp;
@@ -23,6 +25,10 @@ public class Post {
     private String sourceSlug;
     @ForeignKey(entity = Category.class, parentColumns = "slug", childColumns = "categorySlug")
     private String categorySlug;
+    @Ignore
+    private Source source;
+    @Ignore
+    private Category category;
     @TypeConverters(ListToStringConverter.class)
     private List<String> tags;
 
@@ -32,17 +38,20 @@ public class Post {
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
         return slug.equals(post.slug) &&
+                Objects.equals(image, post.image) &&
                 Objects.equals(title, post.title) &&
                 Objects.equals(description, post.description) &&
                 Objects.equals(timestamp, post.timestamp) &&
                 Objects.equals(sourceSlug, post.sourceSlug) &&
                 Objects.equals(categorySlug, post.categorySlug) &&
+                Objects.equals(source, post.source) &&
+                Objects.equals(category, post.category) &&
                 Objects.equals(tags, post.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, title, description, timestamp, sourceSlug, categorySlug, tags);
+        return Objects.hash(slug, image, title, description, timestamp, sourceSlug, categorySlug, source, category, tags);
     }
 
     public void setTitle(String title) {
@@ -55,22 +64,6 @@ public class Post {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public String getSourceSlug() {
-        return sourceSlug;
-    }
-
-    public void setSourceSlug(String sourceSlug) {
-        this.sourceSlug = sourceSlug;
-    }
-
-    public String getCategorySlug() {
-        return categorySlug;
-    }
-
-    public void setCategorySlug(String categorySlug) {
-        this.categorySlug = categorySlug;
     }
 
     @NonNull
@@ -100,5 +93,45 @@ public class Post {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getSourceSlug() {
+        return source != null ? source.getSlug() : sourceSlug;
+    }
+
+    public void setSourceSlug(String sourceSlug) {
+        this.sourceSlug = sourceSlug;
+    }
+
+    public String getCategorySlug() {
+        return category != null ? category.getSlug() : categorySlug;
+    }
+
+    public void setCategorySlug(String categorySlug) {
+        this.categorySlug = categorySlug;
     }
 }

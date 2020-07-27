@@ -3,9 +3,13 @@ package com.bitnews.bitnews.data.repositories;
 import android.content.Context;
 
 import com.bitnews.bitnews.data.db.AppDatabase;
+import com.bitnews.bitnews.data.db.dao.CategoryDao;
 import com.bitnews.bitnews.data.db.dao.PostDao;
+import com.bitnews.bitnews.data.db.dao.SourceDao;
+import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.ResponseList;
+import com.bitnews.bitnews.data.models.Source;
 import com.bitnews.bitnews.data.network.APIEndpoints;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.data.network.APIService;
@@ -13,15 +17,22 @@ import com.bitnews.bitnews.data.network.NetworkBoundResource;
 import com.bitnews.bitnews.utils.PaginationCursorGenerator;
 import com.bitnews.bitnews.utils.TimeStampParser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Single;
 
 public class PostRepository {
     private APIEndpoints apiEndpoints = APIService.getService();
     private PostDao postDao;
+    private CategoryDao categoryDao;
+    private SourceDao sourceDao;
 
     public PostRepository(Context context) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         postDao = appDatabase.getPostsDao();
+        categoryDao = appDatabase.getCategoryDao();
+        sourceDao = appDatabase.getSourceDao();
     }
 
     public Single<APIResponse<ResponseList<Post>>> getPosts(String categorySlug,
@@ -40,11 +51,14 @@ public class PostRepository {
 
             @Override
             protected Single<ResponseList<Post>> fetchFromDB() {
-                return postDao.getAllPostsByCategory(categorySlug, lastTimestamp, before).map(response -> {
-                    ResponseList<Post> responseList = new ResponseList<>();
-                    responseList.setItems(response);
-                    return responseList;
-                });
+                return postDao.getAllPostsByCategory(categorySlug, lastTimestamp, before)
+                        .map(posts -> {
+                            addNestedFieldsToPosts(posts);
+
+                            ResponseList<Post> responseList = new ResponseList<>();
+                            responseList.setItems(posts);
+                            return responseList;
+                        });
             }
 
             @Override
@@ -60,7 +74,18 @@ public class PostRepository {
 
             @Override
             protected void saveToDB(ResponseList<Post> item, boolean isUpdate) {
-                postDao.insertPosts(item.getItems());
+                List<Post> posts = item.getItems();
+                postDao.insertPosts(posts);
+
+                List<Category> categories = new ArrayList<>();
+                List<Source> sources = new ArrayList<>();
+                for (Post post : posts) {
+                    categories.add(post.getCategory());
+                    sources.add(post.getSource());
+                }
+
+                categoryDao.addCategories(categories);
+                sourceDao.addSources(sources);
             }
 
             @Override
@@ -68,5 +93,39 @@ public class PostRepository {
                 return !dbResponse.getItems().isEmpty();
             }
         }.asSingle();
+    }
+
+    private void addNestedFieldsToPosts(List<Post> posts) {
+        List<String> categoriesSlugs = new ArrayList<>();
+        List<String> sourcesSlugs = new ArrayList<>();
+        for (Post post : posts) {
+            categoriesSlugs.add(post.getCategorySlug());
+            sourcesSlugs.add(post.getSourceSlug());
+        }
+
+        List<Category> categories = categoryDao.getCategories(categoriesSlugs);
+        List<Source> sources = sourceDao.getSources(sourcesSlugs);
+        int i = 0;
+        for (Post post : posts) {
+            while (i < categories.size()) {
+                if (categories.get(i).getSlug().equals(post.getCategorySlug())) {
+                    post.setCategory(categories.get(i));
+                    i++;
+                    break;
+                }
+                i++;
+            }
+        }
+        int j = 0;
+        for (Post post : posts) {
+            while (j < sources.size()) {
+                if (sources.get(j).getSlug().equals(post.getSourceSlug())) {
+                    post.setSource(sources.get(j));
+                    j++;
+                    break;
+                }
+                j++;
+            }
+        }
     }
 }

@@ -88,11 +88,12 @@ public class PostsFragment extends Fragment {
     }
 
     private void onSuccessfulResponse(List<Post> posts, int count) {
+        if (count > 0)
+            totalPostsCount = count;
+        else
+            totalPostsCount = -1;
+
         if (!posts.isEmpty()) {
-            if (count > 0)
-                totalPostsCount = count;
-            else
-                totalPostsCount = -1;
             fetchedPostsCount += posts.size();
 
             if (!isRefreshing)
@@ -112,8 +113,10 @@ public class PostsFragment extends Fragment {
                 postsRecyclerView.setVisibility(View.INVISIBLE);
                 postsErrorLabel.setVisibility(View.VISIBLE);
                 postsErrorLabel.setText(R.string.no_feed);
-            } else if (!isRefreshing)
-                postsRecyclerAdapter.setLoadingFailed(true);
+            } else {
+                if (!isRefreshing)
+                    postsRecyclerAdapter.setLoadingMore(false);
+            }
         }
     }
 
@@ -124,7 +127,8 @@ public class PostsFragment extends Fragment {
             postsErrorLabel.setVisibility(View.VISIBLE);
             postsErrorLabel.setText(R.string.network_error);
         } else {
-            postsRecyclerAdapter.setLoadingFailed(true);
+            if (!isRefreshing)
+                postsRecyclerAdapter.setLoadingFailed(true);
         }
     }
 
