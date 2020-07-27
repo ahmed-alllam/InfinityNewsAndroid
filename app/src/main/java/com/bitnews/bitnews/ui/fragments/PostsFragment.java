@@ -103,7 +103,7 @@ public class PostsFragment extends Fragment {
 
             if (isRefreshing) {
                 postsRecyclerAdapter.addAll(0, posts);
-                postsRecyclerView.post(() -> postsRecyclerView.smoothScrollToPosition(0));
+                scrollToTop();
             } else
                 postsRecyclerAdapter.addAll(posts);
         } else {
@@ -155,6 +155,11 @@ public class PostsFragment extends Fragment {
         } else {
             postsSwipeLayout.setRefreshing(false);
         }
+    }
+
+    public void scrollToTop() {
+        if (postsRecyclerView != null)
+            postsRecyclerView.post(() -> postsRecyclerView.smoothScrollToPosition(0));
     }
 
     private void loadPosts(boolean isLoadingInitally, boolean before) {

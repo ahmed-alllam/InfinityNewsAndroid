@@ -15,6 +15,7 @@ import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.adapters.MainViewPagerAdapter;
 import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.data.network.APIResponse;
+import com.bitnews.bitnews.ui.fragments.PostsFragment;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -25,6 +26,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     CategoryViewModel categoryViewModel;
     DrawerLayout drawerLayout;
+    ViewPager2 mainViewPager;
+    TabLayout categoriesTabLayout;
+    MainViewPagerAdapter mainViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,26 +38,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout = findViewById(R.id.drawerLayout);
-        ViewPager2 mainViewPager = findViewById(R.id.mainViewPager);
-        TabLayout categoriesTabLayout = findViewById(R.id.categoriesTabLayout);
+        mainViewPager = findViewById(R.id.mainViewPager);
+        categoriesTabLayout = findViewById(R.id.categoriesTabLayout);
+
+        categoriesTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (mainViewPagerAdapter != null) {
+                    PostsFragment postsFragment = mainViewPagerAdapter.getFragmentAt(tab.getPosition());
+                    if (postsFragment != null)
+                        postsFragment.scrollToTop();
+                }
+            }
+        });
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, response -> {
             findViewById(R.id.progressBar3).setVisibility(View.INVISIBLE);
 
             if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
-                List<Category> categories = response.getitem().getItems();
-                MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(this, categories);
-                mainViewPager.setAdapter(mainViewPagerAdapter);
-                new TabLayoutMediator(categoriesTabLayout, mainViewPager, true, ((tab, position) -> {
-                    tab.setText(categories.get(position).getTitle());
-                })).attach();
-
-                dynamicSetTabLayoutMode(categoriesTabLayout);
+                onSuccessfulResponse(response.getitem().getItems());
             }
         });
 
         categoryViewModel.getFavouriteCategories(this);
+    }
+
+    private void onSuccessfulResponse(List<Category> categories) {
+        mainViewPagerAdapter = new MainViewPagerAdapter(this, categories);
+        mainViewPager.setAdapter(mainViewPagerAdapter);
+        new TabLayoutMediator(categoriesTabLayout, mainViewPager, true, ((tab, position) -> {
+            tab.setText(categories.get(position).getTitle());
+        })).attach();
+
+        dynamicSetTabLayoutMode(categoriesTabLayout);
     }
 
     public void onActionBarItemSelected(View view) {
