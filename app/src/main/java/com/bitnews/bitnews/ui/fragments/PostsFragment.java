@@ -55,7 +55,6 @@ public class PostsFragment extends Fragment {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), response -> {
             postsRecyclerView.suppressLayout(false);
-            isRefreshing = false;
             postsSwipeLayout.setRefreshing(false);
 
             switch (response.getStatus()) {
@@ -66,6 +65,8 @@ public class PostsFragment extends Fragment {
                     onErrorResponse();
                     break;
             }
+
+            isRefreshing = false;
         });
 
         postsRecyclerView = view.findViewById(R.id.postsRecyclerView);
@@ -93,13 +94,17 @@ public class PostsFragment extends Fragment {
             else
                 totalPostsCount = -1;
             fetchedPostsCount += posts.size();
-            lastTimestamp = posts.get(posts.size() - 1).getTimestamp();
+
+            if (!isRefreshing)
+                lastTimestamp = posts.get(posts.size() - 1).getTimestamp();
+
             if (isRefreshing || postsRecyclerAdapter.isEmpty())
                 firstTimestamp = posts.get(0).getTimestamp();
 
-            if (isRefreshing)
+            if (isRefreshing) {
                 postsRecyclerAdapter.addAll(0, posts);
-            else
+                postsRecyclerView.post(() -> postsRecyclerView.smoothScrollToPosition(0));
+            } else
                 postsRecyclerAdapter.addAll(posts);
         } else {
             if (postsRecyclerAdapter.isEmpty()) {
@@ -107,7 +112,7 @@ public class PostsFragment extends Fragment {
                 postsRecyclerView.setVisibility(View.INVISIBLE);
                 postsErrorLabel.setVisibility(View.VISIBLE);
                 postsErrorLabel.setText(R.string.no_feed);
-            } else
+            } else if (!isRefreshing)
                 postsRecyclerAdapter.setLoadingFailed(true);
         }
     }
@@ -132,7 +137,7 @@ public class PostsFragment extends Fragment {
 
             @Override
             public boolean isLoading() {
-                return postsRecyclerAdapter.isLoading() || postsRecyclerAdapter.isLoadingFailedAdded() || isRefreshing;
+                return postsRecyclerAdapter.isLoading() || postsRecyclerAdapter.isLoadingFailedAdded();
             }
 
             @Override

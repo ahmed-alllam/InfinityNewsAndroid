@@ -3,6 +3,7 @@ package com.bitnews.bitnews.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,23 +30,23 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case VIEW_TYPE_ITEM:
-                PostViewHolder postViewHolder = (PostViewHolder) holder;
-                postViewHolder.hi.setText(itemsList.get(position).getTitle());
-                break;
-            case VIEW_TYPE_FOOTER:
-                bindFooterViewHolder(holder);
-        }
+    void bindItemViewHolder(RecyclerView.ViewHolder holder, Post post) {
+        PostViewHolder postViewHolder = (PostViewHolder) holder;
+
+        postViewHolder.postTitle.setText(post.getTitle());
+        postViewHolder.postDescription.setText(post.getDescription());
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView hi;
+        ImageView postImage;
+        TextView postTitle, postDescription;
 
-        public PostViewHolder(@NonNull View itemView) {
+        PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            hi = itemView.findViewById(R.id.hi);
+
+            postTitle = itemView.findViewById(R.id.postTitle);
+            postDescription = itemView.findViewById(R.id.postDescription);
+            postImage = itemView.findViewById(R.id.postImage);
         }
     }
 }

@@ -16,7 +16,6 @@ public interface PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPosts(List<Post> posts);
 
-    //todo: test
     @Query("SELECT * FROM post" +
             " WHERE ((datetime(timestamp) < datetime(:timestamp) and :before = 0)" +
             " or (datetime(timestamp) > datetime(:timestamp) and :before = 1))" +

@@ -18,16 +18,15 @@ import java.util.List;
 
 public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter {
 
-    static final int VIEW_TYPE_ITEM = 0;
+    private static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_EMPTY_ITEM = 1;
     public static final int VIEW_TYPE_FOOTER = 2;
 
     static int ITEM_VIEW_HEIGHT = 0;
 
-    ArrayList<T> itemsList = new ArrayList<>();
+    private ArrayList<T> itemsList = new ArrayList<>();
     Context context;
     private RecyclerView recyclerView;
-    private FooterItemViewHolder footerItemViewHolder;
     private View.OnClickListener retryOnClickListener;
     private boolean isLoadingMore;
     private boolean isLoadingFailed;
@@ -45,21 +44,29 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         if (viewType == VIEW_TYPE_ITEM)
             return createItemViewHolder(parent);
         if (viewType == VIEW_TYPE_FOOTER) {
-            footerItemViewHolder = new FooterItemViewHolder(LayoutInflater.from(context)
+            return new FooterItemViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.loading_footer, parent, false), retryOnClickListener);
-            return footerItemViewHolder;
         }
 
         return createEmptyItemViewHolder(parent);
     }
 
-    void bindFooterViewHolder(RecyclerView.ViewHolder holder) {
-        FooterItemViewHolder footerItemViewHolder = (FooterItemViewHolder) holder;
-        if (isLoadingMore)
-            footerItemViewHolder.showProgressBar();
-        if (isLoadingFailed)
-            footerItemViewHolder.showRetryButton();
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case VIEW_TYPE_ITEM:
+                bindItemViewHolder(holder, itemsList.get(position));
+                break;
+            case VIEW_TYPE_FOOTER:
+                FooterItemViewHolder footerItemViewHolder = (FooterItemViewHolder) holder;
+                if (isLoadingMore)
+                    footerItemViewHolder.showProgressBar();
+                if (isLoadingFailed)
+                    footerItemViewHolder.showRetryButton();
+        }
     }
+
+    abstract void bindItemViewHolder(RecyclerView.ViewHolder holder, T item);
 
     @Override
     public int getItemCount() {
@@ -145,7 +152,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
             }
             else {
                 isLoadingFailed = false;
-                bindFooterViewHolder(footerItemViewHolder);
+                notifyItemChanged(itemsList.size() - 1);
             }
         } else {
             recyclerView.post(this::removeFooterItem);
@@ -158,7 +165,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         if (isLoadingFailed) {
             if (isLoadingMore) {
                 isLoadingMore = false;
-                bindFooterViewHolder(footerItemViewHolder);
+                notifyItemChanged(itemsList.size() - 1);
             }
         }
     }
