@@ -105,26 +105,19 @@ public class PostRepository {
 
         List<Category> categories = categoryDao.getCategories(categoriesSlugs);
         List<Source> sources = sourceDao.getSources(sourcesSlugs);
-        int i = 0;
         for (Post post : posts) {
-            while (i < categories.size()) {
-                if (categories.get(i).getSlug().equals(post.getCategorySlug())) {
-                    post.setCategory(categories.get(i));
-                    i++;
+            for (Category category : categories) {
+                if (category.getSlug().equals(post.getCategorySlug())) {
+                    post.setCategory(category);
                     break;
                 }
-                i++;
             }
-        }
-        int j = 0;
-        for (Post post : posts) {
-            while (j < sources.size()) {
-                if (sources.get(j).getSlug().equals(post.getSourceSlug())) {
-                    post.setSource(sources.get(j));
-                    j++;
+
+            for (Source source : sources) {
+                if (source.getSlug().equals(post.getSourceSlug())) {
+                    post.setSource(source);
                     break;
                 }
-                j++;
             }
         }
     }

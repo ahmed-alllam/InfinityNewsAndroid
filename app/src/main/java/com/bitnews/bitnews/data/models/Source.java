@@ -11,9 +11,9 @@ public class Source {
     @PrimaryKey()
     @NonNull
     private String slug = "";
-    private String name;
+    private String title;
     private String description;
-    private String photo;
+    private String image;
 
     @Override
     public boolean equals(Object o) {
@@ -21,14 +21,14 @@ public class Source {
         if (o == null || getClass() != o.getClass()) return false;
         Source source = (Source) o;
         return Objects.equals(slug, source.slug) &&
-                Objects.equals(name, source.name) &&
+                Objects.equals(title, source.title) &&
                 Objects.equals(description, source.description) &&
-                Objects.equals(photo, source.photo);
+                Objects.equals(image, source.image);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, name, description, photo);
+        return Objects.hash(slug, title, description, image);
     }
 
     public String getSlug() {
@@ -39,27 +39,27 @@ public class Source {
         this.slug = slug;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public String getPhoto() {
-        return photo;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getImage() {
+        return image;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    public void setImage(String image) {
+        this.image = image;
     }
 }

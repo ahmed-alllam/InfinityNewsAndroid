@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.data.models.Post;
+import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
 
 public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
@@ -34,18 +35,49 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     void bindItemViewHolder(RecyclerView.ViewHolder holder, Post post) {
         PostViewHolder postViewHolder = (PostViewHolder) holder;
 
-        if (post.getImage() != null && false)
+        if (post.getImage() != null)
             Glide.with(context)
                     .load(post.getImage())
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(postViewHolder.postImage);
         postViewHolder.postTitle.setText(post.getTitle());
-        postViewHolder.postDescription.setText(post.getDescription());
+
+        if (post.getDescription() != null) {
+            postViewHolder.postDescription.setText(post.getDescription());
+            postViewHolder.postDescription.setVisibility(View.VISIBLE);
+        } else {
+            postViewHolder.postDescription.setVisibility(View.GONE);
+        }
+
+        if (post.getSource() != null && post.getSource().getImage() != null) {
+            Glide.with(context)
+                    .load(post.getSource().getImage())
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .dontAnimate()
+                    .into(postViewHolder.sourceImage);
+            postViewHolder.sourceImage.setVisibility(View.VISIBLE);
+        } else {
+            postViewHolder.sourceImage.setVisibility(View.GONE);
+        }
+
+        if (post.getSource() != null && post.getSource().getTitle() != null) {
+            postViewHolder.sourceTitle.setText(post.getSource().getTitle());
+            postViewHolder.sourceTitle.setVisibility(View.VISIBLE);
+        } else {
+            postViewHolder.sourceTitle.setVisibility(View.GONE);
+        }
+
+        if (post.getTimestamp() != null) {
+            postViewHolder.timestamp.setText(TimeStampParser.parseTimeStamp(context, post.getTimestamp()));
+            postViewHolder.timestamp.setVisibility(View.VISIBLE);
+        } else {
+            postViewHolder.timestamp.setVisibility(View.GONE);
+        }
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        ImageView postImage;
-        TextView postTitle, postDescription;
+        ImageView postImage, sourceImage;
+        TextView postTitle, postDescription, sourceTitle, timestamp;
 
         PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -53,6 +85,9 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
             postTitle = itemView.findViewById(R.id.postTitle);
             postDescription = itemView.findViewById(R.id.postDescription);
             postImage = itemView.findViewById(R.id.postImage);
+            sourceImage = itemView.findViewById(R.id.sourceImage);
+            sourceTitle = itemView.findViewById(R.id.sourceTitle);
+            timestamp = itemView.findViewById(R.id.timestamp);
         }
     }
 }
