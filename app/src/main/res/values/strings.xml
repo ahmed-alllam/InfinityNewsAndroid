@@ -31,4 +31,9 @@
     <string name="news" translatable="false">News</string>
     <string name="retry" translatable="false">Retry</string>
     <string name="no_feed" translatable="false">Your Feed is Empty</string>
+    <string name="news_sources" translatable="false">News Sources</string>
+    <string name="logout" translatable="false">Logout</string>
+    <string name="edit_profile" translatable="false">Edit Profile</string>
+    <string name="change_categories" translatable="false">Change categories</string>
+    <string name="settings" translatable="false">Settings</string>
 </resources>

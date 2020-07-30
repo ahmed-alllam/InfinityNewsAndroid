@@ -1,5 +1,6 @@
 package com.bitnews.bitnews.ui.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+        categoriesTabLayout.setTabTextColors(Color.GRAY, getResources().getColor(R.color.colorAccent));
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, response -> {

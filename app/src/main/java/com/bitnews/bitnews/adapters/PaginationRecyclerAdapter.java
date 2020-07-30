@@ -55,7 +55,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case VIEW_TYPE_ITEM:
-                bindItemViewHolder(holder, itemsList.get(position));
+                bindItemViewHolder(holder, itemsList.get(position), position);
                 break;
             case VIEW_TYPE_FOOTER:
                 FooterItemViewHolder footerItemViewHolder = (FooterItemViewHolder) holder;
@@ -66,7 +66,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter 
         }
     }
 
-    abstract void bindItemViewHolder(RecyclerView.ViewHolder holder, T item);
+    abstract void bindItemViewHolder(RecyclerView.ViewHolder holder, T item, int position);
 
     @Override
     public int getItemCount() {

@@ -10,7 +10,10 @@
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="16dp"
     app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="30dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="20dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/postItem"
@@ -19,21 +22,19 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/postImageContainer"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/postImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_launcher_background" />
         </androidx.cardview.widget.CardView>
 
@@ -58,11 +59,12 @@
         <TextView
             android:id="@+id/postDescription"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="19dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             android:ellipsize="end"
+            android:maxLines="4"
             android:text="@string/loading"
             android:visibility="gone"
             app:autoSizeMaxTextSize="14sp"
@@ -79,17 +81,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="8dp"
             android:ellipsize="end"
             android:fontFamily="@font/roboto_medium"
             android:maxLines="1"
             android:textAlignment="viewStart"
             android:visibility="gone"
             app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline65"
             app:layout_constraintStart_toEndOf="@+id/sourceImage"
-            app:layout_constraintTop_toTopOf="@+id/sourceImage"
             tools:text="source"
             tools:visibility="visible" />
 
@@ -97,7 +99,7 @@
             android:id="@+id/sourceImage"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="8dp"
             android:src="@mipmap/ic_launcher"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +111,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.7" />
+            app:layout_constraintGuide_percent="0.65" />
 
         <TextView
             android:id="@+id/timestamp"
@@ -117,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="8dp"
             android:ellipsize="end"
             android:fontFamily="@font/roboto_medium"
             android:maxLines="1"
@@ -129,7 +131,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline65"
-            app:layout_constraintTop_toTopOf="@+id/sourceTitle"
             tools:text="timestamp"
             tools:visibility="visible" />
 

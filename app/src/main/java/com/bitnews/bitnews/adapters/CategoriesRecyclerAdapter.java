@@ -49,7 +49,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
     }
 
     @Override
-    void bindItemViewHolder(RecyclerView.ViewHolder holder, Category category) {
+    void bindItemViewHolder(RecyclerView.ViewHolder holder, Category category, int position) {
         CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
 
         if (category.getImage() != null)
