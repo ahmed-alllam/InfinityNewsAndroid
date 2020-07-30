@@ -15,8 +15,6 @@ import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
 
 public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
-    private int lastAnimatedItemPosition = -1;
-
     public PostsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
         super(recyclerView, retryOnClickListener);
     }

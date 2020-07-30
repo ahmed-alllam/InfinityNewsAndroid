@@ -1,6 +1,8 @@
 package com.bitnews.bitnews.ui.fragments;
 
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,7 +27,7 @@ import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 
 import java.util.List;
 
-import jp.wasabeef.recyclerview.adapters.SlideInRightAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.AnimationAdapter;
 
 public class PostsFragment extends Fragment {
     private Category category;
@@ -77,7 +79,17 @@ public class PostsFragment extends Fragment {
                 loadPosts(false, false);
         }));
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        postsRecyclerView.setAdapter(new SlideInRightAnimationAdapter(postsRecyclerAdapter));
+        AnimationAdapter animationAdapter = new AnimationAdapter(postsRecyclerAdapter) {
+            @Override
+            protected Animator[] getAnimators(View view) {
+                return new Animator[]{
+                        ObjectAnimator.ofFloat(view, "translationX", view.getRootView().getWidth(), 0),
+                        ObjectAnimator.ofFloat(view, "alpha", 0, 1f)};
+            }
+        };
+        animationAdapter.setDuration(200);
+        postsRecyclerView.setAdapter(animationAdapter);
+
         postsRecyclerView.addOnScrollListener(getOnScrollListener());
 
         postsSwipeLayout = view.findViewById(R.id.postSwipeRefreshLayout);

@@ -19,7 +19,6 @@
             android:id="@+id/postsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layoutAnimation="@anim/right_to_left_layout_animation"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:background="#FDFDFD" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
