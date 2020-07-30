@@ -3,7 +3,6 @@ package com.bitnews.bitnews.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,11 +36,6 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     @Override
     void bindItemViewHolder(RecyclerView.ViewHolder holder, Post post, int position) {
         PostViewHolder postViewHolder = (PostViewHolder) holder;
-
-        if (position > lastAnimatedItemPosition) {
-            postViewHolder.itemView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.right_to_left_animation));
-            lastAnimatedItemPosition = position;
-        }
 
         if (post.getImage() != null)
             Glide.with(context)

@@ -25,6 +25,8 @@ import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 
 import java.util.List;
 
+import jp.wasabeef.recyclerview.adapters.SlideInRightAnimationAdapter;
+
 public class PostsFragment extends Fragment {
     private Category category;
     private PostViewModel postViewModel;
@@ -75,7 +77,7 @@ public class PostsFragment extends Fragment {
                 loadPosts(false, false);
         }));
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        postsRecyclerView.setAdapter(postsRecyclerAdapter);
+        postsRecyclerView.setAdapter(new SlideInRightAnimationAdapter(postsRecyclerAdapter));
         postsRecyclerView.addOnScrollListener(getOnScrollListener());
 
         postsSwipeLayout = view.findViewById(R.id.postSwipeRefreshLayout);

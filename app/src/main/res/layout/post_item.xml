@@ -18,23 +18,27 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/postItem"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/postImageContainer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <ImageView
                 android:id="@+id/postImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/ic_launcher_background" />
         </androidx.cardview.widget.CardView>
 
@@ -59,13 +63,12 @@
         <TextView
             android:id="@+id/postDescription"
             android:layout_width="0dp"
-            android:layout_height="19dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="32dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:text="@string/loading"
             android:visibility="gone"
             app:autoSizeMaxTextSize="14sp"
             app:autoSizeTextType="uniform"
@@ -73,6 +76,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/postTitle"
             app:layout_constraintTop_toBottomOf="@+id/postTitle"
+            tools:text="@string/loading"
             tools:visibility="visible" />
 
         <TextView
@@ -87,8 +91,8 @@
             android:maxLines="1"
             android:textAlignment="viewStart"
             android:visibility="gone"
-            app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="4dp"
+            app:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline65"
             app:layout_constraintStart_toEndOf="@+id/sourceImage"
