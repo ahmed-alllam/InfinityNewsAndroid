@@ -7,7 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -42,6 +44,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawerLayout);
         mainViewPager = findViewById(R.id.mainViewPager);
         categoriesTabLayout = findViewById(R.id.categoriesTabLayout);
+        Toolbar toolbar = findViewById(R.id.mainToolBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar, R.string.open_nav_drawer,
+                R.string.close_nav_drawer);
+        toogle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorPrimary));
+        drawerLayout.addDrawerListener(toogle);
+        toogle.syncState();
+
 
         categoriesTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -85,16 +98,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dynamicSetTabLayoutMode(categoriesTabLayout);
     }
 
-    public void onActionBarItemSelected(View view) {
-        switch (view.getId()) {
-            case R.id.navigationButton:
-                drawerLayout.openDrawer(GravityCompat.START);
-                break;
-            case R.id.searchButton:
-                Intent intent = new Intent(this, SearchActivity.class);
-                startActivity(intent);
-                break;
-        }
+    public void searchButtonClickListener(View view) {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
     }
 
     private void dynamicSetTabLayoutMode(TabLayout tabLayout) {

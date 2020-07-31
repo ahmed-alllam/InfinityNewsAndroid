@@ -13,86 +13,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline42"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mainToolBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05" />
-
-        <ImageButton
-            android:id="@+id/searchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:onClick="onActionBarItemSelected"
-            android:src="@drawable/ic_search"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/newsLabel"
-            app:layout_constraintEnd_toStartOf="@+id/guideline60"
-            app:layout_constraintTop_toTopOf="@+id/guideline42" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline59"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline62"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.17" />
-
-        <TextView
-            android:id="@+id/newsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_medium"
-            android:text="@string/news"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
+            android:paddingStart="16dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline42" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline60"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
+            <ImageButton
+                android:id="@+id/searchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="searchButtonClickListener"
+                android:src="@drawable/ic_search"
+                android:tint="@color/colorPrimary" />
 
-        <ImageButton
-            android:id="@+id/navigationButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:onClick="onActionBarItemSelected"
-            android:src="@drawable/ic_menu"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/newsLabel"
-            app:layout_constraintStart_toStartOf="@+id/guideline59"
-            app:layout_constraintTop_toTopOf="@+id/guideline42" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline61"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.13" />
+            <TextView
+                android:id="@+id/newsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/news"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+        </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/categoriesTabLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline62"
-            app:layout_constraintEnd_toStartOf="@+id/guideline60"
-            app:layout_constraintStart_toStartOf="@+id/guideline59"
-            app:layout_constraintTop_toTopOf="@+id/guideline61"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainToolBar"
             app:tabMinWidth="92dp"
             app:tabRippleColor="@android:color/transparent" />
 
@@ -111,10 +73,11 @@
             android:id="@+id/mainViewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline62">
+            app:layout_constraintTop_toBottomOf="@id/categoriesTabLayout">
 
         </androidx.viewpager2.widget.ViewPager2>
 
@@ -127,6 +90,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@android:color/white"
-        app:menu="@menu/navigation_menu"
-        android:fitsSystemWindows="false" />
+        android:fitsSystemWindows="false"
+        app:menu="@menu/navigation_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

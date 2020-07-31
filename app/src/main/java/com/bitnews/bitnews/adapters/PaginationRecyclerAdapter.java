@@ -16,7 +16,7 @@ import com.bitnews.bitnews.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter {
+public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_EMPTY_ITEM = 1;

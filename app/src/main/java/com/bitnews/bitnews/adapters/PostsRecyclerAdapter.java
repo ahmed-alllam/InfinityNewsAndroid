@@ -1,8 +1,12 @@
 package com.bitnews.bitnews.adapters;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +19,9 @@ import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
 
 public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
+    private int lastAnimatedItemPosition = -1;
+    private Interpolator interpolator = new DecelerateInterpolator();
+
     public PostsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
         super(recyclerView, retryOnClickListener);
     }
@@ -34,6 +41,27 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     @Override
     void bindItemViewHolder(RecyclerView.ViewHolder holder, Post post, int position) {
         PostViewHolder postViewHolder = (PostViewHolder) holder;
+
+        int adapterPosition = holder.getAdapterPosition();
+        View itemView = postViewHolder.itemView;
+
+        if (adapterPosition <= lastAnimatedItemPosition) {
+            itemView.setTranslationX(0);
+            itemView.setAlpha(1);
+        } else {
+            Animator translateAnimator = ObjectAnimator.ofFloat(itemView, "translationX",
+                    itemView.getRootView().getWidth(), 0).setDuration(200);
+
+            translateAnimator.start();
+            translateAnimator.setInterpolator(interpolator);
+
+            Animator alphaAnimator = ObjectAnimator.ofFloat(itemView, "alpha",
+                    0, 1f).setDuration(300);
+            alphaAnimator.start();
+            alphaAnimator.setInterpolator(interpolator);
+
+            lastAnimatedItemPosition = adapterPosition;
+        }
 
         if (post.getImage() != null)
             Glide.with(context)

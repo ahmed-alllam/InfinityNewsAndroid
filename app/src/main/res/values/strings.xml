@@ -36,4 +36,6 @@
     <string name="edit_profile" translatable="false">Edit Profile</string>
     <string name="change_categories" translatable="false">Change categories</string>
     <string name="settings" translatable="false">Settings</string>
+    <string name="open_nav_drawer" translatable="false">Open Navigation Drawer</string>
+    <string name="close_nav_drawer" translatable="false">Close Navigation Drawer</string>
 </resources>
