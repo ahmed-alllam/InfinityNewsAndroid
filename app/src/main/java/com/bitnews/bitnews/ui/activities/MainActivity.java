@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -125,7 +126,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent = null;
+        switch (item.getItemId()) {
+            case R.id.newsSources:
+                intent = new Intent(this, SourcesActivity.class);
+                break;
+            case R.id.changeCategoies:
+                intent = new Intent(this, ChooseCategoriesActivity.class);
+                break;
+            case R.id.editProfile:
+                intent = new Intent(this, EditProfileActivity.class);
+                break;
+            case R.id.settings:
+                intent = new Intent(this, SettingsActivity.class);
+                break;
+            case R.id.logout:
+                break;
+        }
+
+        if (intent != null)
+            startActivityForResult(intent, 0);
+
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

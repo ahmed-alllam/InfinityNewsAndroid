@@ -3,21 +3,26 @@
 
     <item
         android:id="@+id/newsSources"
+        android:icon="@drawable/ic_news_sources"
         android:title="@string/news_sources" />
 
     <item
-        android:id="@+id/changeCategoiesItem"
+        android:id="@+id/changeCategoies"
+        android:icon="@drawable/ic_edit"
         android:title="@string/change_categories" />
 
     <item
         android:id="@+id/editProfile"
+        android:icon="@drawable/ic_person"
         android:title="@string/edit_profile" />
 
     <item
-        android:id="@+id/settingsItem"
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings"
         android:title="@string/settings" />
 
     <item
         android:id="@+id/logout"
+        android:icon="@drawable/ic_exit"
         android:title="@string/logout" />
 </menu>

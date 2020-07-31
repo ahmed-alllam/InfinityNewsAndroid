@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".ui.activities.MainActivity">
-
+    tools:context=".ui.activities.MainActivity"
+    tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -91,5 +91,7 @@
         android:layout_gravity="start"
         android:background="@android:color/white"
         android:fitsSystemWindows="false"
+        app:headerLayout="@layout/nav_header_logged_in"
+        app:itemIconPadding="16dp"
         app:menu="@menu/navigation_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
