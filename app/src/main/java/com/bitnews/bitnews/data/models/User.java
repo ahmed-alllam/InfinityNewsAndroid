@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Objects;
 
 @Entity
@@ -11,10 +13,14 @@ public class User {
     @PrimaryKey
     @NonNull
     private String username = "";
+    @SerializedName("first_name")
     private String firstName;
+    @SerializedName("last_name")
     private String lastName;
+    @SerializedName("profile_photo")
     private String profilePhoto;
     private boolean isCurrentUser;
+    @SerializedName("is_guest")
     private boolean isGuest;
 
     @Override

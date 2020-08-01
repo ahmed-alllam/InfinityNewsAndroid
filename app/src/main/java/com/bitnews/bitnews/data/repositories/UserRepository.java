@@ -120,7 +120,7 @@ public class UserRepository {
 
             @Override
             protected Single<User> getAPICall() {
-                return apiEndpoints.sinUpAsGuest(true);
+                return apiEndpoints.singUpAsGuest(true);
             }
         }.asSingle();
     }

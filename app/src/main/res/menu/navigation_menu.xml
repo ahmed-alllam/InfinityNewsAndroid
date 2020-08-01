@@ -14,7 +14,8 @@
     <item
         android:id="@+id/editProfile"
         android:icon="@drawable/ic_person"
-        android:title="@string/edit_profile" />
+        android:title="@string/edit_profile"
+        android:visible="false" />
 
     <item
         android:id="@+id/settings"
@@ -24,5 +25,6 @@
     <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_exit"
-        android:title="@string/logout" />
+        android:title="@string/logout"
+        android:visible="false" />
 </menu>

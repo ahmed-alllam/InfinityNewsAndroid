@@ -64,6 +64,10 @@ public class UserViewModel extends ViewModel {
         return liveData;
     }
 
+    public void getCurrentUser(Context context) {
+        disposable.add(getUserRepository(context).getCurrentUser().subscribe(user::setValue));
+    }
+
     public MediatorLiveData<APIResponse<User>> getUser() {
         return user;
     }

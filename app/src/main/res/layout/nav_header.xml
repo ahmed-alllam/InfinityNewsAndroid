@@ -7,25 +7,34 @@
     android:paddingStart="56dp"
     android:paddingTop="36dp"
     android:paddingEnd="56dp"
+    android:onClick="onNavigationHeaderClicked"
     android:paddingBottom="16dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_launcher_background" />
 
     <TextView
+        android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/login_or_signup"
         android:textColor="@android:color/white"
         android:textSize="24sp" />
 
     <TextView
+        android:id="@+id/userEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_medium"
         android:textColor="@android:color/white"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textSize="18sp" />
 </LinearLayout>

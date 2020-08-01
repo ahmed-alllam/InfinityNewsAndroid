@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +21,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.adapters.MainViewPagerAdapter;
 import com.bitnews.bitnews.data.models.Category;
+import com.bitnews.bitnews.data.models.User;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.fragments.PostsFragment;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
+import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -29,11 +34,12 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    CategoryViewModel categoryViewModel;
-    DrawerLayout drawerLayout;
-    ViewPager2 mainViewPager;
-    TabLayout categoriesTabLayout;
-    MainViewPagerAdapter mainViewPagerAdapter;
+    private DrawerLayout drawerLayout;
+    private ViewPager2 mainViewPager;
+    private TabLayout categoriesTabLayout;
+    private MainViewPagerAdapter mainViewPagerAdapter;
+    private boolean isNavigationViewClickable;
+    private boolean isLoggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,34 +56,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawerLayout,
-                toolbar, R.string.open_nav_drawer,
-                R.string.close_nav_drawer);
+                toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
         toogle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorPrimary));
         drawerLayout.addDrawerListener(toogle);
         toogle.syncState();
 
-
-        categoriesTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                if (mainViewPagerAdapter != null) {
-                    PostsFragment postsFragment = mainViewPagerAdapter.getFragmentAt(tab.getPosition());
-                    if (postsFragment != null)
-                        postsFragment.scrollToTop();
-                }
-            }
-        });
+        categoriesTabLayout.addOnTabSelectedListener(getTabSelectedListener());
         categoriesTabLayout.setTabTextColors(Color.GRAY, getResources().getColor(R.color.colorAccent));
 
-        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, response -> {
             findViewById(R.id.progressBar3).setVisibility(View.INVISIBLE);
 
@@ -85,6 +72,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 onSuccessfulResponse(response.getitem().getItems());
             }
         });
+
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getUser().observe(this, response -> {
+            User user = response.getitem();
+            isLoggedIn = !user.isGuest();
+            if (isLoggedIn) {
+                bindNavigationViewHeader(navigationView.getHeaderView(0), user);
+                navigationView.getMenu().findItem(R.id.editProfile).setVisible(true);
+                navigationView.getMenu().findItem(R.id.logout).setVisible(true);
+            }
+            isNavigationViewClickable = true;
+        });
+        userViewModel.getCurrentUser(this);
 
         categoryViewModel.getFavouriteCategories(this);
     }
@@ -102,6 +102,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void searchButtonClickListener(View view) {
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
+    }
+
+    private TabLayout.OnTabSelectedListener getTabSelectedListener() {
+        return new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (mainViewPagerAdapter != null) {
+                    PostsFragment postsFragment = mainViewPagerAdapter.getFragmentAt(tab.getPosition());
+                    if (postsFragment != null)
+                        postsFragment.scrollToTop();
+                }
+            }
+        };
     }
 
     private void dynamicSetTabLayoutMode(TabLayout tabLayout) {
@@ -126,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (!isNavigationViewClickable)
+            return false;
+
         Intent intent = null;
         switch (item.getItemId()) {
             case R.id.newsSources:
@@ -150,6 +174,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
+    public void onNavigationHeaderClicked(View view) {
+        if (isNavigationViewClickable && !isLoggedIn) {
+            Intent intent = new Intent(this, LoginSignupActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void bindNavigationViewHeader(View headerView, User user) {
+        ImageView userImage = headerView.findViewById(R.id.userImage);
+        if (user.getProfilePhoto() != null) {
+            Glide.with(this)
+                    .load(user.getProfilePhoto())
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .dontAnimate()
+                    .into(userImage);
+        }
+
+        TextView userName = headerView.findViewById(R.id.userName);
+        userName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+
+        TextView userEmail = headerView.findViewById(R.id.userEmail);
+        userEmail.setText(user.getUsername());
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -157,9 +206,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
+        PostsFragment postsFragment = mainViewPagerAdapter.getFragmentAt(mainViewPager.getCurrentItem());
+
         if (drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawers();
-        else
+        else if (!postsFragment.isAtTop()) {
+            postsFragment.scrollToTop();
+        } else
             super.onBackPressed();
     }
 }

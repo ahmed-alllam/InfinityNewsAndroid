@@ -31,7 +31,7 @@ public interface APIEndpoints {
 
     @FormUrlEncoded
     @POST("users/signup/")
-    Single<User> sinUpAsGuest(@Field("guest") boolean isGuest);
+    Single<User> singUpAsGuest(@Field("is_guest") boolean isGuest);
 
     @FormUrlEncoded
     @POST("users/token/")

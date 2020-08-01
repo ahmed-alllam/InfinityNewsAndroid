@@ -167,6 +167,12 @@ public class PostsFragment extends Fragment {
             postsRecyclerView.post(() -> postsRecyclerView.smoothScrollToPosition(0));
     }
 
+    public boolean isAtTop() {
+        if (postsRecyclerView != null)
+            return postsRecyclerView.computeVerticalScrollOffset() == 0;
+        return true;
+    }
+
     private void loadPosts(boolean isLoadingInitally, boolean before) {
         postsRecyclerView.setVisibility(View.VISIBLE);
         postsErrorLabel.setVisibility(View.INVISIBLE);
