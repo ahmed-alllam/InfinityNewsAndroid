@@ -31,6 +31,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
     private boolean isLoadingMore;
     private boolean isLoadingFailed;
     private boolean isLoadingInitially;
+    int itemsPerScreenCount;
 
     PaginationRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
         this.recyclerView = recyclerView;
@@ -84,10 +85,13 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
     }
 
     int calculateEmptyItemsCount() {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float recyclerViewHeightInDp = recyclerView.getHeight() / displayMetrics.density;
+        if (itemsPerScreenCount == 0) {
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            float recyclerViewHeightInDp = recyclerView.getHeight() / displayMetrics.density;
 
-        return (int) Math.ceil(recyclerViewHeightInDp / ITEM_VIEW_HEIGHT);
+            itemsPerScreenCount = (int) Math.ceil(recyclerViewHeightInDp / ITEM_VIEW_HEIGHT);
+        }
+        return itemsPerScreenCount;
     }
 
     public void addAll(List<T> objects) {
@@ -140,7 +144,6 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
 
     public void setLoadingInitially(boolean loadingInitially) {
         isLoadingInitially = loadingInitially;
-        recyclerView.post(this::notifyDataSetChanged);
     }
 
     public void setLoadingMore(boolean loadingMore) {
@@ -178,7 +181,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
 
     protected abstract RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent);
 
-    public class FooterItemViewHolder extends RecyclerView.ViewHolder {
+    public static class FooterItemViewHolder extends RecyclerView.ViewHolder {
         private ProgressBar progressBar;
         private Button retryButton;
 

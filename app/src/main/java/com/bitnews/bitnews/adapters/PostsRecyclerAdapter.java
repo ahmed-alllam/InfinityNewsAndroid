@@ -24,18 +24,19 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
 
     public PostsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
         super(recyclerView, retryOnClickListener);
+        ITEM_VIEW_HEIGHT = 150;
     }
 
     @Override
     protected RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent) {
         return new PostViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.post_item, parent, false));
+                .inflate(R.layout.post_item, parent, false), false);
     }
 
     @Override
     protected RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent) {
         return new PostViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.post_item, parent, false));
+                .inflate(R.layout.post_empty_item, parent, false), true);
     }
 
     @Override
@@ -103,19 +104,21 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         }
     }
 
-    public class PostViewHolder extends RecyclerView.ViewHolder {
+    public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage, sourceImage;
         TextView postTitle, postDescription, sourceTitle, timestamp;
 
-        PostViewHolder(@NonNull View itemView) {
+        PostViewHolder(@NonNull View itemView, boolean isEmpty) {
             super(itemView);
 
-            postTitle = itemView.findViewById(R.id.postTitle);
-            postDescription = itemView.findViewById(R.id.postDescription);
-            postImage = itemView.findViewById(R.id.postImage);
-            sourceImage = itemView.findViewById(R.id.sourceImage);
-            sourceTitle = itemView.findViewById(R.id.sourceTitle);
-            timestamp = itemView.findViewById(R.id.timestamp);
+            if (!isEmpty) {
+                postTitle = itemView.findViewById(R.id.postTitle);
+                postDescription = itemView.findViewById(R.id.postDescription);
+                postImage = itemView.findViewById(R.id.postImage);
+                sourceImage = itemView.findViewById(R.id.sourceImage);
+                sourceTitle = itemView.findViewById(R.id.sourceTitle);
+                timestamp = itemView.findViewById(R.id.timestamp);
+            }
         }
     }
 }

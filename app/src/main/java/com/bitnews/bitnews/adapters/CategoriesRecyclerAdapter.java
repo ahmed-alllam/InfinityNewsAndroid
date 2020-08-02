@@ -20,7 +20,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
     private static final int ITEMS_PER_ROW = 3;
 
     private CategoryItemChooseListener categoryItemChooseListener;
-    private int selectedColor;
+    private static int selectedColor;
 
     public CategoriesRecyclerAdapter(RecyclerView recyclerView, CategoryItemChooseListener categoryItemChooseListener,
                                      View.OnClickListener retryOnClickListener) {
@@ -45,7 +45,9 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
 
     @Override
     int calculateEmptyItemsCount() {
-        return super.calculateEmptyItemsCount() * ITEMS_PER_ROW;
+        if (itemsPerScreenCount == 0)
+            itemsPerScreenCount = super.calculateEmptyItemsCount() * ITEMS_PER_ROW;
+        return itemsPerScreenCount;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
         }
     }
 
-    private class CategoryViewHolder extends RecyclerView.ViewHolder {
+    private static class CategoryViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private ImageView image;
         private ImageView selectedIcon;

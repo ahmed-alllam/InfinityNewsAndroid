@@ -45,7 +45,7 @@
         android:ellipsize="end"
         android:fontFamily="@font/roboto_medium"
         android:maxLines="3"
-        android:text="@string/loading"
+        tools:text="@string/loading"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
