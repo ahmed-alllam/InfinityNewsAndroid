@@ -44,8 +44,8 @@ public class CategoryViewModel extends ViewModel {
                 .subscribe(categories::setValue));
     }
 
-    public LiveData<APIResponse> updateFavouriteCategories(Context context, List<Category> categories) {
-        MutableLiveData<APIResponse> responseLiveData = new MutableLiveData<>();
+    public LiveData<APIResponse<Object>> updateFavouriteCategories(Context context, List<Category> categories) {
+        MutableLiveData<APIResponse<Object>> responseLiveData = new MutableLiveData<>();
         disposable.add(getCategoryRepository(context)
                 .updateFavouriteCategories(categories)
                 .subscribe(responseLiveData::setValue));

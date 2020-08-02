@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -168,8 +167,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        if (intent != null)
-            startActivityForResult(intent, 0);
+        if (intent != null) {
+            intent.putExtra("fromMainActivity", true);
+            startActivity(intent);
+        }
 
         return false;
     }
@@ -177,8 +178,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onNavigationHeaderClicked(View view) {
         if (isNavigationViewClickable && !isLoggedIn) {
             Intent intent = new Intent(this, LoginSignupActivity.class);
+            intent.putExtra("fromMainActivity", true);
             startActivity(intent);
-            finish();
         }
     }
 
@@ -196,12 +197,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
 
         TextView userEmail = headerView.findViewById(R.id.userEmail);
+        userEmail.setVisibility(View.VISIBLE);
         userEmail.setText(user.getUsername());
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

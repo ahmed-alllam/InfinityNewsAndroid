@@ -31,6 +31,7 @@ import java.util.List;
 public class ChooseCategoriesActivity extends AppCompatActivity implements CategoryItemChooseListener {
     public static final int MIN_CHOSEN_CATEGORIES = 3;
     private ArrayList<Category> chosenCategories = new ArrayList<>();
+    private ArrayList<Category> initallyChosenCategories = new ArrayList<>();
     private RecyclerView categoriesRecyclerView;
     private SwipeRefreshLayout categoriesSwipeLayout;
     private CategoryViewModel categoryViewModel;
@@ -172,7 +173,12 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
     }
 
     public void onNextButtonClicked(View view) {
-        LiveData<APIResponse> responseLiveData = categoryViewModel.updateFavouriteCategories(
+        if (chosenCategories.size() == initallyChosenCategories.size()) {
+            finish();
+            return;
+        }
+
+        LiveData<APIResponse<Object>> responseLiveData = categoryViewModel.updateFavouriteCategories(
                 getApplicationContext(), chosenCategories);
         nextButton.setEnabled(false);
         nextErrorLabel.setVisibility(View.INVISIBLE);
@@ -185,7 +191,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
                 case SUCCESFUL:
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
-                    finish();
+                    finishAffinity();
                     break;
                 case NETWORK_FAILED:
                     nextButton.setEnabled(true);
@@ -211,6 +217,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         for (Category category : categories) {
             if (category.isFavouritedByUser()) {
                 chosenCategories.add(category);
+                initallyChosenCategories.add(category);
             }
         }
         updateNextButton();

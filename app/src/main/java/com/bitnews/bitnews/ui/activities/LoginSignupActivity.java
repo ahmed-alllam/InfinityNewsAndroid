@@ -31,6 +31,7 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
     private Button signupButton;
     private Button loginButton;
     private ProgressBar progressBar;
+    private boolean isCalledFromMainActivity;
 
     private String guestUsername = "";
     private boolean isRequestPending;
@@ -46,6 +47,9 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
             onRequestFinished();
             processGuestLoginResponse(response);
         }));
+
+        isCalledFromMainActivity = getIntent().getBooleanExtra("fromMainActivity",
+                false);
 
         signupButton = findViewById(R.id.signupButton);
         loginButton = findViewById(R.id.loginButton);
@@ -68,11 +72,15 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
         ExtendedFloatingActionButton skipButton = findViewById(R.id.skipFab);
         skipButton.setOnClickListener((v -> {
             if (!isRequestPending) {
-                if (guestUsername.isEmpty())
-                    signupAsGuest();
-                else
-                    loginAsGuest();
-                onRequestPending();
+                if (isCalledFromMainActivity) {
+                    finish();
+                } else {
+                    if (guestUsername.isEmpty())
+                        signupAsGuest();
+                    else
+                        loginAsGuest();
+                    onRequestPending();
+                }
             }
         }));
     }
@@ -143,7 +151,7 @@ public class LoginSignupActivity extends AppCompatActivity implements OnUserAuth
     public void onRequestSuccessful() {
         Intent intent = new Intent(this, ChooseCategoriesActivity.class);
         startActivity(intent);
-        finish();
+        finishAffinity();
     }
 
     private void signupAsGuest() {

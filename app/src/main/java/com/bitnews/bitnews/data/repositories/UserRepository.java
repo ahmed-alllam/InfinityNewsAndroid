@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.bitnews.bitnews.data.db.AppDatabase;
 import com.bitnews.bitnews.data.db.dao.AuthTokenDao;
+import com.bitnews.bitnews.data.db.dao.CategoryDao;
 import com.bitnews.bitnews.data.db.dao.UserDao;
 import com.bitnews.bitnews.data.models.AuthToken;
 import com.bitnews.bitnews.data.models.User;
@@ -21,12 +22,14 @@ import io.reactivex.schedulers.Schedulers;
 public class UserRepository {
     private APIEndpoints apiEndpoints = APIService.getService();
     private UserDao userDao;
+    private CategoryDao categoryDao;
     private AuthTokenDao authTokenDao;
 
     public UserRepository(Context context) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         userDao = appDatabase.getUserDao();
         authTokenDao = appDatabase.getAuthTokenDao();
+        categoryDao = appDatabase.getCategoryDao();
     }
 
     public Single<APIResponse<User>> getCurrentUser() {
@@ -37,6 +40,7 @@ public class UserRepository {
                     userDao.updateUser(user);
                 } else {
                     user.setCurrentUser(true);
+                    userDao.deleteCurrentUser();
                     userDao.addUser(user);
                 }
             }
@@ -68,6 +72,12 @@ public class UserRepository {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
+                if (!AuthTokenDao.getToken().isEmpty()) {
+                    authTokenDao.deleteAuthToken();
+                    AuthTokenDao.setToken("");
+                    userDao.deleteCurrentUser();
+                    categoryDao.removeFavouriteCategories();
+                }
                 user.setCurrentUser(true);
                 userDao.addUser(user);
             }

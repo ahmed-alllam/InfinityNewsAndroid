@@ -35,6 +35,7 @@
         android:fontFamily="@font/roboto_medium"
         android:textColor="@android:color/white"
         android:ellipsize="end"
+        android:visibility="gone"
         android:maxLines="1"
         android:textSize="18sp" />
 </LinearLayout>

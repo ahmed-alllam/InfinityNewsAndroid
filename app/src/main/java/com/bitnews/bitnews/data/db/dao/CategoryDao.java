@@ -49,4 +49,8 @@ public abstract class CategoryDao {
         }
         setFavouriteCategoriesBySlug(categoriesSlugs);
     }
+
+    @Query("UPDATE category " +
+            "SET isFavouritedByUser = 0 ")
+    public abstract void removeFavouriteCategories();
 }
