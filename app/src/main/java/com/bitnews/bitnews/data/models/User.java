@@ -3,9 +3,12 @@ package com.bitnews.bitnews.data.models;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.bitnews.bitnews.utils.DateTimeConverter;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -22,6 +25,8 @@ public class User {
     private boolean isCurrentUser;
     @SerializedName("is_guest")
     private boolean isGuest;
+    @TypeConverters(DateTimeConverter.class)
+    private Date lastUpdated;
 
     @Override
     public boolean equals(Object o) {
@@ -47,11 +52,12 @@ public class User {
         isGuest = guest;
     }
 
+    @NonNull
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(@NonNull String username) {
         this.username = username;
     }
 
@@ -85,5 +91,13 @@ public class User {
 
     public void setCurrentUser(boolean currentUser) {
         isCurrentUser = currentUser;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

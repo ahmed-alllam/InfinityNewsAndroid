@@ -17,7 +17,7 @@ public class TimeStampParser {
         return dateFormat.format(new Date());
     }
 
-    public static String parseTimeStamp(Context context, String timestamp) {
+    public static Date getDateFromString(Context context, String timestamp) {
         Locale currentLocale;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -28,12 +28,17 @@ public class TimeStampParser {
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", currentLocale);
         inputFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
         try {
-            Date parsedDate = inputFormat.parse(timestamp);
-            return String.valueOf(DateUtils.getRelativeTimeSpanString(parsedDate.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS));
+            return inputFormat.parse(timestamp);
         } catch (ParseException e) {
-            System.out.println("ahmed error parsing" + e.getMessage());
-            return "";
+            e.printStackTrace();
+            return new Date();
         }
+    }
+
+    public static String parseTimeStamp(Context context, String timestamp) {
+        return String.valueOf(DateUtils.getRelativeTimeSpanString(
+                getDateFromString(context, timestamp).getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS));
     }
 }

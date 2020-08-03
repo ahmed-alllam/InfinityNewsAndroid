@@ -59,7 +59,7 @@ public abstract class NetworkBoundResource<T> {
     protected abstract Single<T> getAPICall();
 
     protected boolean shouldSaveToDB(T apiResponse, T dbResponse) {
-        return !apiResponse.equals(dbResponse);
+        return true;
     }
 
     protected boolean shouldReturnDbResponseOnError(T dbResponse) {

@@ -2,6 +2,7 @@ package com.bitnews.bitnews.data.repositories;
 
 
 import android.content.Context;
+import android.text.format.DateUtils;
 
 import com.bitnews.bitnews.data.db.AppDatabase;
 import com.bitnews.bitnews.data.db.dao.AuthTokenDao;
@@ -13,6 +14,8 @@ import com.bitnews.bitnews.data.network.APIEndpoints;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.data.network.APIService;
 import com.bitnews.bitnews.data.network.NetworkBoundResource;
+
+import java.util.Date;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -36,18 +39,23 @@ public class UserRepository {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
+                user.setLastUpdated(new Date());
+                user.setCurrentUser(true);
                 if (isUpdate) {
                     userDao.updateUser(user);
                 } else {
-                    user.setCurrentUser(true);
-                    userDao.deleteCurrentUser();
                     userDao.addUser(user);
                 }
             }
 
             @Override
-            protected boolean shouldFetchFromAPI(User data) {
-                return true;
+            protected boolean shouldFetchFromAPI(User user) {
+                if (user == null)
+                    return true;
+
+                long timeDifference = new Date().getTime() - user.getLastUpdated().getTime();
+
+                return timeDifference > DateUtils.DAY_IN_MILLIS * 4;
             }
 
             @Override
@@ -78,6 +86,7 @@ public class UserRepository {
                     userDao.deleteCurrentUser();
                     categoryDao.removeFavouriteCategories();
                 }
+                user.setLastUpdated(new Date());
                 user.setCurrentUser(true);
                 userDao.addUser(user);
             }
@@ -108,8 +117,8 @@ public class UserRepository {
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
-                user.setGuest(true);
                 user.setCurrentUser(true);
+                user.setLastUpdated(new Date());
                 userDao.addUser(user);
             }
 
@@ -134,7 +143,6 @@ public class UserRepository {
             }
         }.asSingle();
     }
-
 
     public Single<APIResponse<AuthToken>> loginUser(String userName, String password) {
         return new NetworkBoundResource<AuthToken>() {
@@ -168,7 +176,7 @@ public class UserRepository {
         }.asSingle();
     }
 
-    public Single logoutUser() {
+    public Single<Object> logoutUser() {
         return Single.fromCallable(() -> {
             userDao.deleteCurrentUser();
             authTokenDao.deleteAuthToken();

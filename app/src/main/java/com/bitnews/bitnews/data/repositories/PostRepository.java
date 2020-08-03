@@ -1,6 +1,7 @@
 package com.bitnews.bitnews.data.repositories;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 
 import com.bitnews.bitnews.data.db.AppDatabase;
 import com.bitnews.bitnews.data.db.dao.CategoryDao;
@@ -18,17 +19,20 @@ import com.bitnews.bitnews.utils.PaginationCursorGenerator;
 import com.bitnews.bitnews.utils.TimeStampParser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
 
 public class PostRepository {
+    private Context context;
     private APIEndpoints apiEndpoints = APIService.getService();
     private PostDao postDao;
     private CategoryDao categoryDao;
     private SourceDao sourceDao;
 
     public PostRepository(Context context) {
+        this.context = context;
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         postDao = appDatabase.getPostsDao();
         categoryDao = appDatabase.getCategoryDao();
@@ -63,7 +67,14 @@ public class PostRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(ResponseList<Post> data) {
-                return true;
+                if (data.getItems().isEmpty() || before)
+                    return true;
+
+                Date postDate = TimeStampParser.getDateFromString(context, data.getItems().get(0).getTimestamp());
+
+                long timeDifference = new Date().getTime() - postDate.getTime();
+
+                return timeDifference > DateUtils.MINUTE_IN_MILLIS * 5;
             }
 
             @Override
@@ -77,14 +88,11 @@ public class PostRepository {
                 List<Post> posts = item.getItems();
                 postDao.insertPosts(posts);
 
-                List<Category> categories = new ArrayList<>();
                 List<Source> sources = new ArrayList<>();
                 for (Post post : posts) {
-                    categories.add(post.getCategory());
                     sources.add(post.getSource());
                 }
 
-                categoryDao.addCategories(categories);
                 sourceDao.addSources(sources);
             }
 

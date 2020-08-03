@@ -3,9 +3,12 @@ package com.bitnews.bitnews.data.models;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.bitnews.bitnews.utils.DateTimeConverter;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +21,8 @@ public class Category {
     private String image;
     @SerializedName("is_favourited_by_user")
     private boolean isFavouritedByUser;
+    @TypeConverters(DateTimeConverter.class)
+    private Date lastUpdated;
 
     @Override
     public boolean equals(Object o) {
@@ -71,5 +76,13 @@ public class Category {
 
     public void setSort(int sort) {
         this.sort = sort;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

@@ -1,6 +1,7 @@
 package com.bitnews.bitnews.data.repositories;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 
 import com.bitnews.bitnews.data.db.AppDatabase;
 import com.bitnews.bitnews.data.db.dao.CategoryDao;
@@ -16,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -52,7 +54,12 @@ public class CategoryRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(ResponseList<Category> data) {
-                return true;
+                if (data.getItems().isEmpty())
+                    return true;
+
+                long timeDifference = new Date().getTime() - data.getItems().get(0).getLastUpdated().getTime();
+
+                return timeDifference > DateUtils.DAY_IN_MILLIS * 4;
             }
 
             @Override
@@ -63,6 +70,9 @@ public class CategoryRepository {
 
             @Override
             protected void saveToDB(ResponseList<Category> list, boolean isUpdate) {
+                for (Category category : list.getItems())
+                    category.setLastUpdated(new Date());
+
                 categoryDao.addCategories(list.getItems());
             }
 
@@ -87,7 +97,12 @@ public class CategoryRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(List<Category> data) {
-                return true;
+                if (data.isEmpty())
+                    return true;
+
+                long timeDifference = new Date().getTime() - data.get(0).getLastUpdated().getTime();
+
+                return timeDifference > DateUtils.DAY_IN_MILLIS * 7;
             }
 
             @Override
@@ -96,8 +111,8 @@ public class CategoryRepository {
             }
 
             @Override
-            protected void saveToDB(List<Category> item, boolean isUpdate) {
-                categoryDao.setFavouriteCategories(item);
+            protected void saveToDB(List<Category> items, boolean isUpdate) {
+                categoryDao.setFavouriteCategories(items);
             }
         }.asSingle();
     }
