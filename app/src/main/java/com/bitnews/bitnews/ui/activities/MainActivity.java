@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int tabWidth = 0;
         for (int i = 0; i < tabLayout.getChildCount(); i++) {
             final View view = tabLayout.getChildAt(i);
-            tabWidth += view.getWidth();
+            tabWidth += view.getMeasuredWidth();
         }
         return tabWidth;
     }

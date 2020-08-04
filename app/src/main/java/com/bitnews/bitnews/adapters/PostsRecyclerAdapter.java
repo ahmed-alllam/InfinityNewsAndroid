@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.data.models.Post;
+import com.bitnews.bitnews.data.models.Source;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
 
@@ -71,16 +72,18 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
                     .into(postViewHolder.postImage);
         postViewHolder.postTitle.setText(post.getTitle());
 
-        if (post.getDescription() != null) {
+        if (post.getDescription() != null && !post.getDescription().isEmpty()) {
             postViewHolder.postDescription.setText(post.getDescription());
             postViewHolder.postDescription.setVisibility(View.VISIBLE);
         } else {
             postViewHolder.postDescription.setVisibility(View.GONE);
         }
 
-        if (post.getSource() != null && post.getSource().getImage() != null) {
+        Source postSource = post.getSource();
+
+        if (postSource != null && postSource.getImage() != null) {
             Glide.with(context)
-                    .load(post.getSource().getImage())
+                    .load(postSource.getImage())
                     .placeholder(R.drawable.ic_launcher_background)
                     .dontAnimate()
                     .into(postViewHolder.sourceImage);
@@ -89,8 +92,8 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
             postViewHolder.sourceImage.setVisibility(View.GONE);
         }
 
-        if (post.getSource() != null && post.getSource().getTitle() != null) {
-            postViewHolder.sourceTitle.setText(post.getSource().getTitle());
+        if (postSource != null && postSource.getTitle() != null && !postSource.getTitle().isEmpty()) {
+            postViewHolder.sourceTitle.setText(postSource.getTitle());
             postViewHolder.sourceTitle.setVisibility(View.VISIBLE);
         } else {
             postViewHolder.sourceTitle.setVisibility(View.GONE);
