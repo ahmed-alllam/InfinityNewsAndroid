@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ViewPager2 mainViewPager;
     private TabLayout categoriesTabLayout;
     private MainViewPagerAdapter mainViewPagerAdapter;
+    private UserViewModel userViewModel;
     private boolean isNavigationViewClickable;
     private boolean isLoggedIn;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawerLayout);
         mainViewPager = findViewById(R.id.mainViewPager);
         categoriesTabLayout = findViewById(R.id.categoriesTabLayout);
+        categoriesTabLayout.post(() -> dynamicSetTabLayoutMode(categoriesTabLayout));
         Toolbar toolbar = findViewById(R.id.mainToolBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getUser().observe(this, response -> {
             User user = response.getitem();
             isLoggedIn = !user.isGuest();
@@ -83,9 +85,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             isNavigationViewClickable = true;
         });
-        userViewModel.getCurrentUser(this);
+        userViewModel.getCurrentUser(getApplicationContext());
 
-        categoryViewModel.getFavouriteCategories(this);
+        categoryViewModel.getFavouriteCategories(getApplicationContext());
     }
 
     private void onSuccessfulResponse(List<Category> categories) {
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tab.setText(categories.get(position).getTitle());
         })).attach();
 
-        dynamicSetTabLayoutMode(categoriesTabLayout);
+        mainViewPager.setOffscreenPageLimit(3);
     }
 
     public void searchButtonClickListener(View view) {
@@ -138,8 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int tabWidth = 0;
         for (int i = 0; i < tabLayout.getChildCount(); i++) {
             final View view = tabLayout.getChildAt(i);
-            view.measure(0, 0);
-            tabWidth += view.getMeasuredWidth();
+            tabWidth += view.getWidth();
         }
         return tabWidth;
     }
@@ -164,15 +165,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent = new Intent(this, SettingsActivity.class);
                 break;
             case R.id.logout:
+                userViewModel.logoutUser(getApplicationContext()).observe(this, o -> {
+                    Intent loginSingupIntent = new Intent(this, LoginSignupActivity.class);
+                    startActivity(loginSingupIntent);
+                    finishAffinity();
+                });
                 break;
         }
 
         if (intent != null) {
-            intent.putExtra("fromMainActivity", true);
             startActivity(intent);
         }
 
-        return false;
+        return true;
     }
 
     public void onNavigationHeaderClicked(View view) {

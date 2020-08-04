@@ -26,5 +26,5 @@ public abstract class UserDao {
     public abstract void updateUser(User user);
 
     @Query("SELECT EXISTS(SELECT * FROM user WHERE isCurrentUser=1)")
-    public abstract Single<Boolean> isUserAuthenticatedAndNotGuest();
+    public abstract Single<Boolean> hasUserProfile();
 }

@@ -173,7 +173,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
     }
 
     public void onNextButtonClicked(View view) {
-        if (chosenCategories.size() == initallyChosenCategories.size()) {
+        if (chosenCategories.equals(initallyChosenCategories)) {
             finish();
             return;
         }

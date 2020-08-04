@@ -45,8 +45,10 @@ public class UserViewModel extends ViewModel {
                 .subscribe(token::setValue));
     }
 
-    public void logoutUser(Context context) {
-        disposable.add(getUserRepository(context).logoutUser().subscribe());
+    public LiveData<Object> logoutUser(Context context) {
+        MutableLiveData<Object> liveData = new MutableLiveData<>();
+        disposable.add(getUserRepository(context).logoutUser().subscribe(liveData::setValue));
+        return liveData;
     }
 
     public LiveData<Boolean> isUserAuthenticated(Context context) {
@@ -57,9 +59,9 @@ public class UserViewModel extends ViewModel {
         return liveData;
     }
 
-    public LiveData<Boolean> isUserAuthenticatedAndNotGuest(Context context) {
+    public LiveData<Boolean> hasUserProfile(Context context) {
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
-        disposable.add(getUserRepository(context).isUserAuthenticatedAndNotGuest()
+        disposable.add(getUserRepository(context).hasUserProfile()
                 .subscribe(liveData::setValue));
         return liveData;
     }

@@ -11,6 +11,7 @@ public abstract class NetworkBoundResource<T> {
     protected NetworkBoundResource() {
         if (shouldFetchFromDB()) {
             response = fetchFromDB()
+                    .doOnError((Throwable::printStackTrace))
                     .map(APIResponse::success)
                     .flatMap(dbResponse -> {
                         if (shouldFetchFromAPI(dbResponse.getitem()))

@@ -29,7 +29,10 @@ public class MainViewPagerAdapter extends FragmentStateAdapter {
     }
 
     public PostsFragment getFragmentAt(int position) {
-        return postsFragments.get(position);
+        if (position < postsFragments.size())
+            return postsFragments.get(position);
+
+        return null;
     }
 
     @Override

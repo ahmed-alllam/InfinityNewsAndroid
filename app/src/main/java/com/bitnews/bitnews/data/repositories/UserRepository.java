@@ -180,9 +180,10 @@ public class UserRepository {
         return Single.fromCallable(() -> {
             userDao.deleteCurrentUser();
             authTokenDao.deleteAuthToken();
+            categoryDao.removeFavouriteCategories();
             AuthTokenDao.setToken("");
 
-            return null;
+            return new Object();
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -195,8 +196,8 @@ public class UserRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<Boolean> isUserAuthenticatedAndNotGuest() {
-        return userDao.isUserAuthenticatedAndNotGuest()
+    public Single<Boolean> hasUserProfile() {
+        return userDao.hasUserProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

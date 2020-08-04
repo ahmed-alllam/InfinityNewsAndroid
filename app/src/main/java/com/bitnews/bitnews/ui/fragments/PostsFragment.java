@@ -188,6 +188,6 @@ public class PostsFragment extends Fragment {
             postsRecyclerAdapter.setLoadingMore(true);
         }
 
-        postViewModel.getPosts(getContext(), category.getSlug(), timestamp, before);
+        postViewModel.getPosts(getActivity().getApplicationContext(), category.getSlug(), timestamp, before);
     }
 }
