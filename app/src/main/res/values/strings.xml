@@ -39,4 +39,8 @@
     <string name="open_nav_drawer" translatable="false">Open Navigation Drawer</string>
     <string name="close_nav_drawer" translatable="false">Close Navigation Drawer</string>
     <string name="login_or_signup" translatable="false">Login or Signup</string>
+    <string name="language">Language</string>
+    <string name="text_size">Text Size</string>
+    <string name="choose_lanuage">Choose a Language</string>
+    <string name="choose_text_size">Choose Text Size</string>
 </resources>

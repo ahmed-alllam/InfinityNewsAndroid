@@ -10,6 +10,7 @@
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/postsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

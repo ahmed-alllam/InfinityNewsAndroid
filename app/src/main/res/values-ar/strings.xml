@@ -19,4 +19,8 @@
     <string name="confirm_password">تأكيد كلمة السر</string>
     <string name="welcome">مرحباً!</string>
     <string name="skip">تخطي</string>
+    <string name="language">اللغة</string>
+    <string name="text_size">حجم الخط</string>
+    <string name="choose_lanuage">اختر لغة</string>
+    <string name="choose_text_size">اختر حجم الخط</string>
 </resources>

@@ -65,11 +65,12 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
             lastAnimatedItemPosition = adapterPosition;
         }
 
-        if (post.getImage() != null)
+        if (post.getImage() != null && !post.getImage().isEmpty())
             Glide.with(context)
                     .load(post.getImage())
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(postViewHolder.postImage);
+
         postViewHolder.postTitle.setText(post.getTitle());
 
         if (post.getDescription() != null && !post.getDescription().isEmpty()) {
@@ -81,7 +82,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
 
         Source postSource = post.getSource();
 
-        if (postSource != null && postSource.getImage() != null) {
+        if (postSource != null && postSource.getImage() != null && !postSource.getImage().isEmpty()) {
             Glide.with(context)
                     .load(postSource.getImage())
                     .placeholder(R.drawable.ic_launcher_background)
@@ -100,7 +101,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         }
 
         if (post.getTimestamp() != null) {
-            postViewHolder.timestamp.setText(TimeStampParser.parseTimeStamp(context, post.getTimestamp()));
+            postViewHolder.timestamp.setText(TimeStampParser.parseTimeStamp(post.getTimestamp()));
             postViewHolder.timestamp.setVisibility(View.VISIBLE);
         } else {
             postViewHolder.timestamp.setVisibility(View.GONE);

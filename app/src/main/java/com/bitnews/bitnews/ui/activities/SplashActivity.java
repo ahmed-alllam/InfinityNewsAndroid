@@ -2,6 +2,7 @@ package com.bitnews.bitnews.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -11,6 +12,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
 import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
+import com.bitnews.bitnews.utils.PreferencesManager;
+
+import java.util.Locale;
 
 public class SplashActivity extends AppCompatActivity {
     public static final int TIME_TO_WAIT = 1500;
@@ -27,6 +31,8 @@ public class SplashActivity extends AppCompatActivity {
             } else
                 addStartActivityDelayToHandler(TutorialActivity.class);
         });
+
+        checkConfigurations();
     }
 
     private void callHasFavouriteCategories() {
@@ -45,5 +51,27 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }, TIME_TO_WAIT);
+    }
+
+    private void checkConfigurations() {
+        boolean isChanged = false;
+        Configuration configuration = new Configuration();
+        String language;
+        if (!(language = PreferencesManager.getLanguageCode(this)).isEmpty()) {
+            isChanged = true;
+            configuration.setLocale(new Locale(language));
+        }
+
+        float textSize;
+        if ((textSize = PreferencesManager.getTextSizeScale(this)) != 1) {
+            isChanged = true;
+            configuration.fontScale = textSize;
+        }
+
+        if (isChanged) {
+            getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
+            getApplicationContext().getResources().updateConfiguration(configuration,
+                    getApplicationContext().getResources().getDisplayMetrics());
+        }
     }
 }

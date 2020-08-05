@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawerLayout);
         mainViewPager = findViewById(R.id.mainViewPager);
         categoriesTabLayout = findViewById(R.id.categoriesTabLayout);
-        categoriesTabLayout.post(() -> dynamicSetTabLayoutMode(categoriesTabLayout));
         Toolbar toolbar = findViewById(R.id.mainToolBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tab.setText(categories.get(position).getTitle());
         })).attach();
 
-        mainViewPager.setOffscreenPageLimit(3);
+        dynamicSetTabLayoutMode(categoriesTabLayout);
     }
 
     public void searchButtonClickListener(View view) {
@@ -128,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void dynamicSetTabLayoutMode(TabLayout tabLayout) {
         int tabsWidth = calculateTotalTabsWidth(tabLayout);
-        int layoutWidth = tabLayout.getWidth();
+        int layoutWidth = findViewById(R.id.postsLayout).getWidth();
         if (tabsWidth <= layoutWidth) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
         } else {
@@ -139,7 +138,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int calculateTotalTabsWidth(TabLayout tabLayout) {
         int tabWidth = 0;
         for (int i = 0; i < tabLayout.getChildCount(); i++) {
-            final View view = tabLayout.getChildAt(i);
+            View view = tabLayout.getChildAt(i);
+            view.measure(0, 0);
             tabWidth += view.getMeasuredWidth();
         }
         return tabWidth;

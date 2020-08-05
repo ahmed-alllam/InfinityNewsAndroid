@@ -1,7 +1,5 @@
 package com.bitnews.bitnews.utils;
 
-import android.content.Context;
-import android.os.Build;
 import android.text.format.DateUtils;
 
 import java.text.ParseException;
@@ -17,16 +15,8 @@ public class TimeStampParser {
         return dateFormat.format(new Date());
     }
 
-    public static Date getDateFromString(Context context, String timestamp) {
-        Locale currentLocale;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            currentLocale = context.getResources().getConfiguration().getLocales().get(0);
-        } else {
-            currentLocale = context.getResources().getConfiguration().locale;
-        }
-
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", currentLocale);
+    public static Date getDateFromString(String timestamp) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
         inputFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         try {
@@ -37,8 +27,8 @@ public class TimeStampParser {
         }
     }
 
-    public static String parseTimeStamp(Context context, String timestamp) {
+    public static String parseTimeStamp(String timestamp) {
         return String.valueOf(DateUtils.getRelativeTimeSpanString(
-                getDateFromString(context, timestamp).getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS));
+                getDateFromString(timestamp).getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS));
     }
 }

@@ -70,7 +70,7 @@ public class PostRepository {
                 if (data.getItems().isEmpty() || before)
                     return true;
 
-                Date postDate = TimeStampParser.getDateFromString(context, data.getItems().get(0).getTimestamp());
+                Date postDate = TimeStampParser.getDateFromString(data.getItems().get(0).getTimestamp());
 
                 long timeDifference = new Date().getTime() - postDate.getTime();
 

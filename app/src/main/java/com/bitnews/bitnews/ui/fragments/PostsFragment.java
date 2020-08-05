@@ -26,7 +26,7 @@ import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 import java.util.List;
 
 public class PostsFragment extends Fragment {
-    private Category category;
+    private String categorySlug;
     private PostViewModel postViewModel;
     private RecyclerView postsRecyclerView;
     private PostsRecyclerAdapter postsRecyclerAdapter;
@@ -35,16 +35,19 @@ public class PostsFragment extends Fragment {
     private int totalPostsCount;
     private int fetchedPostsCount;
     private boolean isRefreshing;
-    private String firstTimestamp;
-    private String lastTimestamp;
+    private String firstPostTimestamp;
+    private String lastPostTimestamp;
 
     public PostsFragment(Category category) {
-        this.category = category;
+        this.categorySlug = category.getSlug();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null)
+            categorySlug = savedInstanceState.getString("categorySlug");
+
         return inflater.inflate(R.layout.fragment_posts, container, false);
     }
 
@@ -98,10 +101,10 @@ public class PostsFragment extends Fragment {
             fetchedPostsCount += posts.size();
 
             if (!isRefreshing)
-                lastTimestamp = posts.get(posts.size() - 1).getTimestamp();
+                lastPostTimestamp = posts.get(posts.size() - 1).getTimestamp();
 
             if (isRefreshing || postsRecyclerAdapter.isEmpty())
-                firstTimestamp = posts.get(0).getTimestamp();
+                firstPostTimestamp = posts.get(0).getTimestamp();
 
             if (isRefreshing) {
                 postsRecyclerAdapter.addAll(0, posts);
@@ -177,17 +180,17 @@ public class PostsFragment extends Fragment {
         postsRecyclerView.setVisibility(View.VISIBLE);
         postsErrorLabel.setVisibility(View.INVISIBLE);
 
-        String timestamp = lastTimestamp;
+        String timestamp = lastPostTimestamp;
         if (isLoadingInitally) {
             if (!before) {
                 postsRecyclerAdapter.setLoadingInitially(true);
                 postsRecyclerView.suppressLayout(true);
             } else
-                timestamp = firstTimestamp;
+                timestamp = firstPostTimestamp;
         } else {
             postsRecyclerAdapter.setLoadingMore(true);
         }
 
-        postViewModel.getPosts(getActivity().getApplicationContext(), category.getSlug(), timestamp, before);
+        postViewModel.getPosts(getActivity().getApplicationContext(), categorySlug, timestamp, before);
     }
 }

@@ -12,14 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustResize"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activities.PostDetailActivity"></activity>
+        <activity android:name=".ui.activities.PostDetailActivity" />
         <activity android:name=".ui.activities.SourcesActivity" />
         <activity android:name=".ui.activities.EditProfileActivity" />
-        <activity android:name=".ui.activities.SettingsActivity" />
+        <activity
+            android:name=".ui.activities.SettingsActivity"
+            android:label="@string/settings"
+            android:theme="@style/AppTheme" />
         <activity android:name=".ui.activities.SearchActivity" />
         <activity android:name=".ui.activities.ChooseCategoriesActivity" />
         <activity android:name=".ui.activities.LoginSignupActivity" />
