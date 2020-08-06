@@ -1,14 +1,16 @@
 <resources>
-    <string name="app_name">Bit News</string>
+    <!-- Tutorial Activity -->
     <string name="get_started_button">إبدأ</string>
-    <string name="tutorial1_title">Get Latest News</string>
-    <string name="tutorial2_title">Keep Up-To-Date</string>
-    <string name="tutorial3_title">Smart Searching</string>
-    <string name="tutorial4_title">Get Notifed Instantly</string>
-    <string name="tutorial1_description">Get latest News Posts from over 100+ of your favorite and most famous Sources and Magazines in one App</string>
-    <string name="tutorial2_description">Keep Up-to-date with the Daily and Breaking News in your Area by using the Daily Recap Stories</string>
-    <string name="tutorial3_description">Search By Title, Tags, Date and Keywords for all the News Posts and Stories that you need</string>
-    <string name="tutorial4_description">Receive Notifications for Posts as soon as Published by Subscribing to news sources Push Notifications</string>
+    <string name="tutorial1_title">احصل على أحدث المنشورات الإخبارية</string>
+    <string name="tutorial2_title">كن علي متابعة لكل جديد</string>
+    <string name="tutorial3_title">بحث ذكي</string>
+    <string name="tutorial4_title">تصلك اشعارات بالاخبار لحظياً</string>
+    <string name="tutorial1_description">احصل على أحدث المنشورات الإخبارية من أكثر من 100+ من المصادر والمجلات المفضلة لديك والأكثر شهرة في تطبيق واحد</string>
+    <string name="tutorial2_description">كن علي متابعة لكل جديد من الاخبار اليومية و العاجلة في منتقطك بميزة الملخص اليومي</string>
+    <string name="tutorial3_description">ابحث حسب العنوان و المواضيع والتاريخ والكلمات الدلالية لجميع المنشورات الإخبارية والمقالات التي تحتاجها</string>
+    <string name="tutorial4_description">تصلك اشعارات بالاخبار لحظياً بمجرد نشرها عن طريق الاشتراك في مصادر الأخبار المفضلة لك</string>
+
+    <!-- LoginSignup Activity -->
     <string name="sign_up">انشئ حساب</string>
     <string name="log_in">سجل دخول</string>
     <string name="password">كلمة السر</string>
@@ -19,6 +21,34 @@
     <string name="confirm_password">تأكيد كلمة السر</string>
     <string name="welcome">مرحباً!</string>
     <string name="skip">تخطي</string>
+
+    <!-- Error and State Strings -->
+    <string name="network_error">لا يوجد اتصال بالشبكة، اعد المحاولة لاحقاً</string>
+    <string name="wrong_username_or_password">اسم مستخدم او كلمة سر خطأ</string>
+    <string name="username_taken">اسم مستخدم محجوز من قبل</string>
+    <string name="invalid_name">خطأ في الاسم الأول او الأخير</string>
+    <string name="invalid_username">اسم مستخدم غير صالح</string>
+    <string name="invalid_password">كلمة سر غير صالحة</string>
+    <string name="retry">أعد المحاولة</string>
+    <string name="no_feed">لا يوجد أخبار جديدة لك</string>
+    <string name="loading">جارٍ التحميل…</string>
+    <string name="next">التالي</string>
+
+    <!-- ChooseCategories Activity -->
+    <string name="choose_topics">اختر 3 تصنيفات علي الأقل</string>
+
+    <!-- Main Activity -->
+    <string name="news">آخر الأخبار</string>
+
+    <!-- Main Activity NavigationView -->
+    <string name="news_sources">المصادر و الصحف</string>
+    <string name="logout">تسجيل الخروة</string>
+    <string name="edit_profile">تعديل الصفحة الشخصية</string>
+    <string name="change_categories">تغيير التصنيفات المفضلة</string>
+    <string name="settings">الإعدادات</string>
+    <string name="login_or_signup">سجل الدخول او انشئ حساب</string>
+
+    <!-- Settings Activity -->
     <string name="language">اللغة</string>
     <string name="text_size">حجم الخط</string>
     <string name="choose_lanuage">اختر لغة</string>
