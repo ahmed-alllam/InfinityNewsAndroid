@@ -57,4 +57,7 @@
     <!-- Empty Activities -->
     <string name="empty_screen">سيتم تنفيذ هذه الميزة قريبًا!</string>
 
+    <!-- Search Activity -->
+    <string name="search">البحث</string>
+
 </resources>

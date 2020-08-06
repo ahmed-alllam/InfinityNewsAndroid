@@ -61,4 +61,7 @@
     <!-- Empty Activities -->
     <string name="empty_screen">This Feature will be implemented soon!</string>
 
+    <!-- Search Activity -->
+    <string name="search">Search</string>
+
 </resources>

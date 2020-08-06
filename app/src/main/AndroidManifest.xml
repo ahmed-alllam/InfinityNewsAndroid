@@ -17,13 +17,22 @@
         android:windowSoftInputMode="adjustResize"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ui.activities.PostDetailActivity" />
-        <activity android:name=".ui.activities.SourcesActivity" />
-        <activity android:name=".ui.activities.EditProfileActivity" />
+        <activity
+            android:name=".ui.activities.SourcesActivity"
+            android:label="@string/news_sources"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.activities.EditProfileActivity"
+            android:label="@string/edit_profile"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:label="@string/settings"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.activities.SearchActivity" />
+        <activity
+            android:name=".ui.activities.SearchActivity"
+            android:label="@string/search"
+            android:theme="@style/AppTheme" />
         <activity android:name=".ui.activities.ChooseCategoriesActivity" />
         <activity android:name=".ui.activities.LoginSignupActivity" />
         <activity android:name=".ui.activities.TutorialActivity" />
