@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toogle.syncState();
 
         categoriesTabLayout.addOnTabSelectedListener(getTabSelectedListener());
+        categoriesTabLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> dynamicallySetTabLayoutMode(categoriesTabLayout));
         categoriesTabLayout.setTabTextColors(Color.GRAY, getResources().getColor(R.color.colorAccent));
 
         CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
@@ -95,8 +96,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         new TabLayoutMediator(categoriesTabLayout, mainViewPager, true, ((tab, position) -> {
             tab.setText(categories.get(position).getTitle());
         })).attach();
-
-        dynamicSetTabLayoutMode(categoriesTabLayout);
     }
 
     public void searchButtonClickListener(View view) {
@@ -125,22 +124,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         };
     }
 
-    private void dynamicSetTabLayoutMode(TabLayout tabLayout) {
+    private void dynamicallySetTabLayoutMode(TabLayout tabLayout) {
         int tabsWidth = calculateTotalTabsWidth(tabLayout);
-        int layoutWidth = findViewById(R.id.postsLayout).getWidth();
-        if (tabsWidth <= layoutWidth) {
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        } else {
-            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        int layoutWidth = tabLayout.getWidth();
+
+        System.out.println("ahmed " + tabsWidth + " " + layoutWidth);
+
+        if (tabsWidth != 0 && layoutWidth != 0) {
+            if (tabsWidth <= layoutWidth) {
+                tabLayout.setTabMode(TabLayout.MODE_FIXED);
+            } else {
+                tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+            }
         }
     }
 
     private int calculateTotalTabsWidth(TabLayout tabLayout) {
         int tabWidth = 0;
-        for (int i = 0; i < tabLayout.getChildCount(); i++) {
-            View view = tabLayout.getChildAt(i);
-            view.measure(0, 0);
-            tabWidth += view.getMeasuredWidth();
+
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                tabWidth += tab.view.getWidth();
+            }
         }
         return tabWidth;
     }

@@ -45,9 +45,6 @@ public class PostsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null)
-            categorySlug = savedInstanceState.getString("categorySlug");
-
         return inflater.inflate(R.layout.fragment_posts, container, false);
     }
 

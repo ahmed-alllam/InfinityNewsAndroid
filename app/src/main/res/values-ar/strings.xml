@@ -1,10 +1,10 @@
 <resources>
     <!-- Tutorial Activity -->
     <string name="get_started_button">إبدأ</string>
-    <string name="tutorial1_title">احصل على أحدث المنشورات الإخبارية</string>
+    <string name="tutorial1_title">أحدث المنشورات الإخبارية</string>
     <string name="tutorial2_title">كن علي متابعة لكل جديد</string>
-    <string name="tutorial3_title">بحث ذكي</string>
-    <string name="tutorial4_title">تصلك اشعارات بالاخبار لحظياً</string>
+    <string name="tutorial3_title">بحث ذكي للأخبار</string>
+    <string name="tutorial4_title">اشعارات بالاخبار لحظياً</string>
     <string name="tutorial1_description">احصل على أحدث المنشورات الإخبارية من أكثر من 100+ من المصادر والمجلات المفضلة لديك والأكثر شهرة في تطبيق واحد</string>
     <string name="tutorial2_description">كن علي متابعة لكل جديد من الاخبار اليومية و العاجلة في منتقطك بميزة الملخص اليومي</string>
     <string name="tutorial3_description">ابحث حسب العنوان و المواضيع والتاريخ والكلمات الدلالية لجميع المنشورات الإخبارية والمقالات التي تحتاجها</string>
@@ -42,11 +42,11 @@
 
     <!-- Main Activity NavigationView -->
     <string name="news_sources">المصادر و الصحف</string>
-    <string name="logout">تسجيل الخروة</string>
+    <string name="logout">تسجيل الخروج</string>
     <string name="edit_profile">تعديل الصفحة الشخصية</string>
     <string name="change_categories">تغيير التصنيفات المفضلة</string>
     <string name="settings">الإعدادات</string>
-    <string name="login_or_signup">سجل الدخول او انشئ حساب</string>
+    <string name="login_or_signup">انشئ حساب</string>
 
     <!-- Settings Activity -->
     <string name="language">اللغة</string>
