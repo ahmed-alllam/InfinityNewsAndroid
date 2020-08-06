@@ -53,4 +53,8 @@
     <string name="text_size">حجم الخط</string>
     <string name="choose_lanuage">اختر لغة</string>
     <string name="choose_text_size">اختر حجم الخط</string>
+
+    <!-- Empty Activities -->
+    <string name="empty_screen">سيتم تنفيذ هذه الميزة قريبًا!</string>
+
 </resources>

@@ -129,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int layoutWidth = tabLayout.getWidth();
 
-        System.out.println("ahmed " + tabsWidth + " " + layoutWidth);
-
         if (tabsWidth != 0 && layoutWidth != 0) {
             if (tabsWidth <= layoutWidth) {
                 tabLayout.setTabMode(TabLayout.MODE_FIXED);
