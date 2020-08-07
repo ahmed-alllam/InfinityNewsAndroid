@@ -57,4 +57,7 @@ public interface APIEndpoints {
     @GET("news/categories/{slug}/posts")
     Single<ResponseList<Post>> getPostsByCategory(@Path("slug") String categorySlug,
                                                   @Query("cursor") String cursor);
+
+    @GET("news/posts/{slug}")
+    Single<Post> getPost(@Path("slug") String postSlug);
 }

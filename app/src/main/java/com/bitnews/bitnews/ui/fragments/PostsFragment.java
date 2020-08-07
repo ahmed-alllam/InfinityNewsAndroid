@@ -1,6 +1,7 @@
 package com.bitnews.bitnews.ui.fragments;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.bitnews.bitnews.adapters.PostsRecyclerAdapter;
 import com.bitnews.bitnews.callbacks.PaginationScrollListener;
 import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.data.models.Post;
+import com.bitnews.bitnews.ui.activities.PostDetailActivity;
 import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 
 import java.util.List;
@@ -73,6 +75,10 @@ public class PostsFragment extends Fragment {
         postsRecyclerAdapter = new PostsRecyclerAdapter(postsRecyclerView, (v -> {
             if (!postsRecyclerAdapter.isLoading() && !isRefreshing)
                 loadPosts(false, false);
+        }), (postSlug -> {
+            Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+            intent.putExtra("postSlug", postSlug);
+            startActivity(intent);
         }));
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         postsRecyclerView.setAdapter(postsRecyclerAdapter);

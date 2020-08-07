@@ -17,6 +17,7 @@ import com.bitnews.bitnews.data.network.NetworkBoundResource;
 
 import java.util.Date;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -176,14 +177,12 @@ public class UserRepository {
         }.asSingle();
     }
 
-    public Single<Object> logoutUser() {
-        return Single.fromCallable(() -> {
+    public Completable logoutUser() {
+        return Completable.fromAction(() -> {
             userDao.deleteCurrentUser();
             authTokenDao.deleteAuthToken();
             categoryDao.removeFavouriteCategories();
             AuthTokenDao.setToken("");
-
-            return new Object();
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

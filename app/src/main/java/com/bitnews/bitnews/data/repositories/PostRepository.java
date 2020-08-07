@@ -25,14 +25,12 @@ import java.util.List;
 import io.reactivex.Single;
 
 public class PostRepository {
-    private Context context;
     private APIEndpoints apiEndpoints = APIService.getService();
     private PostDao postDao;
     private CategoryDao categoryDao;
     private SourceDao sourceDao;
 
     public PostRepository(Context context) {
-        this.context = context;
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         postDao = appDatabase.getPostsDao();
         categoryDao = appDatabase.getCategoryDao();
@@ -99,6 +97,42 @@ public class PostRepository {
             @Override
             protected boolean shouldReturnDbResponseOnError(ResponseList<Post> dbResponse) {
                 return !dbResponse.getItems().isEmpty();
+            }
+        }.asSingle();
+    }
+
+    public Single<APIResponse<Post>> getPost(String postSlug) {
+        return new NetworkBoundResource<Post>() {
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return true;
+            }
+
+            @Override
+            protected Single<Post> fetchFromDB() {
+                return postDao.getPost(postSlug);
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI(Post post) {
+                if (post == null || post.getBody() == null || post.getBody().isEmpty())
+                    return true;
+
+                Date postDate = TimeStampParser.getDateFromString(post.getTimestamp());
+
+                long timeDifference = new Date().getTime() - postDate.getTime();
+
+                return timeDifference > DateUtils.HOUR_IN_MILLIS * 5;
+            }
+
+            @Override
+            protected Single<Post> getAPICall() {
+                return apiEndpoints.getPost(postSlug);
+            }
+
+            @Override
+            protected void saveToDB(Post post, boolean isUpdate) {
+                postDao.insertPost(post);
             }
         }.asSingle();
     }

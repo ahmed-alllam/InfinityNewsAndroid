@@ -47,7 +47,7 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<Object> logoutUser(Context context) {
         MutableLiveData<Object> liveData = new MutableLiveData<>();
-        disposable.add(getUserRepository(context).logoutUser().subscribe(liveData::setValue));
+        disposable.add(getUserRepository(context).logoutUser().subscribe(() -> liveData.setValue(null)));
         return liveData;
     }
 

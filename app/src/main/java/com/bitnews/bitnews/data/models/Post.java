@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.bitnews.bitnews.utils.ListToStringConverter;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +26,9 @@ public class Post {
     private String sourceSlug;
     @ForeignKey(entity = Category.class, parentColumns = "slug", childColumns = "categorySlug")
     private String categorySlug;
+    @SerializedName("detailed_url")
+    private String detailedUrl;
+    private String body;
     @Ignore
     private Source source;
     @Ignore
@@ -44,6 +48,8 @@ public class Post {
                 Objects.equals(timestamp, post.timestamp) &&
                 Objects.equals(sourceSlug, post.sourceSlug) &&
                 Objects.equals(categorySlug, post.categorySlug) &&
+                Objects.equals(detailedUrl, post.detailedUrl) &&
+                Objects.equals(body, post.body) &&
                 Objects.equals(source, post.source) &&
                 Objects.equals(category, post.category) &&
                 Objects.equals(tags, post.tags);
@@ -51,7 +57,7 @@ public class Post {
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, image, title, description, timestamp, sourceSlug, categorySlug, source, category, tags);
+        return Objects.hash(slug, image, title, description, timestamp, sourceSlug, categorySlug, detailedUrl, body, source, category, tags);
     }
 
     public void setTitle(String title) {
@@ -133,5 +139,21 @@ public class Post {
 
     public void setCategorySlug(String categorySlug) {
         this.categorySlug = categorySlug;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getDetailedUrl() {
+        return detailedUrl;
+    }
+
+    public void setDetailedUrl(String detailedUrl) {
+        this.detailedUrl = detailedUrl;
     }
 }

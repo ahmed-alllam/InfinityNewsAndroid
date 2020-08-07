@@ -13,8 +13,11 @@ import io.reactivex.Single;
 
 @Dao
 public interface PostDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertPosts(List<Post> posts);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPost(Post post);
 
     @Query("SELECT * FROM post" +
             " WHERE ((datetime(timestamp) < datetime(:timestamp) and :before = 0)" +
@@ -23,4 +26,7 @@ public interface PostDao {
             " ORDER BY timestamp DESC" +
             " LIMIT 40")
     Single<List<Post>> getAllPostsByCategory(String categorySlug, String timestamp, boolean before);
+
+    @Query("SELECT * FROM post WHERE slug = :postSlug")
+    Single<Post> getPost(String postSlug);
 }

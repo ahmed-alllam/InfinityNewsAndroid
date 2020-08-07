@@ -76,14 +76,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getUser().observe(this, response -> {
-            User user = response.getitem();
-            isLoggedIn = !user.isGuest();
-            if (isLoggedIn) {
-                bindNavigationViewHeader(navigationView.getHeaderView(0), user);
-                navigationView.getMenu().findItem(R.id.editProfile).setVisible(true);
-                navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-            }
             isNavigationViewClickable = true;
+
+            if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
+                User user = response.getitem();
+                isLoggedIn = !user.isGuest();
+                if (isLoggedIn) {
+                    bindNavigationViewHeader(navigationView.getHeaderView(0), user);
+                    navigationView.getMenu().findItem(R.id.editProfile).setVisible(true);
+                    navigationView.getMenu().findItem(R.id.logout).setVisible(true);
+                }
+            }
         });
         userViewModel.getCurrentUser(getApplicationContext());
 

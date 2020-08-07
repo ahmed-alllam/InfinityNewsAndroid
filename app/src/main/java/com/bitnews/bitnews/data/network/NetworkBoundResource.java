@@ -11,12 +11,11 @@ public abstract class NetworkBoundResource<T> {
     protected NetworkBoundResource() {
         if (shouldFetchFromDB()) {
             response = fetchFromDB()
-                    .doOnError((Throwable::printStackTrace))
                     .map(APIResponse::success)
                     .flatMap(dbResponse -> {
                         if (shouldFetchFromAPI(dbResponse.getitem()))
                             return fetchAPIResponse(dbResponse.getitem());
-                        return Single.just(dbResponse);
+                        return Single.just(dbResponse).onErrorReturn(APIResponse::failed);
                     });
         } else {
             response = fetchAPIResponse(null);

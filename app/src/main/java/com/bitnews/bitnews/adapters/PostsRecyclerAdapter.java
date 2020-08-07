@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
+import com.bitnews.bitnews.callbacks.OnPostItemClickListener;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
 import com.bitnews.bitnews.utils.TimeStampParser;
@@ -22,48 +23,37 @@ import com.bumptech.glide.Glide;
 public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     private int lastAnimatedItemPosition = -1;
     private Interpolator interpolator = new DecelerateInterpolator();
+    private OnPostItemClickListener onPostItemClickListener;
 
-    public PostsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
+    public PostsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener,
+                                OnPostItemClickListener onPostItemClickListener) {
         super(recyclerView, retryOnClickListener);
         ITEM_VIEW_HEIGHT = 150;
+        this.onPostItemClickListener = onPostItemClickListener;
     }
 
     @Override
     protected RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent) {
         return new PostViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.post_item, parent, false), false);
+                .inflate(R.layout.post_item, parent, false), onPostItemClickListener);
     }
 
     @Override
     protected RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent) {
-        return new PostViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.post_empty_item, parent, false), true);
+        return new EmptyPostViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.post_empty_item, parent, false));
     }
 
     @Override
     void bindItemViewHolder(RecyclerView.ViewHolder holder, Post post, int position) {
         PostViewHolder postViewHolder = (PostViewHolder) holder;
 
-        int adapterPosition = holder.getAdapterPosition();
         View itemView = postViewHolder.itemView;
+        int adapterPosition = holder.getAdapterPosition();
 
-        if (adapterPosition <= lastAnimatedItemPosition) {
-            itemView.setTranslationX(0);
-            itemView.setAlpha(1);
-        } else {
-            Animator translateAnimator = ObjectAnimator.ofFloat(itemView, "translationX",
-                    itemView.getRootView().getWidth(), 0).setDuration(200);
+        startAnimation(itemView, adapterPosition);
 
-            translateAnimator.start();
-            translateAnimator.setInterpolator(interpolator);
-
-            Animator alphaAnimator = ObjectAnimator.ofFloat(itemView, "alpha",
-                    0, 1f).setDuration(300);
-            alphaAnimator.start();
-            alphaAnimator.setInterpolator(interpolator);
-
-            lastAnimatedItemPosition = adapterPosition;
-        }
+        postViewHolder.postSlug = post.getSlug();
 
         if (post.getImage() != null && !post.getImage().isEmpty())
             Glide.with(context)
@@ -108,21 +98,48 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         }
     }
 
+    private void startAnimation(View view, int position) {
+        if (position <= lastAnimatedItemPosition) {
+            view.setTranslationX(0);
+            view.setAlpha(1);
+        } else {
+            Animator translateAnimator = ObjectAnimator.ofFloat(view, "translationX",
+                    view.getRootView().getWidth(), 0).setDuration(200);
+
+            translateAnimator.start();
+            translateAnimator.setInterpolator(interpolator);
+
+            Animator alphaAnimator = ObjectAnimator.ofFloat(view, "alpha",
+                    0, 1f).setDuration(300);
+            alphaAnimator.start();
+            alphaAnimator.setInterpolator(interpolator);
+
+            lastAnimatedItemPosition = position;
+        }
+    }
+
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage, sourceImage;
         TextView postTitle, postDescription, sourceTitle, timestamp;
+        String postSlug;
 
-        PostViewHolder(@NonNull View itemView, boolean isEmpty) {
+        PostViewHolder(@NonNull View itemView, OnPostItemClickListener onPostItemClickListener) {
             super(itemView);
 
-            if (!isEmpty) {
-                postTitle = itemView.findViewById(R.id.postTitle);
-                postDescription = itemView.findViewById(R.id.postDescription);
-                postImage = itemView.findViewById(R.id.postImage);
-                sourceImage = itemView.findViewById(R.id.sourceImage);
-                sourceTitle = itemView.findViewById(R.id.sourceTitle);
-                timestamp = itemView.findViewById(R.id.timestamp);
-            }
+            postTitle = itemView.findViewById(R.id.postTitle);
+            postDescription = itemView.findViewById(R.id.postDescription);
+            postImage = itemView.findViewById(R.id.postImage);
+            sourceImage = itemView.findViewById(R.id.sourceImage);
+            sourceTitle = itemView.findViewById(R.id.sourceTitle);
+            timestamp = itemView.findViewById(R.id.timestamp);
+
+            itemView.setOnClickListener(v -> onPostItemClickListener.onPostClicked(postSlug));
+        }
+    }
+
+    public static class EmptyPostViewHolder extends RecyclerView.ViewHolder {
+        public EmptyPostViewHolder(@NonNull View itemView) {
+            super(itemView);
         }
     }
 }
