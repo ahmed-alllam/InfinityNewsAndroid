@@ -48,16 +48,16 @@ public interface APIEndpoints {
     @GET("news/categories/")
     Single<ResponseList<Category>> getAllCategories(@Query("cursor") String cursor);
 
-    @GET("users/me/favourite-categories")
+    @GET("users/me/favourite-categories/")
     Single<List<Category>> getFavouriteCategories();
 
-    @PUT("users/me/favourite-categories")
+    @PUT("users/me/favourite-categories/")
     Completable updateFavouriteCategories(@Body RequestBody requestBody);
 
-    @GET("news/categories/{slug}/posts")
+    @GET("news/categories/{slug}/posts/")
     Single<ResponseList<Post>> getPostsByCategory(@Path("slug") String categorySlug,
                                                   @Query("cursor") String cursor);
 
-    @GET("news/posts/{slug}")
+    @GET("news/posts/{slug}/")
     Single<Post> getPost(@Path("slug") String postSlug);
 }
