@@ -15,7 +15,11 @@ public abstract class NetworkBoundResource<T> {
                     .flatMap(dbResponse -> {
                         if (shouldFetchFromAPI(dbResponse.getitem()))
                             return fetchAPIResponse(dbResponse.getitem());
-                        return Single.just(dbResponse).onErrorReturn(APIResponse::failed);
+                        return Single.just(dbResponse);
+                    }).onErrorResumeNext(t -> {
+                        if (shouldFetchFromAPI(null))
+                            return fetchAPIResponse(null);
+                        return Single.just(APIResponse.failed(t));
                     });
         } else {
             response = fetchAPIResponse(null);

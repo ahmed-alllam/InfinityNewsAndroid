@@ -53,7 +53,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
 
         startAnimation(itemView, adapterPosition);
 
-        postViewHolder.postSlug = post.getSlug();
+        postViewHolder.post = post;
 
         if (post.getImage() != null && !post.getImage().isEmpty())
             Glide.with(context)
@@ -121,7 +121,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage, sourceImage;
         TextView postTitle, postDescription, sourceTitle, timestamp;
-        String postSlug;
+        Post post;
 
         PostViewHolder(@NonNull View itemView, OnPostItemClickListener onPostItemClickListener) {
             super(itemView);
@@ -133,7 +133,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
             sourceTitle = itemView.findViewById(R.id.sourceTitle);
             timestamp = itemView.findViewById(R.id.timestamp);
 
-            itemView.setOnClickListener(v -> onPostItemClickListener.onPostClicked(postSlug));
+            itemView.setOnClickListener(v -> onPostItemClickListener.onPostClicked(post));
         }
     }
 

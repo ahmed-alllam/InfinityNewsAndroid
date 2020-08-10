@@ -27,6 +27,6 @@ public interface PostDao {
             " LIMIT 40")
     Single<List<Post>> getAllPostsByCategory(String categorySlug, String timestamp, boolean before);
 
-    @Query("SELECT * FROM post WHERE slug = :postSlug")
+    @Query("SELECT * FROM post WHERE slug = :postSlug AND LENGTH(body) > 0")
     Single<Post> getPost(String postSlug);
 }

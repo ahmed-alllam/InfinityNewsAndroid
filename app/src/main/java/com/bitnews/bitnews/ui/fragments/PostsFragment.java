@@ -75,9 +75,9 @@ public class PostsFragment extends Fragment {
         postsRecyclerAdapter = new PostsRecyclerAdapter(postsRecyclerView, (v -> {
             if (!postsRecyclerAdapter.isLoading() && !isRefreshing)
                 loadPosts(false, false);
-        }), (postSlug -> {
+        }), (post -> {
             Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-            intent.putExtra("postSlug", postSlug);
+            savePostInIntent(intent, post);
             startActivity(intent);
         }));
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -195,5 +195,18 @@ public class PostsFragment extends Fragment {
         }
 
         postViewModel.getPosts(getActivity().getApplicationContext(), categorySlug, timestamp, before);
+    }
+
+    private void savePostInIntent(Intent intent, Post post) {
+        intent.putExtra("postSlug", post.getSlug());
+        intent.putExtra("postImage", post.getImage());
+        intent.putExtra("postTitle", post.getTitle());
+        intent.putExtra("postDescription", post.getDescription());
+        intent.putExtra("postTimestamp", post.getTimestamp());
+
+        if (post.getSource() != null) {
+            intent.putExtra("sourceTitle", post.getSource().getTitle());
+            intent.putExtra("sourceImage", post.getSource().getImage());
+        }
     }
 }

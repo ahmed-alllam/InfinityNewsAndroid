@@ -36,6 +36,17 @@ public class Post {
     @TypeConverters(ListToStringConverter.class)
     private List<String> tags;
 
+    public Post() {
+    }
+
+    public Post(String image, String title,
+                String description, String timestamp) {
+        this.image = image;
+        this.title = title;
+        this.description = description;
+        this.timestamp = timestamp;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

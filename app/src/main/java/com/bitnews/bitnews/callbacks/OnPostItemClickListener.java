@@ -1,6 +1,8 @@
 package com.bitnews.bitnews.callbacks;
 
+import com.bitnews.bitnews.data.models.Post;
+
 public interface OnPostItemClickListener {
 
-    void onPostClicked(String postSlug);
+    void onPostClicked(Post post);
 }

@@ -5,8 +5,8 @@ import android.view.MotionEvent;
 import android.widget.ScrollView;
 
 public abstract class PopupScrollView extends ScrollView {
-    float yOffset;
-    float displayHeight;
+    private float yOffset;
+    private float displayHeight;
 
     public PopupScrollView(Context context) {
         super(context);
@@ -45,7 +45,7 @@ public abstract class PopupScrollView extends ScrollView {
                 return true;
 
             default:
-                return false;
+                return super.onTouchEvent(ev);
         }
     }
 }

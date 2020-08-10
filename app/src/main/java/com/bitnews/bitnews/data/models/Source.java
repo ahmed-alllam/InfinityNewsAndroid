@@ -15,6 +15,14 @@ public class Source {
     private String description;
     private String image;
 
+    public Source() {
+    }
+
+    public Source(String title, String image) {
+        this.title = title;
+        this.image = image;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
