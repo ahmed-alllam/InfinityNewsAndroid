@@ -39,6 +39,7 @@ public class Post {
     public Post() {
     }
 
+    @Ignore
     public Post(String image, String title,
                 String description, String timestamp) {
         this.image = image;

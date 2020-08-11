@@ -142,7 +142,7 @@
                     tools:text="Post Description"
                     tools:visibility="visible" />
 
-                <TextView
+                <org.sufficientlysecure.htmltextview.HtmlTextView
                     android:id="@+id/postBody"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

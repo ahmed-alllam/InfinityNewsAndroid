@@ -2,6 +2,7 @@ package com.bitnews.bitnews.data.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -18,6 +19,7 @@ public class Source {
     public Source() {
     }
 
+    @Ignore
     public Source(String title, String image) {
         this.title = title;
         this.image = image;

@@ -1,7 +1,6 @@
 package com.bitnews.bitnews.ui.activities;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +19,10 @@ import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 import com.bitnews.bitnews.ui.views.PopupScrollView;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 
 public class PostDetailActivity extends AppCompatActivity {
     private String postSlug;
@@ -99,8 +102,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void bindPostFromResponse(Post post) {
         if (post.getBody() != null && !post.getBody().isEmpty()) {
-            TextView postBody = findViewById(R.id.postBody);
-            postBody.setText(Html.fromHtml(post.getBody()));
+            HtmlTextView postBody = findViewById(R.id.postBody);
+            HtmlHttpImageGetter imageGetter = new HtmlHttpImageGetter(postBody);
+            imageGetter.enableCompressImage(true);
+            postBody.setHtml(post.getBody(), imageGetter);
         }
     }
 
