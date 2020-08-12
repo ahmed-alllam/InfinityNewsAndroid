@@ -1,14 +1,13 @@
 package com.bitnews.bitnews.ui.activities;
 
 import android.os.Bundle;
+import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Guideline;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bitnews.bitnews.R;
@@ -16,9 +15,10 @@ import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
-import com.bitnews.bitnews.ui.views.PopupScrollView;
+import com.bitnews.bitnews.ui.views.BottomSheetScrollView;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -26,8 +26,8 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 public class PostDetailActivity extends AppCompatActivity {
     private String postSlug;
-    public static final float MIN_GUIDLINE_PERCENT = 0.2f;
-    public static final float MAX_GUIDLINE_PERCENT = 0.35f;
+    public static final int BOTTOM_SHEET_EXPANDED_OFFSET = 100;
+    public static final int BOTTOM_SHEET_HEIGHT = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +38,6 @@ public class PostDetailActivity extends AppCompatActivity {
 
         bindPostFromBundle(getIntent().getExtras());
 
-        CardView postCardView = findViewById(R.id.postCardView);
-        ConstraintLayout postContainerLayout = findViewById(R.id.postContainerLayout);
-        Guideline scrollViewGuideline = findViewById(R.id.scrollViewGuideline);
-        PopupScrollView popupScrollView = getScrollView(scrollViewGuideline);
-
-        postCardView.removeView(postContainerLayout);
-        postCardView.addView(popupScrollView);
-        popupScrollView.addView(postContainerLayout);
-
         PostViewModel postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.getPost(getApplicationContext(), postSlug).observe(this, response -> {
             findViewById(R.id.progressBar4).setVisibility(View.GONE);
@@ -55,6 +46,19 @@ public class PostDetailActivity extends AppCompatActivity {
                 Post post = response.getitem();
                 bindPostFromResponse(post);
             }
+        });
+
+        BottomSheetScrollView bottomSheet = findViewById(R.id.postBottomSheet);
+        BottomSheetBehavior<BottomSheetScrollView> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        bottomSheetBehavior.setPeekHeight(getBootomSheetHeight());
+        bottomSheet.setMinimumHeight(getBootomSheetHeight());
+        bottomSheet.setBottomSheetBehavior(bottomSheetBehavior);
+        bottomSheet.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if (bottomSheet.getScrollY() == 0) {
+                bottomSheetBehavior.setDraggable(true);
+            } else
+                bottomSheetBehavior.setDraggable(false);
         });
     }
 
@@ -106,39 +110,17 @@ public class PostDetailActivity extends AppCompatActivity {
             HtmlHttpImageGetter imageGetter = new HtmlHttpImageGetter(postBody);
             imageGetter.enableCompressImage(true);
             postBody.setHtml(post.getBody(), imageGetter);
+            Linkify.addLinks(postBody, Linkify.WEB_URLS);
         }
     }
 
-    private PopupScrollView getScrollView(Guideline guideline) {
-        return new PopupScrollView(this) {
-            @Override
-            protected boolean isScrollable(boolean isScrollingUp) {
-                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                        guideline.getLayoutParams();
-                float currentPercent = layoutParams.guidePercent;
-
-                if (isScrollingUp) {
-                    return currentPercent <= MIN_GUIDLINE_PERCENT;
-                }
-
-                return currentPercent >= MAX_GUIDLINE_PERCENT ||
-                        (currentPercent <= MIN_GUIDLINE_PERCENT && getScrollY() != 0);
-            }
-
-            @Override
-            protected void moveView(float yOffsetPercent) {
-                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)
-                        guideline.getLayoutParams();
-                layoutParams.guidePercent = calculateBoundedPercent(layoutParams.guidePercent - yOffsetPercent);
-                guideline.setLayoutParams(layoutParams);
-            }
-        };
+    private int getBootomSheetHeight() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return (int) (displayMetrics.heightPixels - (BOTTOM_SHEET_HEIGHT * displayMetrics.density));
     }
 
-    private float calculateBoundedPercent(float percent) {
-        if (percent < MIN_GUIDLINE_PERCENT)
-            return MIN_GUIDLINE_PERCENT;
-
-        return Math.min(percent, MAX_GUIDLINE_PERCENT);
+    private int getExpandedOffset() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return (int) (BOTTOM_SHEET_EXPANDED_OFFSET * displayMetrics.density);
     }
 }
