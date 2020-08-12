@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bitnews.bitnews.R;
@@ -27,7 +28,7 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 public class PostDetailActivity extends AppCompatActivity {
     private String postSlug;
     public static final int BOTTOM_SHEET_EXPANDED_OFFSET = 100;
-    public static final int BOTTOM_SHEET_HEIGHT = 300;
+    public static final int BOTTOM_SHEET_COLLAPSED_OFFSET = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +52,11 @@ public class PostDetailActivity extends AppCompatActivity {
         BottomSheetScrollView bottomSheet = findViewById(R.id.postBottomSheet);
         BottomSheetBehavior<BottomSheetScrollView> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
-        bottomSheetBehavior.setPeekHeight(getBootomSheetHeight());
-        bottomSheet.setMinimumHeight(getBootomSheetHeight());
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomSheet.getLayoutParams();
+        layoutParams.height = getBootomSheetMaxHeight();
+        bottomSheet.setLayoutParams(layoutParams);
+
+        bottomSheetBehavior.setPeekHeight(getBootomSheetMinHeight());
         bottomSheet.setBottomSheetBehavior(bottomSheetBehavior);
         bottomSheet.getViewTreeObserver().addOnScrollChangedListener(() -> {
             if (bottomSheet.getScrollY() == 0) {
@@ -114,13 +118,13 @@ public class PostDetailActivity extends AppCompatActivity {
         }
     }
 
-    private int getBootomSheetHeight() {
+    private int getBootomSheetMinHeight() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return (int) (displayMetrics.heightPixels - (BOTTOM_SHEET_HEIGHT * displayMetrics.density));
+        return (int) (displayMetrics.heightPixels - (BOTTOM_SHEET_COLLAPSED_OFFSET * displayMetrics.density));
     }
 
-    private int getExpandedOffset() {
+    private int getBootomSheetMaxHeight() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return (int) (BOTTOM_SHEET_EXPANDED_OFFSET * displayMetrics.density);
+        return (int) (displayMetrics.heightPixels - (BOTTOM_SHEET_EXPANDED_OFFSET * displayMetrics.density));
     }
 }
