@@ -65,7 +65,7 @@ public class PostRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(ResponseList<Post> data) {
-                if (data.getItems().isEmpty() || before)
+                if (data == null || data.getItems().isEmpty() || before)
                     return true;
 
                 Date postDate = TimeStampParser.getDateFromString(data.getItems().get(0).getTimestamp());
@@ -145,8 +145,8 @@ public class PostRepository {
             sourcesSlugs.add(post.getSourceSlug());
         }
 
-        List<Category> categories = categoryDao.getCategories(categoriesSlugs);
-        List<Source> sources = sourceDao.getSources(sourcesSlugs);
+        List<Category> categories = categoryDao.getCategoriesBySlugs(categoriesSlugs);
+        List<Source> sources = sourceDao.getSourcesBySlugs(sourcesSlugs);
         for (Post post : posts) {
             for (Category category : categories) {
                 if (category.getSlug().equals(post.getCategorySlug())) {
@@ -161,6 +161,9 @@ public class PostRepository {
                     break;
                 }
             }
+
+            assert post.getCategory() != null;
+            assert post.getSource() != null;
         }
     }
 }

@@ -81,13 +81,13 @@
         android:alpha="0.5"
         android:background="@drawable/get_started_button_shape"
         android:backgroundTint="@color/colorPrimary"
+        android:enabled="false"
         android:fontFamily="@font/roboto_medium"
+        android:onClick="onNextButtonClicked"
         android:stateListAnimator="@null"
         android:text="@string/next"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:enabled="false"
-        android:onClick="onNextButtonClicked"
         app:autoSizeMaxTextSize="19sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/guideline48"
@@ -119,15 +119,10 @@
         app:layout_constraintTop_toTopOf="@+id/guideline37">
 
 
-        <FrameLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoriesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/categoriesRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </FrameLayout>
+            android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.constraintlayout.widget.Guideline

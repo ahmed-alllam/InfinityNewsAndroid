@@ -8,18 +8,19 @@ import androidx.room.RoomDatabase;
 
 import com.bitnews.bitnews.data.db.dao.AuthTokenDao;
 import com.bitnews.bitnews.data.db.dao.CategoryDao;
+import com.bitnews.bitnews.data.db.dao.CommentDao;
 import com.bitnews.bitnews.data.db.dao.PostDao;
 import com.bitnews.bitnews.data.db.dao.SourceDao;
 import com.bitnews.bitnews.data.db.dao.UserDao;
 import com.bitnews.bitnews.data.models.AuthToken;
 import com.bitnews.bitnews.data.models.Category;
+import com.bitnews.bitnews.data.models.Comment;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
-import com.bitnews.bitnews.data.models.Tag;
 import com.bitnews.bitnews.data.models.User;
 
 @Database(entities = {User.class, AuthToken.class, Category.class,
-        Post.class, Source.class, Tag.class},
+        Post.class, Source.class, Comment.class},
         version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -47,4 +48,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract PostDao getPostsDao();
 
     public abstract SourceDao getSourceDao();
+
+    public abstract CommentDao getCommentDao();
 }

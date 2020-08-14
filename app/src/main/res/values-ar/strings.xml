@@ -59,5 +59,7 @@
 
     <!-- Search Activity -->
     <string name="search">البحث</string>
+    <string name="tags">المواضيع المتعلقة</string>
+    <string name="comments">التعليقات</string>
 
 </resources>

@@ -8,23 +8,31 @@ import androidx.room.Update;
 
 import com.bitnews.bitnews.data.models.User;
 
+import java.util.List;
+
 import io.reactivex.Single;
 
 @Dao
-public abstract class UserDao {
+public interface UserDao {
 
     @Query("SELECT * FROM user WHERE isCurrentUser=1")
-    public abstract Single<User> getCurrentUser();
+    Single<User> getCurrentUser();
+
+    @Query("SELECT * FROM user WHERE username IN(:usernames)")
+    List<User> getUsersByUsernames(List<String> usernames);
 
     @Query("DELETE FROM user WHERE isCurrentUser=1")
-    public abstract void deleteCurrentUser();
+    void deleteCurrentUser();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void addUser(User user);
+    void addUser(User user);
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void addUsers(List<User> user);
 
     @Update
-    public abstract void updateUser(User user);
+    void updateUser(User user);
 
     @Query("SELECT EXISTS(SELECT * FROM user WHERE isCurrentUser=1)")
-    public abstract Single<Boolean> hasUserProfile();
+    Single<Boolean> hasUserProfile();
 }

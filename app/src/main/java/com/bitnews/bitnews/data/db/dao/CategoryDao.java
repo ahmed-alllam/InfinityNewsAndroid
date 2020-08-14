@@ -19,7 +19,7 @@ public abstract class CategoryDao {
     public abstract Single<List<Category>> getAllCategories(int offset);
 
     @Query("SELECT * FROM category WHERE slug IN(:slugs)")
-    public abstract List<Category> getCategories(List<String> slugs);
+    public abstract List<Category> getCategoriesBySlugs(List<String> slugs);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void addCategories(List<Category> categories);

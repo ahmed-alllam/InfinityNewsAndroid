@@ -3,6 +3,7 @@ package com.bitnews.bitnews.ui.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -30,6 +31,7 @@ import java.util.List;
 
 public class ChooseCategoriesActivity extends AppCompatActivity implements CategoryItemChooseListener {
     public static final int MIN_CHOSEN_CATEGORIES = 3;
+    public static final int CATEGORY_ITEM_WIDTH = 100;
     private ArrayList<Category> chosenCategories = new ArrayList<>();
     private ArrayList<Category> initallyChosenCategories = new ArrayList<>();
     private RecyclerView categoriesRecyclerView;
@@ -115,7 +117,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
     }
 
     private RecyclerView.LayoutManager getListLayoutManager() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, calculateSpanCount());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -127,6 +129,15 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         });
 
         return layoutManager;
+    }
+
+    private int calculateSpanCount() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+        float displayWidth = displayMetrics.widthPixels / displayMetrics.density;
+        float recyclerViewWidth = displayWidth - (displayWidth / 5);
+
+        return (int) (recyclerViewWidth / CATEGORY_ITEM_WIDTH);
     }
 
     private PaginationScrollListener getOnScrollListener() {

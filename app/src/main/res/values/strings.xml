@@ -63,5 +63,7 @@
 
     <!-- Search Activity -->
     <string name="search">Search</string>
+    <string name="tags">Tags</string>
+    <string name="comments">Comments</string>
 
 </resources>

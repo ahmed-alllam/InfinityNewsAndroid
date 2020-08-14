@@ -2,6 +2,7 @@ package com.bitnews.bitnews.data.network;
 
 import com.bitnews.bitnews.data.models.AuthToken;
 import com.bitnews.bitnews.data.models.Category;
+import com.bitnews.bitnews.data.models.Comment;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.ResponseList;
 import com.bitnews.bitnews.data.models.User;
@@ -60,4 +61,8 @@ public interface APIEndpoints {
 
     @GET("news/posts/{slug}/")
     Single<Post> getPost(@Path("slug") String postSlug);
+
+    @GET("news/posts/{slug}/comments/")
+    Single<ResponseList<Comment>> getCommentsForPost(@Path("slug") String postSlug,
+                                                     @Query("cursor") String cursor);
 }

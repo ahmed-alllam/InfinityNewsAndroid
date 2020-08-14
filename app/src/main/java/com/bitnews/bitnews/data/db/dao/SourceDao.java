@@ -16,5 +16,5 @@ public interface SourceDao {
     void addSources(List<Source> sources);
 
     @Query("SELECT * FROM source WHERE slug IN(:sourceSlugs)")
-    List<Source> getSources(List<String> sourceSlugs);
+    List<Source> getSourcesBySlugs(List<String> sourceSlugs);
 }

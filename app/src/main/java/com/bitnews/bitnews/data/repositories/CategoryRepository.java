@@ -54,7 +54,7 @@ public class CategoryRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(ResponseList<Category> data) {
-                if (data.getItems().isEmpty())
+                if (data == null || data.getItems().isEmpty())
                     return true;
 
                 long timeDifference = new Date().getTime() - data.getItems().get(0).getLastUpdated().getTime();
@@ -97,7 +97,7 @@ public class CategoryRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(List<Category> data) {
-                if (data.isEmpty())
+                if (data == null || data.isEmpty())
                     return true;
 
                 long timeDifference = new Date().getTime() - data.get(0).getLastUpdated().getTime();

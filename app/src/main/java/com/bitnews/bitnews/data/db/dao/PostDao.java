@@ -20,12 +20,12 @@ public interface PostDao {
     void insertPost(Post post);
 
     @Query("SELECT * FROM post" +
-            " WHERE ((datetime(timestamp) < datetime(:timestamp) and :before = 0)" +
-            " or (datetime(timestamp) > datetime(:timestamp) and :before = 1))" +
+            " WHERE ((datetime(timestamp) < datetime(:lastTimeStamp) and :before = 0)" +
+            " or (datetime(timestamp) > datetime(:lastTimeStamp) and :before = 1))" +
             " AND categorySlug = :categorySlug" +
             " ORDER BY timestamp DESC" +
             " LIMIT 40")
-    Single<List<Post>> getAllPostsByCategory(String categorySlug, String timestamp, boolean before);
+    Single<List<Post>> getAllPostsByCategory(String categorySlug, String lastTimeStamp, boolean before);
 
     @Query("SELECT * FROM post WHERE slug = :postSlug AND LENGTH(body) > 0")
     Single<Post> getPost(String postSlug);

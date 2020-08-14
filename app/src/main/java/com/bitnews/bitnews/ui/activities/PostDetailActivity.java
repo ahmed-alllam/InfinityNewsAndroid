@@ -10,8 +10,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
+import com.bitnews.bitnews.adapters.PostTagsAdapter;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
 import com.bitnews.bitnews.data.network.APIResponse;
@@ -19,6 +21,7 @@ import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 import com.bitnews.bitnews.ui.views.BottomSheetScrollView;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
@@ -27,8 +30,9 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 public class PostDetailActivity extends AppCompatActivity {
     private String postSlug;
-    public static final int BOTTOM_SHEET_EXPANDED_OFFSET = 100;
+    public static final int BOTTOM_SHEET_EXPANDED_OFFSET = 150;
     public static final int BOTTOM_SHEET_COLLAPSED_OFFSET = 300;
+    BottomSheetBehavior<BottomSheetScrollView> bottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,21 +45,22 @@ public class PostDetailActivity extends AppCompatActivity {
 
         PostViewModel postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.getPost(getApplicationContext(), postSlug).observe(this, response -> {
-            findViewById(R.id.progressBar4).setVisibility(View.GONE);
-
             if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
                 Post post = response.getitem();
                 bindPostFromResponse(post);
             }
+
+            findViewById(R.id.progressBar4).setVisibility(View.GONE);
         });
 
         BottomSheetScrollView bottomSheet = findViewById(R.id.postBottomSheet);
-        BottomSheetBehavior<BottomSheetScrollView> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomSheet.getLayoutParams();
         layoutParams.height = getBootomSheetMaxHeight();
         bottomSheet.setLayoutParams(layoutParams);
 
+        bottomSheet.setMinimumHeight(getBootomSheetMinHeight());
         bottomSheetBehavior.setPeekHeight(getBootomSheetMinHeight());
         bottomSheet.setBottomSheetBehavior(bottomSheetBehavior);
         bottomSheet.getViewTreeObserver().addOnScrollChangedListener(() -> {
@@ -104,6 +109,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         if (post.getDescription() != null && !post.getDescription().isEmpty()) {
             TextView postDescription = findViewById(R.id.postDescription);
+            postDescription.setVisibility(View.VISIBLE);
             postDescription.setText(post.getDescription());
         }
     }
@@ -114,7 +120,16 @@ public class PostDetailActivity extends AppCompatActivity {
             HtmlHttpImageGetter imageGetter = new HtmlHttpImageGetter(postBody);
             imageGetter.enableCompressImage(true);
             postBody.setHtml(post.getBody(), imageGetter);
-            Linkify.addLinks(postBody, Linkify.WEB_URLS);
+            Linkify.addLinks(postBody, Linkify.ALL);
+        }
+
+        if (post.getTags() != null && !post.getTags().isEmpty()) {
+            findViewById(R.id.tagsLabel).setVisibility(View.VISIBLE);
+            RecyclerView tagsRecyclerView = findViewById(R.id.tagsRecyclerView);
+            tagsRecyclerView.setLayoutManager(new FlexboxLayoutManager(this));
+            tagsRecyclerView.setHasFixedSize(true);
+            tagsRecyclerView.setVisibility(View.VISIBLE);
+            tagsRecyclerView.setAdapter(new PostTagsAdapter(post.getTags()));
         }
     }
 
