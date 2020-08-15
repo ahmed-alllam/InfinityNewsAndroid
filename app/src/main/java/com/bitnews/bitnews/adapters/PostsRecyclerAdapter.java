@@ -118,7 +118,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         }
     }
 
-    public static class PostViewHolder extends RecyclerView.ViewHolder {
+    private static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage, sourceImage;
         TextView postTitle, postDescription, sourceTitle, timestamp;
         Post post;
@@ -137,7 +137,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         }
     }
 
-    public static class EmptyPostViewHolder extends RecyclerView.ViewHolder {
+    private static class EmptyPostViewHolder extends RecyclerView.ViewHolder {
         public EmptyPostViewHolder(@NonNull View itemView) {
             super(itemView);
         }

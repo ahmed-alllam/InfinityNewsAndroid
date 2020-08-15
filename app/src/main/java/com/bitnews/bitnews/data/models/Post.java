@@ -35,6 +35,8 @@ public class Post {
     private Category category;
     @TypeConverters(ListToStringConverter.class)
     private List<String> tags;
+    @SerializedName("comments_count")
+    private int commentsCount;
 
     public Post() {
     }
@@ -53,7 +55,8 @@ public class Post {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return slug.equals(post.slug) &&
+        return commentsCount == post.commentsCount &&
+                slug.equals(post.slug) &&
                 Objects.equals(image, post.image) &&
                 Objects.equals(title, post.title) &&
                 Objects.equals(description, post.description) &&
@@ -69,7 +72,7 @@ public class Post {
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, image, title, description, timestamp, sourceSlug, categorySlug, detailedUrl, body, source, category, tags);
+        return Objects.hash(slug, image, title, description, timestamp, sourceSlug, categorySlug, detailedUrl, body, source, category, tags, commentsCount);
     }
 
     public void setTitle(String title) {
@@ -167,5 +170,13 @@ public class Post {
 
     public void setDetailedUrl(String detailedUrl) {
         this.detailedUrl = detailedUrl;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
     }
 }

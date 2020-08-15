@@ -12,7 +12,7 @@ import com.bitnews.bitnews.data.repositories.CommentRepository;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-class CommentsViewModel extends ViewModel {
+public class CommentsViewModel extends ViewModel {
     private MutableLiveData<APIResponse<ResponseList<Comment>>> commentsLiveData = new MutableLiveData<>();
     private CommentRepository commentRepository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -23,9 +23,9 @@ class CommentsViewModel extends ViewModel {
         return commentRepository;
     }
 
-    public void getComments(Context context, String categorySlug, String lastTimestamp) {
+    public void getComments(Context context, String postSlug, String lastTimestamp) {
         compositeDisposable.add(getCommentRepository(context)
-                .getCommentsForPost(categorySlug, lastTimestamp)
+                .getCommentsForPost(postSlug, lastTimestamp)
                 .subscribe(commentsLiveData::setValue));
     }
 
