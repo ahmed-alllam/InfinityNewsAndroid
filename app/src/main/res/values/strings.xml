@@ -65,5 +65,7 @@
     <string name="search">Search</string>
     <string name="tags">Tags</string>
     <string name="comments">Comments</string>
+    <string name="post_a_comment">Post a comment</string>
+    <string name="send">Send</string>
 
 </resources>

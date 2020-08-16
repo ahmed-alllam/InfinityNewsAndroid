@@ -2,6 +2,7 @@ package com.bitnews.bitnews.ui.viewmodels;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -27,6 +28,14 @@ public class CommentsViewModel extends ViewModel {
         compositeDisposable.add(getCommentRepository(context)
                 .getCommentsForPost(postSlug, lastTimestamp)
                 .subscribe(commentsLiveData::setValue));
+    }
+
+    public LiveData<APIResponse<Comment>> sendCommentForPost(Context context, String postSlug,
+                                                             String text) {
+        MutableLiveData<APIResponse<Comment>> commentLiveData = new MutableLiveData<>();
+        compositeDisposable.add(getCommentRepository(context)
+                .sendCommentForPost(postSlug, text).subscribe(commentLiveData::setValue));
+        return commentLiveData;
     }
 
     public MutableLiveData<APIResponse<ResponseList<Comment>>> getCommentsLiveData() {

@@ -189,14 +189,55 @@
                 app:layout_constraintTop_toBottomOf="@+id/tagsRecyclerView" />
 
             <TextView
+                android:id="@+id/commentsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/commentsLabel"
+                app:layout_constraintStart_toEndOf="@+id/commentsLabel"
+                app:layout_constraintTop_toTopOf="@+id/commentsLabel"
+                tools:text="0"
+                tools:visibility="visible" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="24dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/commentsLabel"
+                tools:src="@drawable/ic_launcher_background"
+                tools:visibility="visible" />
+
+            <EditText
+                android:id="@+id/commentEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:hint="@string/post_a_comment"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/userImage"
+                app:layout_constraintEnd_toStartOf="@+id/sendCommentButton"
+                app:layout_constraintStart_toEndOf="@+id/userImage"
+                app:layout_constraintTop_toTopOf="@+id/userImage"
+                tools:visibility="visible" />
+
+            <TextView
                 android:id="@+id/commentsErrorLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:textColor="@android:color/holo_red_light"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentsLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/userImage"
+                tools:visibility="visible" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentsRecyclerView"
@@ -210,8 +251,32 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/commentsLabel"
+                app:layout_constraintTop_toBottomOf="@+id/userImage"
                 tools:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/sendCommentButton"
+                android:layout_width="35dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_send"
+                android:tint="@color/colorAccent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/commentEditText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/commentEditText"
+                tools:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/sendingCommentProgressBar"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="60dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/commentEditText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/commentEditText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.bitnews.bitnews.ui.views.BottomSheetScrollView>

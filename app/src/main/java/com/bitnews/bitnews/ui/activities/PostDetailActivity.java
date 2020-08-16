@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,9 +21,11 @@ import com.bitnews.bitnews.adapters.PostTagsAdapter;
 import com.bitnews.bitnews.data.models.Comment;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
+import com.bitnews.bitnews.data.models.User;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.viewmodels.CommentsViewModel;
 import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
+import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 import com.bitnews.bitnews.ui.views.BottomSheetScrollView;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
@@ -30,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -162,9 +168,39 @@ public class PostDetailActivity extends AppCompatActivity {
 
         findViewById(R.id.commentsLabel).setVisibility(View.VISIBLE);
 
+        TextView commentsCount = findViewById(R.id.commentsCount);
+        commentsCount.setVisibility(View.VISIBLE);
+        commentsCount.setText(String.valueOf(post.getCommentsCount()));
+
+        loadCurrentUser();
+
         if (post.getCommentsCount() > 0) {
             loadComments();
         }
+    }
+
+    private void bindCurrentUserToPost(User user) {
+        ImageView userImage = findViewById(R.id.userImage);
+        userImage.setVisibility(View.VISIBLE);
+        Glide.with(this)
+                .load(user.getProfilePhoto())
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_background)
+                .into(userImage);
+
+        EditText commentEditText = findViewById(R.id.commentEditText);
+        commentEditText.setVisibility(View.VISIBLE);
+
+        ImageButton sendCommentButton = findViewById(R.id.sendCommentButton);
+        sendCommentButton.setVisibility(View.VISIBLE);
+        sendCommentButton.setOnClickListener(v -> {
+            String text = commentEditText.getText().toString();
+            if (!text.isEmpty())
+                sendComment(text);
+
+            sendCommentButton.setVisibility(View.GONE);
+            findViewById(R.id.sendingCommentProgressBar).setVisibility(View.VISIBLE);
+        });
     }
 
     private void onSuccseesfulCommentsResponse(List<Comment> comments, int count) {
@@ -185,6 +221,39 @@ public class PostDetailActivity extends AppCompatActivity {
                 commentsRecyclerAdapter.setLoadingMore(false);
             }
         }
+    }
+
+    private void sendComment(String text) {
+        ImageButton sendCommentButton = findViewById(R.id.sendCommentButton);
+        sendCommentButton.setVisibility(View.GONE);
+
+        ProgressBar sendingCommentProgressBar = findViewById(R.id.sendingCommentProgressBar);
+        sendingCommentProgressBar.setVisibility(View.VISIBLE);
+
+        commentsViewModel.sendCommentForPost(getApplicationContext(), postSlug, text)
+                .observe(this, response -> {
+                    sendCommentButton.setVisibility(View.VISIBLE);
+                    sendingCommentProgressBar.setVisibility(View.GONE);
+
+                    if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
+                        EditText commentEditText = findViewById(R.id.commentEditText);
+                        commentEditText.getText().clear();
+                        commentsRecyclerView.setVisibility(View.VISIBLE);
+                        commentsRecyclerAdapter.addAll(0, Collections.singletonList(response.getitem()));
+                    }
+                });
+    }
+
+    private void loadCurrentUser() {
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getCurrentUser(getApplicationContext());
+        userViewModel.getUser().observe(this, response -> {
+            if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
+                User user = response.getitem();
+                if (!user.isGuest())
+                    bindCurrentUserToPost(response.getitem());
+            }
+        });
     }
 
     private void loadComments() {

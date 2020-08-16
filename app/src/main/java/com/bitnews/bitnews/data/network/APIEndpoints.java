@@ -65,4 +65,9 @@ public interface APIEndpoints {
     @GET("news/posts/{slug}/comments/")
     Single<ResponseList<Comment>> getCommentsForPost(@Path("slug") String postSlug,
                                                      @Query("cursor") String cursor);
+
+    @FormUrlEncoded
+    @POST("news/posts/{slug}/comments/")
+    Single<Comment> sendCommentForPost(@Path("slug") String postSlug,
+                                       @Field("text") String text);
 }

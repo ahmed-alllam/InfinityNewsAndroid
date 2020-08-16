@@ -17,6 +17,7 @@ import com.bitnews.bitnews.utils.PaginationCursorGenerator;
 import com.bitnews.bitnews.utils.TimeStampParser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -94,6 +95,36 @@ public class CommentRepository {
             @Override
             protected boolean shouldReturnDbResponseOnError(ResponseList<Comment> dbResponse) {
                 return !dbResponse.getItems().isEmpty();
+            }
+        }.asSingle();
+    }
+
+    public Single<APIResponse<Comment>> sendCommentForPost(String postSlug,
+                                                           String text) {
+        return new NetworkBoundResource<Comment>() {
+            @Override
+            protected boolean shouldFetchFromDB() {
+                return false;
+            }
+
+            @Override
+            protected Single<Comment> fetchFromDB() {
+                return null;
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI(Comment data) {
+                return true;
+            }
+
+            @Override
+            protected Single<Comment> getAPICall() {
+                return apiEndpoints.sendCommentForPost(postSlug, text);
+            }
+
+            @Override
+            protected void saveToDB(Comment comment, boolean isUpdate) {
+                commentDao.insertComments(Collections.singletonList(comment));
             }
         }.asSingle();
     }

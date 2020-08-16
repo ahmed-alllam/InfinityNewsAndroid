@@ -61,5 +61,7 @@
     <string name="search">البحث</string>
     <string name="tags">المواضيع المتعلقة</string>
     <string name="comments">التعليقات</string>
+    <string name="post_a_comment">أرسل تعليق</string>
+    <string name="send">أرسل</string>
 
 </resources>
