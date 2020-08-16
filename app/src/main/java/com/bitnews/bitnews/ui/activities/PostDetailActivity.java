@@ -238,6 +238,11 @@ public class PostDetailActivity extends AppCompatActivity {
                     if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
                         EditText commentEditText = findViewById(R.id.commentEditText);
                         commentEditText.getText().clear();
+
+                        TextView commentsCount = findViewById(R.id.commentsCount);
+                        int prevCount = Integer.parseInt(commentsCount.getText().toString());
+                        commentsCount.setText(String.valueOf(prevCount + 1));
+
                         commentsRecyclerView.setVisibility(View.VISIBLE);
                         commentsRecyclerAdapter.addAll(0, Collections.singletonList(response.getitem()));
                     }

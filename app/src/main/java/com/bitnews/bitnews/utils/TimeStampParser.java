@@ -29,6 +29,6 @@ public class TimeStampParser {
 
     public static String parseTimeStamp(String timestamp) {
         return String.valueOf(DateUtils.getRelativeTimeSpanString(
-                getDateFromString(timestamp).getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS));
+                getDateFromString(timestamp).getTime(), new Date().getTime(), 0L, DateUtils.FORMAT_ABBREV_ALL));
     }
 }
