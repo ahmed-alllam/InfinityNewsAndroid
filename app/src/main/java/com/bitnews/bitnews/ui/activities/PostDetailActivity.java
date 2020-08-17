@@ -12,13 +12,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.adapters.CommentsRecyclerAdapter;
 import com.bitnews.bitnews.adapters.PostTagsAdapter;
-import com.bitnews.bitnews.callbacks.PaginationScrollListener;
 import com.bitnews.bitnews.data.models.Comment;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
@@ -27,7 +27,6 @@ import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.viewmodels.CommentsViewModel;
 import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
-import com.bitnews.bitnews.ui.views.BottomSheetScrollView;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -44,7 +43,6 @@ public class PostDetailActivity extends AppCompatActivity {
     private static final int BOTTOM_SHEET_EXPANDED_OFFSET = 150;
     private static final int BOTTOM_SHEET_COLLAPSED_OFFSET = 300;
     private String postSlug;
-    private BottomSheetBehavior<BottomSheetScrollView> bottomSheetBehavior;
     private CommentsViewModel commentsViewModel;
     private RecyclerView commentsRecyclerView;
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
@@ -84,26 +82,25 @@ public class PostDetailActivity extends AppCompatActivity {
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(commentsRecyclerView,
                 v -> loadComments());
         commentsRecyclerView.setAdapter(commentsRecyclerAdapter);
-        commentsRecyclerView.addOnScrollListener(getOnScrollListener());
 
         commentsErrorLabel = findViewById(R.id.commentsErrorLabel);
 
-        BottomSheetScrollView bottomSheet = findViewById(R.id.postBottomSheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        NestedScrollView bottomSheet = findViewById(R.id.postBottomSheet);
+        BottomSheetBehavior.from(bottomSheet).setPeekHeight(getBootomSheetMinHeight());
+        bottomSheet.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if (!bottomSheet.canScrollVertically(1)) {
+                if (fetchedCommentsCount < totalCommentsCount || totalCommentsCount == -1) {
+                    if (!commentsRecyclerAdapter.isLoading() && !commentsRecyclerAdapter.isLoadingFailedAdded()) {
+                        loadComments();
+                    }
+                }
+            }
+        });
 
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomSheet.getLayoutParams();
         layoutParams.height = getBootomSheetMaxHeight();
         bottomSheet.setLayoutParams(layoutParams);
-
         bottomSheet.setMinimumHeight(getBootomSheetMinHeight());
-        bottomSheetBehavior.setPeekHeight(getBootomSheetMinHeight());
-        bottomSheet.setBottomSheetBehavior(bottomSheetBehavior);
-        bottomSheet.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            if (bottomSheet.getScrollY() == 0) {
-                bottomSheetBehavior.setDraggable(true);
-            } else
-                bottomSheetBehavior.setDraggable(false);
-        });
     }
 
     private void bindPostFromBundle(Bundle postBundle) {
@@ -226,10 +223,7 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         }
 
-        commentsRecyclerView.post(() -> {
-            commentsRecyclerAdapter.setLoadingInitially(false);
-            commentsRecyclerAdapter.setLoadingMore(false);
-        });
+        commentsRecyclerAdapter.finishLoading();
     }
 
     private void sendComment(String text) {
@@ -277,30 +271,10 @@ public class PostDetailActivity extends AppCompatActivity {
         } else {
             commentsRecyclerAdapter.setLoadingFailed(false);
             commentsRecyclerAdapter.setLoadingMore(true);
-            commentsRecyclerAdapter.removeFooterItem();
             commentsRecyclerAdapter.addFooterItem();
         }
 
         commentsViewModel.getComments(getApplicationContext(), postSlug, lastCommentTimeStamp);
-    }
-
-    private PaginationScrollListener getOnScrollListener() {
-        return new PaginationScrollListener(commentsRecyclerView.getLayoutManager()) {
-            @Override
-            public boolean isLastPage() {
-                return fetchedCommentsCount >= totalCommentsCount && totalCommentsCount != -1;
-            }
-
-            @Override
-            public boolean isLoading() {
-                return commentsRecyclerAdapter.isLoading() || commentsRecyclerAdapter.isLoadingFailedAdded();
-            }
-
-            @Override
-            public void loadMoreItems() {
-                loadComments();
-            }
-        };
     }
 
     private int getBootomSheetMinHeight() {

@@ -117,8 +117,12 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
 
     public void addFooterItem() {
         recyclerView.post(() -> {
-            itemsList.add(null);
-            notifyItemInserted(itemsList.size() - 1);
+            if (itemsList.contains(null))
+                notifyItemChanged(itemsList.size() - 1);
+            else {
+                itemsList.add(null);
+                notifyItemInserted(itemsList.size() - 1);
+            }
         });
     }
 
@@ -131,6 +135,13 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
 
     public boolean isLoading() {
         return isLoadingInitially || isLoadingMore;
+    }
+
+    public void finishLoading() {
+        recyclerView.post(() -> {
+            setLoadingInitially(false);
+            setLoadingMore(false);
+        });
     }
 
     public boolean isLoadingFailedAdded() {

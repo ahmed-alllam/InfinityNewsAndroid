@@ -8,12 +8,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.ui.fragments.PostsFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainViewPagerAdapter extends FragmentStateAdapter {
     private List<Category> categoriesList;
-    private List<PostsFragment> postsFragments = new ArrayList<>();
 
     public MainViewPagerAdapter(FragmentActivity fa, List<Category> categoriesList) {
         super(fa);
@@ -23,16 +21,7 @@ public class MainViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        PostsFragment postsFragment = new PostsFragment(categoriesList.get(position));
-        postsFragments.add(postsFragment);
-        return postsFragment;
-    }
-
-    public PostsFragment getFragmentAt(int position) {
-        if (position < postsFragments.size())
-            return postsFragments.get(position);
-
-        return null;
+        return new PostsFragment(categoriesList.get(position));
     }
 
     @Override

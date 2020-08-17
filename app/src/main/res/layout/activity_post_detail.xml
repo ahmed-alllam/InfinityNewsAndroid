@@ -1,4 +1,4 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.bitnews.bitnews.ui.views.CustomCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:src="@drawable/ic_launcher_background"
         tools:ignore="ContentDescription" />
 
-    <com.bitnews.bitnews.ui.views.BottomSheetScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/postBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -279,7 +279,7 @@
                 app:layout_constraintTop_toTopOf="@+id/commentEditText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.bitnews.bitnews.ui.views.BottomSheetScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <ImageButton
         android:id="@+id/backButton"
@@ -291,4 +291,4 @@
         android:rotationY="@dimen/rotate_by"
         android:src="@drawable/ic_arrow_small"
         tools:ignore="ContentDescription" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</com.bitnews.bitnews.ui.views.CustomCoordinatorLayout>

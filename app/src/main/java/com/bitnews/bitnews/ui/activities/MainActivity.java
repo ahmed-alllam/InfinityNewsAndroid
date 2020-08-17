@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 if (mainViewPagerAdapter != null) {
-                    PostsFragment postsFragment = mainViewPagerAdapter.getFragmentAt(tab.getPosition());
+                    PostsFragment postsFragment = (PostsFragment) getSupportFragmentManager().findFragmentByTag("f" + tab.getPosition());
                     if (postsFragment != null)
                         postsFragment.scrollToTop();
                 }
@@ -217,11 +217,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        PostsFragment postsFragment = mainViewPagerAdapter.getFragmentAt(mainViewPager.getCurrentItem());
+        PostsFragment postsFragment = (PostsFragment) getSupportFragmentManager().findFragmentByTag("f" + mainViewPager.getCurrentItem());
 
         if (drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawers();
-        else if (!postsFragment.isAtTop()) {
+        else if (postsFragment != null && !postsFragment.isAtTop()) {
             postsFragment.scrollToTop();
         } else
             super.onBackPressed();

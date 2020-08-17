@@ -125,10 +125,7 @@ public class PostsFragment extends Fragment {
             }
         }
 
-        postsRecyclerView.post(() -> {
-            postsRecyclerAdapter.setLoadingInitially(false);
-            postsRecyclerAdapter.setLoadingMore(false);
-        });
+        postsRecyclerAdapter.finishLoading();
     }
 
     private void onErrorResponse() {
@@ -141,7 +138,6 @@ public class PostsFragment extends Fragment {
             if (!isRefreshing) {
                 postsRecyclerAdapter.setLoadingMore(false);
                 postsRecyclerAdapter.setLoadingFailed(true);
-                postsRecyclerAdapter.removeFooterItem();
                 postsRecyclerAdapter.addFooterItem();
             }
         }
@@ -201,7 +197,6 @@ public class PostsFragment extends Fragment {
         } else {
             postsRecyclerAdapter.setLoadingFailed(false);
             postsRecyclerAdapter.setLoadingMore(true);
-            postsRecyclerAdapter.removeFooterItem();
             postsRecyclerAdapter.addFooterItem();
         }
 

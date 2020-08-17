@@ -107,10 +107,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             }
         }
 
-        categoriesRecyclerView.post(() -> {
-            categoriesAdapter.setLoadingInitially(false);
-            categoriesAdapter.setLoadingMore(false);
-        });
+        categoriesAdapter.finishLoading();
     }
 
     private void onErrorResponse() {
@@ -122,7 +119,6 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         } else {
             categoriesAdapter.setLoadingMore(false);
             categoriesAdapter.setLoadingFailed(true);
-            categoriesAdapter.removeFooterItem();
             categoriesAdapter.addFooterItem();
         }
     }
@@ -160,7 +156,6 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
             @Override
             public boolean isLoading() {
-                System.out.println("ahmed isloading " + categoriesAdapter.isLoading());
                 return categoriesAdapter.isLoading() || categoriesAdapter.isLoadingFailedAdded();
             }
 
@@ -197,7 +192,6 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         } else {
             categoriesAdapter.setLoadingFailed(false);
             categoriesAdapter.setLoadingMore(true);
-            categoriesAdapter.removeFooterItem();
             categoriesAdapter.addFooterItem();
         }
         categoryViewModel.getAllCategories(getApplicationContext(), offset);
@@ -207,6 +201,9 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         if (chosenCategories.equals(initallyChosenCategories)) {
             if (getIntent().getBooleanExtra("isFromMainActivity", false))
                 finish();
+            else
+                startActivity(new Intent(this, MainActivity.class));
+            finish();
             return;
         }
 
@@ -221,8 +218,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
             switch (response.getStatus()) {
                 case SUCCESFUL:
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(this, MainActivity.class));
                     finishAffinity();
                     break;
                 case NETWORK_FAILED:
