@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.adapters.CommentsRecyclerAdapter;
 import com.bitnews.bitnews.adapters.PostTagsAdapter;
+import com.bitnews.bitnews.callbacks.PaginationScrollListener;
 import com.bitnews.bitnews.data.models.Comment;
 import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
@@ -83,6 +84,7 @@ public class PostDetailActivity extends AppCompatActivity {
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(commentsRecyclerView,
                 v -> loadComments());
         commentsRecyclerView.setAdapter(commentsRecyclerAdapter);
+        commentsRecyclerView.addOnScrollListener(getOnScrollListener());
 
         commentsErrorLabel = findViewById(R.id.commentsErrorLabel);
 
@@ -198,41 +200,45 @@ public class PostDetailActivity extends AppCompatActivity {
             if (!text.isEmpty())
                 sendComment(text);
 
-            sendCommentButton.setVisibility(View.GONE);
+            sendCommentButton.setVisibility(View.INVISIBLE);
             findViewById(R.id.sendingCommentProgressBar).setVisibility(View.VISIBLE);
         });
     }
 
     private void onSuccseesfulCommentsResponse(List<Comment> comments, int count) {
+        commentsRecyclerAdapter.removeFooterItem();
+
         if (count > 0)
             totalCommentsCount = count;
+        else
+            totalCommentsCount = -1;
 
         if (!comments.isEmpty()) {
             fetchedCommentsCount += comments.size();
             lastCommentTimeStamp = comments.get(comments.size() - 1).getTimestamp();
-            commentsRecyclerAdapter.addAll(comments);
+
+            commentsRecyclerAdapter.addAll(-1, comments);
         } else {
             if (commentsRecyclerAdapter.isEmpty()) {
-                commentsRecyclerAdapter.setLoadingInitially(false);
                 commentsRecyclerView.setVisibility(View.INVISIBLE);
                 commentsErrorLabel.setVisibility(View.VISIBLE);
                 commentsErrorLabel.setText(R.string.no_feed);
-            } else {
-                commentsRecyclerAdapter.setLoadingMore(false);
             }
         }
+
+        commentsRecyclerView.post(() -> {
+            commentsRecyclerAdapter.setLoadingInitially(false);
+            commentsRecyclerAdapter.setLoadingMore(false);
+        });
     }
 
     private void sendComment(String text) {
-        ImageButton sendCommentButton = findViewById(R.id.sendCommentButton);
-        sendCommentButton.setVisibility(View.GONE);
-
         ProgressBar sendingCommentProgressBar = findViewById(R.id.sendingCommentProgressBar);
         sendingCommentProgressBar.setVisibility(View.VISIBLE);
 
         commentsViewModel.sendCommentForPost(getApplicationContext(), postSlug, text)
                 .observe(this, response -> {
-                    sendCommentButton.setVisibility(View.VISIBLE);
+                    findViewById(R.id.sendCommentButton).setVisibility(View.VISIBLE);
                     sendingCommentProgressBar.setVisibility(View.GONE);
 
                     if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
@@ -269,10 +275,32 @@ public class PostDetailActivity extends AppCompatActivity {
             commentsRecyclerAdapter.setLoadingInitially(true);
             commentsRecyclerView.suppressLayout(true);
         } else {
+            commentsRecyclerAdapter.setLoadingFailed(false);
             commentsRecyclerAdapter.setLoadingMore(true);
+            commentsRecyclerAdapter.removeFooterItem();
+            commentsRecyclerAdapter.addFooterItem();
         }
 
         commentsViewModel.getComments(getApplicationContext(), postSlug, lastCommentTimeStamp);
+    }
+
+    private PaginationScrollListener getOnScrollListener() {
+        return new PaginationScrollListener(commentsRecyclerView.getLayoutManager()) {
+            @Override
+            public boolean isLastPage() {
+                return fetchedCommentsCount >= totalCommentsCount && totalCommentsCount != -1;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return commentsRecyclerAdapter.isLoading() || commentsRecyclerAdapter.isLoadingFailedAdded();
+            }
+
+            @Override
+            public void loadMoreItems() {
+                loadComments();
+            }
+        };
     }
 
     private int getBootomSheetMinHeight() {

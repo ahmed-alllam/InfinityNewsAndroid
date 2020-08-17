@@ -21,6 +21,6 @@ public interface CommentDao {
             "WHERE postSlug = :postSlug " +
             "AND datetime(timestamp) < datetime(:lastTimeStamp) " +
             "ORDER BY timestamp DESC " +
-            "LIMIT 15 ")
+            "LIMIT 10 ")
     Single<List<Comment>> getCommentsForPost(String postSlug, String lastTimeStamp);
 }

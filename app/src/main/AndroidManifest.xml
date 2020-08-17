@@ -16,7 +16,9 @@
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustResize"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activities.PostDetailActivity" />
+        <activity
+            android:name=".ui.activities.PostDetailActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activities.SourcesActivity"
             android:label="@string/news_sources"

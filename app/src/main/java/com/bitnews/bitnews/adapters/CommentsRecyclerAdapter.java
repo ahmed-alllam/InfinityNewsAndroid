@@ -16,8 +16,8 @@ import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
 
 public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> {
-    public CommentsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
-        super(recyclerView, retryOnClickListener);
+    public CommentsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener onFooterClickListener) {
+        super(recyclerView, onFooterClickListener);
         itemsPerScreenCount = 5;
     }
 

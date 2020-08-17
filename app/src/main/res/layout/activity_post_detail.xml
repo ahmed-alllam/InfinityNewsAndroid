@@ -262,7 +262,7 @@
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_send"
                 android:tint="@color/colorAccent"
-                android:visibility="gone"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/commentEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/commentEditText"

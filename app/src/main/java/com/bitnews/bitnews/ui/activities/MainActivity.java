@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.changeCategoies:
                 intent = new Intent(this, ChooseCategoriesActivity.class);
+                intent.putExtra("isFromMainActivity", true);
                 break;
             case R.id.editProfile:
                 intent = new Intent(this, EditProfileActivity.class);

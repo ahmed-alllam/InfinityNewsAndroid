@@ -55,11 +55,10 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
 
         postViewHolder.post = post;
 
-        if (post.getImage() != null && !post.getImage().isEmpty())
-            Glide.with(context)
-                    .load(post.getImage())
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(postViewHolder.postImage);
+        Glide.with(context)
+                .load(post.getImage())
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(postViewHolder.postImage);
 
         postViewHolder.postTitle.setText(post.getTitle());
 
@@ -72,7 +71,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
 
         Source postSource = post.getSource();
 
-        if (postSource != null && postSource.getImage() != null && !postSource.getImage().isEmpty()) {
+        if (postSource != null) {
             Glide.with(context)
                     .load(postSource.getImage())
                     .placeholder(R.drawable.ic_launcher_background)

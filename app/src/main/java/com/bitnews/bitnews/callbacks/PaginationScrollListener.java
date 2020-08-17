@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bitnews.bitnews.adapters.PaginationRecyclerAdapter;
+
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
     private RecyclerView.LayoutManager layoutManager;
 
@@ -16,22 +18,25 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        int visibleItemCount = layoutManager.getChildCount();
-        int totalItemCount = layoutManager.getItemCount();
-        int firstVisibleItemPosition = 0;
+        if (dy <= 0)
+            return;
+
+        int lastVisableItemPosition = 0;
+
         if (layoutManager instanceof LinearLayoutManager) {
-            firstVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            lastVisableItemPosition = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
         }
 
         if (layoutManager instanceof GridLayoutManager) {
-            firstVisibleItemPosition = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            lastVisableItemPosition = ((GridLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
         }
 
-        if (!isLastPage() && !isLoading()) {
-            if ((visibleItemCount + firstVisibleItemPosition) >=
-                    totalItemCount && firstVisibleItemPosition >= 0) {
-                loadMoreItems();
-            }
+
+        PaginationRecyclerAdapter<?> recyclerAdapter = (PaginationRecyclerAdapter<?>) recyclerView.getAdapter();
+
+        if (lastVisableItemPosition == recyclerAdapter.listSize() - 1
+                && !isLastPage() && !isLoading()) {
+            loadMoreItems();
         }
     }
 

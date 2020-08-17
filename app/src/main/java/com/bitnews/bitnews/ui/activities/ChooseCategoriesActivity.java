@@ -71,7 +71,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView);
         categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView, this, (v) -> {
             if (!categoriesAdapter.isLoading())
-                loadCategories(false);
+                loadCategories();
         });
         categoriesRecyclerView.setAdapter(categoriesAdapter);
         categoriesRecyclerView.setLayoutManager(getListLayoutManager());
@@ -83,27 +83,34 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
         nextButton = findViewById(R.id.nextButton);
 
-        loadCategories(true);
+        loadCategories();
     }
 
     private void onSuccessfulResponse(List<Category> categories, int count) {
+        categoriesAdapter.removeFooterItem();
+
+        if (count > 0)
+            categoriesCount = count;
+        else
+            categoriesCount = -1;
+
         if (!categories.isEmpty()) {
-            if (count > 0)
-                categoriesCount = count;
-            else
-                categoriesCount = -1;
             offset = categories.get(categories.size() - 1).getSort();
-            categoriesAdapter.addAll(categories);
+
+            categoriesAdapter.addAll(-1, categories);
             onNewCategoriesAdded(categories);
         } else {
             if (categoriesAdapter.isEmpty()) {
                 categoriesRecyclerView.setVisibility(View.INVISIBLE);
                 categoriesErrorLabel.setVisibility(View.VISIBLE);
                 categoriesErrorLabel.setText(R.string.no_feed);
-            } else {
-                categoriesAdapter.setLoadingMore(false);
             }
         }
+
+        categoriesRecyclerView.post(() -> {
+            categoriesAdapter.setLoadingInitially(false);
+            categoriesAdapter.setLoadingMore(false);
+        });
     }
 
     private void onErrorResponse() {
@@ -112,8 +119,12 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
             categoriesRecyclerView.setVisibility(View.INVISIBLE);
             categoriesErrorLabel.setVisibility(View.VISIBLE);
             categoriesErrorLabel.setText(R.string.network_error);
-        } else
+        } else {
+            categoriesAdapter.setLoadingMore(false);
             categoriesAdapter.setLoadingFailed(true);
+            categoriesAdapter.removeFooterItem();
+            categoriesAdapter.addFooterItem();
+        }
     }
 
     private RecyclerView.LayoutManager getListLayoutManager() {
@@ -149,43 +160,53 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
             @Override
             public boolean isLoading() {
+                System.out.println("ahmed isloading " + categoriesAdapter.isLoading());
                 return categoriesAdapter.isLoading() || categoriesAdapter.isLoadingFailedAdded();
             }
 
             @Override
             public void loadMoreItems() {
-                loadCategories(false);
+                loadCategories();
             }
         };
     }
 
     private void onSwipeLayoutListener() {
         if (!categoriesAdapter.isLoading()) {
-            loadCategories(true);
+            refreshCategoires();
         } else
             categoriesSwipeLayout.setRefreshing(false);
     }
 
-    private void loadCategories(boolean isInitialLoad) {
+    private void refreshCategoires() {
+        offset = 0;
+        categoriesCount = 0;
+        chosenCategories.clear();
+        categoriesAdapter.clear();
+        initallyChosenCategories.clear();
+        loadCategories();
+    }
+
+    private void loadCategories() {
         categoriesRecyclerView.setVisibility(View.VISIBLE);
         categoriesErrorLabel.setVisibility(View.INVISIBLE);
 
-        if (isInitialLoad) {
-            offset = 0;
-            categoriesCount = 0;
-            chosenCategories.clear();
-            categoriesAdapter.clear();
+        if (categoriesAdapter.isEmpty()) {
             categoriesAdapter.setLoadingInitially(true);
             categoriesRecyclerView.suppressLayout(true);
         } else {
+            categoriesAdapter.setLoadingFailed(false);
             categoriesAdapter.setLoadingMore(true);
+            categoriesAdapter.removeFooterItem();
+            categoriesAdapter.addFooterItem();
         }
         categoryViewModel.getAllCategories(getApplicationContext(), offset);
     }
 
     public void onNextButtonClicked(View view) {
         if (chosenCategories.equals(initallyChosenCategories)) {
-            finish();
+            if (getIntent().getBooleanExtra("isFromMainActivity", false))
+                finish();
             return;
         }
 

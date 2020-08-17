@@ -27,16 +27,16 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
     private ArrayList<T> itemsList = new ArrayList<>();
     Context context;
     private RecyclerView recyclerView;
-    private View.OnClickListener retryOnClickListener;
+    private View.OnClickListener onFooterClickListener;
     private boolean isLoadingMore;
     private boolean isLoadingFailed;
     private boolean isLoadingInitially;
     int itemsPerScreenCount;
 
-    PaginationRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener retryOnClickListener) {
+    PaginationRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener onFooterClickListener) {
         this.recyclerView = recyclerView;
         context = recyclerView.getContext();
-        this.retryOnClickListener = retryOnClickListener;
+        this.onFooterClickListener = onFooterClickListener;
     }
 
     @NonNull
@@ -46,7 +46,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
             return createItemViewHolder(parent);
         if (viewType == VIEW_TYPE_FOOTER) {
             return new FooterItemViewHolder(LayoutInflater.from(context)
-                    .inflate(R.layout.loading_footer, parent, false), retryOnClickListener);
+                    .inflate(R.layout.loading_footer, parent, false), onFooterClickListener);
         }
 
         return createEmptyItemViewHolder(parent);
@@ -94,44 +94,39 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
         return itemsPerScreenCount;
     }
 
-    public void addAll(List<T> objects) {
-        addAll(itemsList.size() - 1, objects);
-    }
-
     public void addAll(int index, List<T> objects) {
         recyclerView.post(() -> {
-            if (isLoadingMore || isLoadingFailed)
-                removeFooterItem();
+            int startIndex = index;
+            if (index == -1)
+                startIndex = itemsList.size();
 
             if (itemsList.size() != 0) {
-                itemsList.addAll(index, objects);
-                notifyItemRangeInserted(index, objects.size());
+                itemsList.addAll(startIndex, objects);
+                notifyItemRangeInserted(startIndex, objects.size());
             } else {
                 itemsList.addAll(objects);
                 notifyDataSetChanged();
             }
-
-            recyclerView.post(() -> {
-                isLoadingFailed = false;
-                isLoadingInitially = false;
-                isLoadingMore = false;
-            });
         });
     }
 
     public void clear() {
         itemsList.clear();
-        notifyDataSetChanged();
+        recyclerView.post(this::notifyDataSetChanged);
     }
 
-    private void addFooterItem() {
-        itemsList.add(null);
-        notifyItemInserted(itemsList.size() - 1);
+    public void addFooterItem() {
+        recyclerView.post(() -> {
+            itemsList.add(null);
+            notifyItemInserted(itemsList.size() - 1);
+        });
     }
 
-    private void removeFooterItem() {
-        itemsList.remove(null);
-        notifyItemRemoved(itemsList.size());
+    public void removeFooterItem() {
+        recyclerView.post(() -> {
+            if (itemsList.remove(null))
+                notifyItemRemoved(itemsList.size());
+        });
     }
 
     public boolean isLoading() {
@@ -148,33 +143,18 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
 
     public void setLoadingMore(boolean loadingMore) {
         isLoadingMore = loadingMore;
-
-        if (loadingMore) {
-            if (!isLoadingFailed) {
-                recyclerView.post(this::addFooterItem);
-            }
-            else {
-                isLoadingFailed = false;
-                notifyItemChanged(itemsList.size() - 1);
-            }
-        } else {
-            recyclerView.post(this::removeFooterItem);
-        }
     }
 
     public void setLoadingFailed(boolean loadingFailed) {
         isLoadingFailed = loadingFailed;
-
-        if (isLoadingFailed) {
-            if (isLoadingMore) {
-                isLoadingMore = false;
-                notifyItemChanged(itemsList.size() - 1);
-            }
-        }
     }
 
     public boolean isEmpty() {
         return itemsList.isEmpty();
+    }
+
+    public int listSize() {
+        return itemsList.size();
     }
 
     protected abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent);
@@ -182,24 +162,24 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
     protected abstract RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent);
 
     public static class FooterItemViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar progressBar;
-        private Button retryButton;
+        protected ProgressBar progressBar;
+        protected Button retryButton;
 
-        FooterItemViewHolder(@NonNull View itemView, View.OnClickListener retryOnClickListener) {
+        FooterItemViewHolder(@NonNull View itemView, View.OnClickListener onFooterClickListener) {
             super(itemView);
 
             progressBar = itemView.findViewById(R.id.progressBar2);
             retryButton = itemView.findViewById(R.id.retryButton);
 
-            retryButton.setOnClickListener(retryOnClickListener);
+            retryButton.setOnClickListener(onFooterClickListener);
         }
 
-        private void showProgressBar() {
+        protected void showProgressBar() {
             progressBar.setVisibility(View.VISIBLE);
             retryButton.setVisibility(View.GONE);
         }
 
-        private void showRetryButton() {
+        protected void showRetryButton() {
             retryButton.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }

@@ -95,10 +95,13 @@ public class PostsFragment extends Fragment {
     }
 
     private void onSuccessfulResponse(List<Post> posts, int count) {
-        if (count > 0)
+        postsRecyclerAdapter.removeFooterItem();
+
+        if (count > 0) {
             totalPostsCount = count;
-        else
+        } else {
             totalPostsCount = -1;
+        }
 
         if (!posts.isEmpty()) {
             fetchedPostsCount += posts.size();
@@ -113,18 +116,19 @@ public class PostsFragment extends Fragment {
                 postsRecyclerAdapter.addAll(0, posts);
                 scrollToTop();
             } else
-                postsRecyclerAdapter.addAll(posts);
+                postsRecyclerAdapter.addAll(-1, posts);
         } else {
             if (postsRecyclerAdapter.isEmpty()) {
-                postsRecyclerAdapter.setLoadingInitially(false);
                 postsRecyclerView.setVisibility(View.INVISIBLE);
                 postsErrorLabel.setVisibility(View.VISIBLE);
                 postsErrorLabel.setText(R.string.no_feed);
-            } else {
-                if (!isRefreshing)
-                    postsRecyclerAdapter.setLoadingMore(false);
             }
         }
+
+        postsRecyclerView.post(() -> {
+            postsRecyclerAdapter.setLoadingInitially(false);
+            postsRecyclerAdapter.setLoadingMore(false);
+        });
     }
 
     private void onErrorResponse() {
@@ -134,8 +138,12 @@ public class PostsFragment extends Fragment {
             postsErrorLabel.setVisibility(View.VISIBLE);
             postsErrorLabel.setText(R.string.network_error);
         } else {
-            if (!isRefreshing)
+            if (!isRefreshing) {
+                postsRecyclerAdapter.setLoadingMore(false);
                 postsRecyclerAdapter.setLoadingFailed(true);
+                postsRecyclerAdapter.removeFooterItem();
+                postsRecyclerAdapter.addFooterItem();
+            }
         }
     }
 
@@ -191,7 +199,10 @@ public class PostsFragment extends Fragment {
             } else
                 timestamp = firstPostTimestamp;
         } else {
+            postsRecyclerAdapter.setLoadingFailed(false);
             postsRecyclerAdapter.setLoadingMore(true);
+            postsRecyclerAdapter.removeFooterItem();
+            postsRecyclerAdapter.addFooterItem();
         }
 
         postViewModel.getPosts(getActivity().getApplicationContext(), categorySlug, timestamp, before);
