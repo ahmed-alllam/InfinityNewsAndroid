@@ -19,6 +19,7 @@ import com.bitnews.bitnews.data.models.Post;
 import com.bitnews.bitnews.data.models.Source;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
     private int lastAnimatedItemPosition = -1;
@@ -56,8 +57,9 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         postViewHolder.post = post;
 
         Glide.with(context)
-                .load(post.getImage())
+                .load(post.getThumbnail())
                 .placeholder(R.drawable.ic_launcher_background)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(postViewHolder.postImage);
 
         postViewHolder.postTitle.setText(post.getTitle());
@@ -74,8 +76,8 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         if (postSource != null) {
             Glide.with(context)
                     .load(postSource.getImage())
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .dontAnimate()
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(postViewHolder.sourceImage);
             postViewHolder.sourceImage.setVisibility(View.VISIBLE);
         } else {

@@ -26,6 +26,7 @@ import com.bitnews.bitnews.ui.fragments.PostsFragment;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
 import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Glide.with(this)
                     .load(user.getProfilePhoto())
                     .placeholder(R.drawable.ic_launcher_background)
-                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(userImage);
         }
 

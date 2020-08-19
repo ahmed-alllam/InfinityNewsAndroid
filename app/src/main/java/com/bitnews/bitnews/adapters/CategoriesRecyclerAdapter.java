@@ -15,6 +15,7 @@ import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.callbacks.CategoryItemChooseListener;
 import com.bitnews.bitnews.data.models.Category;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Category> {
     private static final int ITEMS_PER_ROW = 3;
@@ -57,6 +58,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
         Glide.with(context)
                 .load(category.getImage())
                 .placeholder(R.drawable.ic_launcher_background)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(categoryViewHolder.image);
 
         categoryViewHolder.title.setText(category.getTitle());

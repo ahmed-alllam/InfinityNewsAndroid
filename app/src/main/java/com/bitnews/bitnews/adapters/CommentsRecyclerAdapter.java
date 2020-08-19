@@ -14,6 +14,7 @@ import com.bitnews.bitnews.data.models.Comment;
 import com.bitnews.bitnews.data.models.User;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> {
     public CommentsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener onFooterClickListener) {
@@ -32,7 +33,7 @@ public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> 
         Glide.with(context)
                 .load(commentsUser.getProfilePhoto())
                 .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(commentViewHolder.commentUserImage);
 
         commentViewHolder.commentUsername.setText(usersName);

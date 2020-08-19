@@ -124,7 +124,7 @@ public class SignupFragment extends Fragment implements UserAuthFragmentListener
     }
 
     private boolean isUsernameValid(String username) {
-        String regexPattern = "^(?=.{8,36}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
+        String regexPattern = "^(?=[a-zA-Z0-9._]{8,36}$)(?!.*[_.]{2})[^_.].*[^_.]$";
         return username.matches(regexPattern);
     }
 

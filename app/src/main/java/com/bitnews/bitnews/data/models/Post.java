@@ -18,7 +18,9 @@ public class Post {
     @PrimaryKey
     @NonNull
     private String slug = "";
-    private String image;
+    private String thumbnail;
+    @SerializedName("full_image")
+    private String fullImage;
     private String title;
     private String description;
     private String timestamp;
@@ -42,9 +44,9 @@ public class Post {
     }
 
     @Ignore
-    public Post(String image, String title,
+    public Post(String thumbnail, String title,
                 String description, String timestamp) {
-        this.image = image;
+        this.thumbnail = thumbnail;
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;
@@ -57,7 +59,7 @@ public class Post {
         Post post = (Post) o;
         return commentsCount == post.commentsCount &&
                 slug.equals(post.slug) &&
-                Objects.equals(image, post.image) &&
+                Objects.equals(thumbnail, post.thumbnail) &&
                 Objects.equals(title, post.title) &&
                 Objects.equals(description, post.description) &&
                 Objects.equals(timestamp, post.timestamp) &&
@@ -72,7 +74,7 @@ public class Post {
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, image, title, description, timestamp, sourceSlug, categorySlug, detailedUrl, body, source, category, tags, commentsCount);
+        return Objects.hash(slug, thumbnail, title, description, timestamp, sourceSlug, categorySlug, detailedUrl, body, source, category, tags, commentsCount);
     }
 
     public void setTitle(String title) {
@@ -132,12 +134,20 @@ public class Post {
         this.category = category;
     }
 
-    public String getImage() {
-        return image;
+    public String getThumbnail() {
+        return thumbnail;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getFullImage() {
+        return fullImage;
+    }
+
+    public void setFullImage(String fullImage) {
+        this.fullImage = fullImage;
     }
 
     public String getSourceSlug() {

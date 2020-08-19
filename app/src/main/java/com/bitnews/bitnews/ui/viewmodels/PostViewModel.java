@@ -2,7 +2,6 @@ package com.bitnews.bitnews.ui.viewmodels;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -15,6 +14,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class PostViewModel extends ViewModel {
     private MutableLiveData<APIResponse<ResponseList<Post>>> postsLiveData = new MutableLiveData<>();
+    private MutableLiveData<APIResponse<Post>> detailedPostLiveData = new MutableLiveData<>();
     private PostRepository postRepository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -30,15 +30,17 @@ public class PostViewModel extends ViewModel {
                 .subscribe(postsLiveData::setValue));
     }
 
-    public LiveData<APIResponse<Post>> getPost(Context context, String postSlug) {
-        MutableLiveData<APIResponse<Post>> postLiveData = new MutableLiveData<>();
+    public void getDetailedPost(Context context, String postSlug) {
         compositeDisposable.add(getPostRepository(context)
-                .getPost(postSlug).subscribe(postLiveData::setValue));
-        return postLiveData;
+                .getPost(postSlug).subscribe(detailedPostLiveData::setValue));
     }
 
     public MutableLiveData<APIResponse<ResponseList<Post>>> getPostsLiveData() {
         return postsLiveData;
+    }
+
+    public MutableLiveData<APIResponse<Post>> getDetailedPostLiveData() {
+        return detailedPostLiveData;
     }
 
     @Override

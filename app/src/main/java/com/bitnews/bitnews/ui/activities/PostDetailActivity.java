@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ import com.bitnews.bitnews.ui.viewmodels.PostViewModel;
 import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 import com.bitnews.bitnews.utils.TimeStampParser;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -40,13 +42,12 @@ import java.util.List;
 
 
 public class PostDetailActivity extends AppCompatActivity {
-    private static final int BOTTOM_SHEET_EXPANDED_OFFSET = 150;
-    private static final int BOTTOM_SHEET_COLLAPSED_OFFSET = 300;
+    private static final int BOTTOM_SHEET_EXPANDED_OFFSET = 100;
+    private static final int BOTTOM_SHEET_COLLAPSED_OFFSET = 250;
     private String postSlug;
     private CommentsViewModel commentsViewModel;
     private RecyclerView commentsRecyclerView;
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
-    private TextView commentsErrorLabel;
     private int totalCommentsCount;
     private int fetchedCommentsCount;
     private String lastCommentTimeStamp;
@@ -60,21 +61,38 @@ public class PostDetailActivity extends AppCompatActivity {
 
         bindPostFromBundle(getIntent().getExtras());
 
+        Button retryButton = findViewById(R.id.retryButton);
+
         PostViewModel postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        postViewModel.getPost(getApplicationContext(), postSlug).observe(this, response -> {
-            if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
-                Post post = response.getitem();
-                bindPostFromResponse(post);
+        postViewModel.getDetailedPostLiveData().observe(this, response -> {
+            switch (response.getStatus()) {
+                case SUCCESFUL:
+                    Post post = response.getitem();
+                    bindPostFromResponse(post);
+                    break;
+                case NETWORK_FAILED:
+                    retryButton.setVisibility(View.VISIBLE);
             }
 
             findViewById(R.id.progressBar4).setVisibility(View.GONE);
         });
 
+        retryButton.setOnClickListener(v -> {
+            retryButton.setVisibility(View.GONE);
+            findViewById(R.id.progressBar4).setVisibility(View.VISIBLE);
+            postViewModel.getDetailedPost(getApplicationContext(), postSlug);
+        });
+
         commentsViewModel = new ViewModelProvider(this).get(CommentsViewModel.class);
         commentsViewModel.getCommentsLiveData().observe(this, response -> {
-            if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
-                commentsRecyclerView.suppressLayout(false);
-                onSuccseesfulCommentsResponse(response.getitem().getItems(), response.getitem().getCount());
+            commentsRecyclerView.suppressLayout(false);
+
+            switch (response.getStatus()) {
+                case SUCCESFUL:
+                    onSuccseesfulCommentsResponse(response.getitem().getItems(), response.getitem().getCount());
+                    break;
+                case NETWORK_FAILED:
+                    onErrorCommentsResponse();
             }
         });
 
@@ -82,8 +100,6 @@ public class PostDetailActivity extends AppCompatActivity {
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(commentsRecyclerView,
                 v -> loadComments());
         commentsRecyclerView.setAdapter(commentsRecyclerAdapter);
-
-        commentsErrorLabel = findViewById(R.id.commentsErrorLabel);
 
         NestedScrollView bottomSheet = findViewById(R.id.postBottomSheet);
         BottomSheetBehavior.from(bottomSheet).setPeekHeight(getBootomSheetMinHeight());
@@ -101,6 +117,8 @@ public class PostDetailActivity extends AppCompatActivity {
         layoutParams.height = getBootomSheetMaxHeight();
         bottomSheet.setLayoutParams(layoutParams);
         bottomSheet.setMinimumHeight(getBootomSheetMinHeight());
+
+        postViewModel.getDetailedPost(getApplicationContext(), postSlug);
     }
 
     private void bindPostFromBundle(Bundle postBundle) {
@@ -110,13 +128,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 postBundle.getString("postTimestamp"));
 
         postSlug = postBundle.getString("postSlug");
-
-        if (post.getImage() != null && !post.getImage().isEmpty()) {
-            ImageView postImage = findViewById(R.id.postImage);
-            Glide.with(this)
-                    .load(post.getImage())
-                    .into(postImage);
-        }
 
         TextView postTitle = findViewById(R.id.postTitle);
         postTitle.setText(post.getTitle());
@@ -128,6 +139,8 @@ public class PostDetailActivity extends AppCompatActivity {
             ImageView sourceImage = findViewById(R.id.sourceImage);
             Glide.with(this)
                     .load(postSource.getImage())
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(sourceImage);
         }
 
@@ -147,7 +160,13 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void bindPostFromResponse(Post post) {
-        //todo check if blocks
+        ImageView postImage = findViewById(R.id.postImage);
+        Glide.with(this)
+                .load(post.getFullImage())
+                .placeholder(R.drawable.ic_launcher_background)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(postImage);
+
         if (post.getBody() != null && !post.getBody().isEmpty()) {
             HtmlTextView postBody = findViewById(R.id.postBody);
             HtmlHttpImageGetter imageGetter = new HtmlHttpImageGetter(postBody);
@@ -160,7 +179,6 @@ public class PostDetailActivity extends AppCompatActivity {
             findViewById(R.id.tagsLabel).setVisibility(View.VISIBLE);
             RecyclerView tagsRecyclerView = findViewById(R.id.tagsRecyclerView);
             tagsRecyclerView.setLayoutManager(new FlexboxLayoutManager(this));
-            tagsRecyclerView.setHasFixedSize(true);
             tagsRecyclerView.setVisibility(View.VISIBLE);
             tagsRecyclerView.setAdapter(new PostTagsAdapter(post.getTags()));
         }
@@ -184,7 +202,7 @@ public class PostDetailActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(user.getProfilePhoto())
                 .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(userImage);
 
         EditText commentEditText = findViewById(R.id.commentEditText);
@@ -215,15 +233,21 @@ public class PostDetailActivity extends AppCompatActivity {
             lastCommentTimeStamp = comments.get(comments.size() - 1).getTimestamp();
 
             commentsRecyclerAdapter.addAll(-1, comments);
-        } else {
-            if (commentsRecyclerAdapter.isEmpty()) {
-                commentsRecyclerView.setVisibility(View.INVISIBLE);
-                commentsErrorLabel.setVisibility(View.VISIBLE);
-                commentsErrorLabel.setText(R.string.no_feed);
-            }
-        }
+        } else if (commentsRecyclerAdapter.isEmpty())
+            commentsRecyclerView.setVisibility(View.GONE);
 
         commentsRecyclerAdapter.finishLoading();
+    }
+
+    private void onErrorCommentsResponse() {
+        if (commentsRecyclerAdapter.isEmpty()) {
+            commentsRecyclerAdapter.setLoadingInitially(false);
+            commentsRecyclerAdapter.notifyDataSetChanged();
+        } else
+            commentsRecyclerAdapter.setLoadingMore(false);
+
+        commentsRecyclerAdapter.setLoadingFailed(true);
+        commentsRecyclerAdapter.addFooterItem();
     }
 
     private void sendComment(String text) {
@@ -263,7 +287,6 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void loadComments() {
         commentsRecyclerView.setVisibility(View.VISIBLE);
-        commentsErrorLabel.setVisibility(View.GONE);
 
         if (commentsRecyclerAdapter.isEmpty()) {
             commentsRecyclerAdapter.setLoadingInitially(true);

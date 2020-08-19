@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,7 +34,8 @@ public class PostsFragment extends Fragment {
     private RecyclerView postsRecyclerView;
     private PostsRecyclerAdapter postsRecyclerAdapter;
     private SwipeRefreshLayout postsSwipeLayout;
-    private TextView postsErrorLabel;
+    private TextView feedEmptyLabel;
+    private Button retryButton;
     private int totalPostsCount;
     private int fetchedPostsCount;
     private boolean isRefreshing;
@@ -89,7 +91,12 @@ public class PostsFragment extends Fragment {
         postsSwipeLayout.setColorSchemeColors(Color.YELLOW, Color.RED, Color.GREEN, Color.BLUE);
         postsSwipeLayout.setOnRefreshListener(this::onSwipeLayoutListener);
 
-        postsErrorLabel = view.findViewById(R.id.postsErrorLabel);
+        feedEmptyLabel = view.findViewById(R.id.feedEmptyLabel);
+        retryButton = view.findViewById(R.id.retryButton);
+        retryButton.setOnClickListener(v -> {
+            if (!postsRecyclerAdapter.isLoading())
+                loadPosts(true, false);
+        });
 
         loadPosts(true, false);
     }
@@ -120,8 +127,8 @@ public class PostsFragment extends Fragment {
         } else {
             if (postsRecyclerAdapter.isEmpty()) {
                 postsRecyclerView.setVisibility(View.INVISIBLE);
-                postsErrorLabel.setVisibility(View.VISIBLE);
-                postsErrorLabel.setText(R.string.no_feed);
+                feedEmptyLabel.setVisibility(View.VISIBLE);
+                feedEmptyLabel.setText(R.string.no_feed);
             }
         }
 
@@ -132,8 +139,7 @@ public class PostsFragment extends Fragment {
         if (postsRecyclerAdapter.isEmpty()) {
             postsRecyclerAdapter.setLoadingInitially(false);
             postsRecyclerView.setVisibility(View.INVISIBLE);
-            postsErrorLabel.setVisibility(View.VISIBLE);
-            postsErrorLabel.setText(R.string.network_error);
+            retryButton.setVisibility(View.VISIBLE);
         } else {
             if (!isRefreshing) {
                 postsRecyclerAdapter.setLoadingMore(false);
@@ -185,7 +191,8 @@ public class PostsFragment extends Fragment {
 
     private void loadPosts(boolean isLoadingInitally, boolean before) {
         postsRecyclerView.setVisibility(View.VISIBLE);
-        postsErrorLabel.setVisibility(View.INVISIBLE);
+        feedEmptyLabel.setVisibility(View.INVISIBLE);
+        retryButton.setVisibility(View.INVISIBLE);
 
         String timestamp = lastPostTimestamp;
         if (isLoadingInitally) {
@@ -205,7 +212,7 @@ public class PostsFragment extends Fragment {
 
     private void savePostInIntent(Intent intent, Post post) {
         intent.putExtra("postSlug", post.getSlug());
-        intent.putExtra("postImage", post.getImage());
+        intent.putExtra("postImage", post.getThumbnail());
         intent.putExtra("postTitle", post.getTitle());
         intent.putExtra("postDescription", post.getDescription());
         intent.putExtra("postTimestamp", post.getTimestamp());

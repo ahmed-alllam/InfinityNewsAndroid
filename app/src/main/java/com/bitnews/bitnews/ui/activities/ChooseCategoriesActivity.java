@@ -39,7 +39,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
     private CategoryViewModel categoryViewModel;
     private CategoriesRecyclerAdapter categoriesAdapter;
     private ProgressBar progressBar;
-    private TextView categoriesErrorLabel;
+    private TextView retryButton;
     private Button nextButton;
     private TextView nextErrorLabel;
     private int categoriesCount;
@@ -51,7 +51,6 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         setContentView(R.layout.activity_choose_categories);
 
         progressBar = findViewById(R.id.nextProgressBar);
-        categoriesErrorLabel = findViewById(R.id.categoriesErrorLabel);
         nextErrorLabel = findViewById(R.id.nextErrorLabel);
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
@@ -82,6 +81,11 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         categoriesSwipeLayout.setOnRefreshListener(this::onSwipeLayoutListener);
 
         nextButton = findViewById(R.id.nextButton);
+        retryButton = findViewById(R.id.retryButton);
+        retryButton.setOnClickListener(v -> {
+            if (!categoriesAdapter.isLoading())
+                loadCategories();
+        });
 
         loadCategories();
     }
@@ -99,12 +103,6 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
             categoriesAdapter.addAll(-1, categories);
             onNewCategoriesAdded(categories);
-        } else {
-            if (categoriesAdapter.isEmpty()) {
-                categoriesRecyclerView.setVisibility(View.INVISIBLE);
-                categoriesErrorLabel.setVisibility(View.VISIBLE);
-                categoriesErrorLabel.setText(R.string.no_feed);
-            }
         }
 
         categoriesAdapter.finishLoading();
@@ -114,8 +112,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         if (categoriesAdapter.isEmpty()) {
             categoriesAdapter.setLoadingInitially(false);
             categoriesRecyclerView.setVisibility(View.INVISIBLE);
-            categoriesErrorLabel.setVisibility(View.VISIBLE);
-            categoriesErrorLabel.setText(R.string.network_error);
+            retryButton.setVisibility(View.VISIBLE);
         } else {
             categoriesAdapter.setLoadingMore(false);
             categoriesAdapter.setLoadingFailed(true);
@@ -142,9 +139,9 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
         float displayWidth = displayMetrics.widthPixels / displayMetrics.density;
-        float recyclerViewWidth = displayWidth - (displayWidth / 5);
+        float recyclerViewWidth = displayWidth - (displayWidth / 5); // - 20%
 
-        return (int) (recyclerViewWidth / CATEGORY_ITEM_WIDTH);
+        return Math.max((int) (recyclerViewWidth / CATEGORY_ITEM_WIDTH), 3);
     }
 
     private PaginationScrollListener getOnScrollListener() {
@@ -184,7 +181,7 @@ public class ChooseCategoriesActivity extends AppCompatActivity implements Categ
 
     private void loadCategories() {
         categoriesRecyclerView.setVisibility(View.VISIBLE);
-        categoriesErrorLabel.setVisibility(View.INVISIBLE);
+        retryButton.setVisibility(View.INVISIBLE);
 
         if (categoriesAdapter.isEmpty()) {
             categoriesAdapter.setLoadingInitially(true);

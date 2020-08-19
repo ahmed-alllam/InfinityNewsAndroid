@@ -60,24 +60,23 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.43" />
 
-    <TextView
-        android:id="@+id/categoriesErrorLabel"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fontFamily="@font/roboto_medium"
-        android:textAlignment="center"
-        android:textColor="@android:color/holo_red_light"
+    <Button
+        android:id="@+id/retryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:text="@string/retry"
+        android:textColor="@android:color/white"
         android:visibility="invisible"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/guideline54"
         app:layout_constraintEnd_toStartOf="@+id/guideline44"
         app:layout_constraintStart_toStartOf="@+id/guideline43"
-        app:layout_constraintTop_toTopOf="@+id/guideline53" />
+        app:layout_constraintTop_toTopOf="@+id/guideline53"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/nextButton"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:alpha="0.5"
         android:background="@drawable/get_started_button_shape"
         android:backgroundTint="@color/colorPrimary"
@@ -90,17 +89,9 @@
         android:textColor="@android:color/white"
         app:autoSizeMaxTextSize="19sp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/guideline48"
         app:layout_constraintEnd_toStartOf="@+id/guideline44"
         app:layout_constraintStart_toStartOf="@+id/guideline43"
         app:layout_constraintTop_toTopOf="@+id/guideline47" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline54"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.47" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline47"
@@ -124,13 +115,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline48"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.94" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline50"
