@@ -21,7 +21,7 @@ import com.bitnews.bitnews.data.models.User;
 
 @Database(entities = {User.class, AuthToken.class, Category.class,
         Post.class, Source.class, Comment.class},
-        version = 2, exportSchema = false)
+        version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "bitnews-db";
@@ -32,7 +32,6 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (instance == null)
                     instance = Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
-                            .fallbackToDestructiveMigration()
                             .build();
             }
         }

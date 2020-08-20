@@ -53,13 +53,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.75" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline53"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.43" />
-
     <Button
         android:id="@+id/retryButton"
         android:layout_width="wrap_content"
@@ -68,9 +61,10 @@
         android:text="@string/retry"
         android:textColor="@android:color/white"
         android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline45"
         app:layout_constraintEnd_toStartOf="@+id/guideline44"
         app:layout_constraintStart_toStartOf="@+id/guideline43"
-        app:layout_constraintTop_toTopOf="@+id/guideline53"
+        app:layout_constraintTop_toTopOf="@+id/guideline37"
         tools:visibility="visible" />
 
     <Button

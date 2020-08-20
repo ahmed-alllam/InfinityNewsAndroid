@@ -44,9 +44,9 @@ public class Post {
     }
 
     @Ignore
-    public Post(String thumbnail, String title,
+    public Post(String fullImage, String title,
                 String description, String timestamp) {
-        this.thumbnail = thumbnail;
+        this.fullImage = fullImage;
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;

@@ -93,11 +93,6 @@ public class PostRepository {
 
                 sourceDao.addSources(sources);
             }
-
-            @Override
-            protected boolean shouldReturnDbResponseOnError(ResponseList<Post> dbResponse) {
-                return !dbResponse.getItems().isEmpty();
-            }
         }.asSingle();
     }
 

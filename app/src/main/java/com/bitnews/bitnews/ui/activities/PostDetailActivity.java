@@ -122,12 +122,19 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void bindPostFromBundle(Bundle postBundle) {
-        Post post = new Post(postBundle.getString("postImage"),
+        Post post = new Post(postBundle.getString("postFullImage"),
                 postBundle.getString("postTitle"),
                 postBundle.getString("postDescription"),
                 postBundle.getString("postTimestamp"));
 
         postSlug = postBundle.getString("postSlug");
+
+        ImageView postImage = findViewById(R.id.postImage);
+        Glide.with(this)
+                .load(post.getFullImage())
+                .placeholder(R.drawable.ic_launcher_background)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(postImage);
 
         TextView postTitle = findViewById(R.id.postTitle);
         postTitle.setText(post.getTitle());
@@ -160,13 +167,6 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void bindPostFromResponse(Post post) {
-        ImageView postImage = findViewById(R.id.postImage);
-        Glide.with(this)
-                .load(post.getFullImage())
-                .placeholder(R.drawable.ic_launcher_background)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(postImage);
-
         if (post.getBody() != null && !post.getBody().isEmpty()) {
             HtmlTextView postBody = findViewById(R.id.postBody);
             HtmlHttpImageGetter imageGetter = new HtmlHttpImageGetter(postBody);
@@ -192,6 +192,8 @@ public class PostDetailActivity extends AppCompatActivity {
         loadCurrentUser();
 
         if (post.getCommentsCount() > 0) {
+            commentsRecyclerAdapter.setItemsPerScreenCount(Math.min(post.getCommentsCount(), 5));
+            totalCommentsCount = post.getCommentsCount();
             loadComments();
         }
     }
@@ -212,21 +214,16 @@ public class PostDetailActivity extends AppCompatActivity {
         sendCommentButton.setVisibility(View.VISIBLE);
         sendCommentButton.setOnClickListener(v -> {
             String text = commentEditText.getText().toString();
-            if (!text.isEmpty())
+            if (!text.isEmpty() && !commentsRecyclerAdapter.isLoading()) {
                 sendComment(text);
-
-            sendCommentButton.setVisibility(View.INVISIBLE);
-            findViewById(R.id.sendingCommentProgressBar).setVisibility(View.VISIBLE);
+                sendCommentButton.setVisibility(View.INVISIBLE);
+                findViewById(R.id.sendingCommentProgressBar).setVisibility(View.VISIBLE);
+            }
         });
     }
 
     private void onSuccseesfulCommentsResponse(List<Comment> comments, int count) {
         commentsRecyclerAdapter.removeFooterItem();
-
-        if (count > 0)
-            totalCommentsCount = count;
-        else
-            totalCommentsCount = -1;
 
         if (!comments.isEmpty()) {
             fetchedCommentsCount += comments.size();

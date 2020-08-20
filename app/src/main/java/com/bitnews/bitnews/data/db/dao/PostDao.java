@@ -23,7 +23,7 @@ public interface PostDao {
             " WHERE ((datetime(timestamp) < datetime(:lastTimeStamp) and :before = 0)" +
             " or (datetime(timestamp) > datetime(:lastTimeStamp) and :before = 1))" +
             " AND categorySlug = :categorySlug" +
-            " ORDER BY timestamp DESC" +
+            " ORDER BY datetime(timestamp) DESC" +
             " LIMIT 40")
     Single<List<Post>> getAllPostsByCategory(String categorySlug, String lastTimeStamp, boolean before);
 

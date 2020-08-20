@@ -212,7 +212,7 @@ public class PostsFragment extends Fragment {
 
     private void savePostInIntent(Intent intent, Post post) {
         intent.putExtra("postSlug", post.getSlug());
-        intent.putExtra("postImage", post.getThumbnail());
+        intent.putExtra("postFullImage", post.getFullImage());
         intent.putExtra("postTitle", post.getTitle());
         intent.putExtra("postDescription", post.getDescription());
         intent.putExtra("postTimestamp", post.getTimestamp());

@@ -19,7 +19,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> {
     public CommentsRecyclerAdapter(RecyclerView recyclerView, View.OnClickListener onFooterClickListener) {
         super(recyclerView, onFooterClickListener);
-        itemsPerScreenCount = 5;
     }
 
     @Override
@@ -71,5 +70,9 @@ public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> 
         public EmptyCommentViewHolder(@NonNull View itemView) {
             super(itemView);
         }
+    }
+
+    public void setItemsPerScreenCount(int count) {
+        itemsPerScreenCount = count;
     }
 }

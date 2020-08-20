@@ -75,11 +75,6 @@ public class CategoryRepository {
 
                 categoryDao.addCategories(list.getItems());
             }
-
-            @Override
-            protected boolean shouldReturnDbResponseOnError(ResponseList<Category> dbResponse) {
-                return !dbResponse.getItems().isEmpty();
-            }
         }.asSingle();
     }
 

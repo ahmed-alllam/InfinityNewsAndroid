@@ -1,5 +1,7 @@
 package com.bitnews.bitnews.data.network;
 
+import com.bitnews.bitnews.data.models.ResponseList;
+
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -67,6 +69,10 @@ public abstract class NetworkBoundResource<T> {
     }
 
     protected boolean shouldReturnDbResponseOnError(T dbResponse) {
+        if (dbResponse instanceof ResponseList) {
+            ResponseList<?> dbResponseList = (ResponseList<?>) dbResponse;
+            return dbResponseList.getItems() != null && !dbResponseList.getItems().isEmpty();
+        }
         return dbResponse != null;
     }
 

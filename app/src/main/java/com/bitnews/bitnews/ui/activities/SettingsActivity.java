@@ -65,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
                         currentLanguage = languagesList[which];
                         PreferencesManager.setLanguage(this, currentLanguage);
                         languageTextView.setText(currentLanguage);
-                        changeConfigurations(true, false);
+                        changeLocale();
                         startActivity(new Intent(this, MainActivity.class));
                         finishAffinity();
                         dialog.dismiss();
@@ -83,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
                         currentTextSize = textSizesValuesList[which];
                         PreferencesManager.setTextSizeScale(this, currentTextSize);
                         textSizeTextView.setText(textSizesNamesList[which]);
-                        changeConfigurations(false, true);
+                        changeFontScale();
                         startActivity(new Intent(this, MainActivity.class));
                         finishAffinity();
                         dialog.dismiss();
@@ -91,14 +91,19 @@ public class SettingsActivity extends AppCompatActivity {
                 });
     }
 
-    private void changeConfigurations(boolean isLangaugeChanged, boolean isTextSizeChanged) {
+    private void changeLocale() {
         Configuration configuration = new Configuration();
-        if (isLangaugeChanged)
-            configuration.setLocale(new Locale(PreferencesManager.convertLanguageNameToCode(currentLanguage)));
+        configuration.setLocale(new Locale(PreferencesManager.convertLanguageNameToCode(currentLanguage)));
+        changeConfigurations(configuration);
+    }
 
-        if (isTextSizeChanged)
-            configuration.fontScale = currentTextSize;
+    private void changeFontScale() {
+        Configuration configuration = new Configuration();
+        configuration.fontScale = currentTextSize;
+        changeConfigurations(configuration);
+    }
 
+    private void changeConfigurations(Configuration configuration) {
         getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
         getApplicationContext().getResources().updateConfiguration(configuration,
                 getApplicationContext().getResources().getDisplayMetrics());

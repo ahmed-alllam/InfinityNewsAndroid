@@ -50,8 +50,8 @@ public class CommentRepository {
 
             @Override
             protected Single<ResponseList<Comment>> fetchFromDB() {
-                return commentDao.getCommentsForPost(postSlug, timestamp).map(comments -> {
-                    addUsersToComments(comments);
+                return commentDao.getCommentsForPost(postSlug, lastTimestamp).map(comments -> {
+                    addNestedFieldsToComments(comments);
 
                     ResponseList<Comment> responseList = new ResponseList<>();
                     responseList.setItems(comments);
@@ -80,21 +80,16 @@ public class CommentRepository {
             @Override
             protected void saveToDB(ResponseList<Comment> item, boolean isUpdate) {
                 List<Comment> comments = item.getItems();
-
-                commentDao.insertComments(comments);
-
                 List<User> users = new ArrayList<>();
 
                 for (Comment comment : comments) {
                     users.add(comment.getUser());
+                    comment.setPostSlug(postSlug);
+                    comment.setUserUsername(comment.getUser().getUsername());
                 }
 
+                commentDao.insertComments(comments);
                 userDao.addUsers(users);
-            }
-
-            @Override
-            protected boolean shouldReturnDbResponseOnError(ResponseList<Comment> dbResponse) {
-                return !dbResponse.getItems().isEmpty();
             }
         }.asSingle();
     }
@@ -129,7 +124,7 @@ public class CommentRepository {
         }.asSingle();
     }
 
-    private void addUsersToComments(List<Comment> comments) {
+    private void addNestedFieldsToComments(List<Comment> comments) {
         List<String> usernames = new ArrayList<>();
         for (Comment comment : comments) {
             usernames.add(comment.getUserUsername());

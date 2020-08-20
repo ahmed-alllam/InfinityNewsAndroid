@@ -21,14 +21,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/top_rounded_corners_shape"
-        android:paddingBottom="16dp"
         app:behavior_expandedOffset="100dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/postContainerLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
 
             <TextView
                 android:id="@+id/postTitle"
@@ -152,6 +152,7 @@
                 android:textAlignment="textStart"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:textIsSelectable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/postDescription"
@@ -263,6 +264,7 @@
                 android:layout_width="35dp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="16dp"
+                android:rotationY="@dimen/rotate_by"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_send"
                 android:tint="@color/colorAccent"
