@@ -186,14 +186,17 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
         }
 
         protected void showProgressBar() {
-            // todo: add delay
-            retryButton.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
+            itemView.postDelayed(() -> {
+                retryButton.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+            }, 50);
         }
 
         protected void showRetryButton() {
-            progressBar.setVisibility(View.GONE);
-            retryButton.setVisibility(View.VISIBLE);
+            itemView.postDelayed(() -> {
+                progressBar.setVisibility(View.GONE);
+                retryButton.setVisibility(View.VISIBLE);
+            }, 50);
         }
     }
 }

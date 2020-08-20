@@ -57,7 +57,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainToolBar"
             app:tabMode="scrollable"
-            app:tabMinWidth="92dp"
+            app:tabMinWidth="64dp"
             app:tabRippleColor="@android:color/transparent" />
 
         <ProgressBar

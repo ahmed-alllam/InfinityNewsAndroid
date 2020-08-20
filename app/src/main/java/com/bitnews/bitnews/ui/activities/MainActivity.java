@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toogle.syncState();
 
         categoriesTabLayout.addOnTabSelectedListener(getTabSelectedListener());
-        categoriesTabLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> dynamicallySetTabLayoutMode(categoriesTabLayout));
         categoriesTabLayout.setTabTextColors(Color.GRAY, getResources().getColor(R.color.colorAccent));
 
         CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
@@ -97,9 +96,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void onSuccessfulResponse(List<Category> categories) {
         mainViewPagerAdapter = new MainViewPagerAdapter(this, categories);
         mainViewPager.setAdapter(mainViewPagerAdapter);
-        new TabLayoutMediator(categoriesTabLayout, mainViewPager, true, ((tab, position) -> {
-            tab.setText(categories.get(position).getTitle());
-        })).attach();
+        new TabLayoutMediator(categoriesTabLayout, mainViewPager, true,
+                ((tab, position) -> tab.setText(categories.get(position).getTitle()))).attach();
+        dynamicallySetTabLayoutMode(categoriesTabLayout);
     }
 
     public void searchButtonClickListener(View view) {
@@ -130,28 +129,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void dynamicallySetTabLayoutMode(TabLayout tabLayout) {
         int tabsWidth = calculateTotalTabsWidth(tabLayout);
+        int layoutWidth = getResources().getDisplayMetrics().widthPixels;
 
-        int layoutWidth = tabLayout.getWidth();
-
-        if (tabsWidth != 0 && layoutWidth != 0) {
-            if (tabsWidth <= layoutWidth) {
-                tabLayout.setTabMode(TabLayout.MODE_FIXED);
-            } else {
-                tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-            }
-        }
+        if (tabsWidth < layoutWidth)
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
     }
 
     private int calculateTotalTabsWidth(TabLayout tabLayout) {
-        int tabWidth = 0;
+        int tabsWidth = 0;
 
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {
-                tabWidth += tab.view.getWidth();
+                tab.view.measure(0, 0);
+                tabsWidth += tab.view.getMeasuredWidth();
             }
         }
-        return tabWidth;
+        return tabsWidth;
     }
 
     @Override
