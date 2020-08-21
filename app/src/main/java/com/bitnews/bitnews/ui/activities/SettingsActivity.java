@@ -92,13 +92,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void changeLocale() {
-        Configuration configuration = new Configuration();
+        Configuration configuration = getResources().getConfiguration();
         configuration.setLocale(new Locale(PreferencesManager.convertLanguageNameToCode(currentLanguage)));
         changeConfigurations(configuration);
     }
 
     private void changeFontScale() {
-        Configuration configuration = new Configuration();
+        Configuration configuration = getResources().getConfiguration();
         configuration.fontScale = currentTextSize;
         changeConfigurations(configuration);
     }

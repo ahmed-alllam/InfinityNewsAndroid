@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkConfigurations() {
         boolean isChanged = false;
-        Configuration configuration = new Configuration();
+        Configuration configuration = getResources().getConfiguration();
         String language;
         if (!(language = PreferencesManager.getLanguageCode(this)).isEmpty()) {
             isChanged = true;
