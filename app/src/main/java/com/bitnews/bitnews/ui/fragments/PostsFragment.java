@@ -40,10 +40,23 @@ public class PostsFragment extends Fragment {
     private int fetchedPostsCount;
     private boolean isRefreshing;
     private String firstPostTimestamp;
+
+    public PostsFragment() {
+    }
+
     private String lastPostTimestamp;
 
     public PostsFragment(Category category) {
-        this.categorySlug = category.getSlug();
+        Bundle bundle = new Bundle();
+        bundle.putString("categorySlug", category.getSlug());
+        setArguments(bundle);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        categorySlug = getArguments().getString("categorySlug");
     }
 
     @Override

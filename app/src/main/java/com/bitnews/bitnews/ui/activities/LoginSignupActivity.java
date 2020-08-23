@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,7 +22,7 @@ import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class LoginSignupActivity extends AppCompatActivity implements OnUserAuthRequestListener {
+public class LoginSignupActivity extends BaseActivity implements OnUserAuthRequestListener {
     private SignupFragment signupFragment;
     private LoginFragment loginFragment;
     private UserViewModel userViewModel;

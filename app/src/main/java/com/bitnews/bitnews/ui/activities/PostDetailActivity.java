@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
@@ -41,7 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class PostDetailActivity extends AppCompatActivity {
+public class PostDetailActivity extends BaseActivity {
     private static final int BOTTOM_SHEET_EXPANDED_OFFSET = 100;
     private static final float BOTTOM_SHEET_COLLAPSED_PERCENT = 0.45f;
     private static final float POST_IMAGE_VIEW_HEIGHT_PERCENT = 0.5f;

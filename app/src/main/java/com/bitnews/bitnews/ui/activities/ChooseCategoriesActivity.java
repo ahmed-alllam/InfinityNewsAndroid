@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ChooseCategoriesActivity extends AppCompatActivity implements CategoryItemChooseListener {
+public class ChooseCategoriesActivity extends BaseActivity implements CategoryItemChooseListener {
     public static final int MIN_CHOSEN_CATEGORIES = 3;
     public static final int CATEGORY_ITEM_WIDTH = 100;
     private ArrayList<Category> chosenCategories = new ArrayList<>();

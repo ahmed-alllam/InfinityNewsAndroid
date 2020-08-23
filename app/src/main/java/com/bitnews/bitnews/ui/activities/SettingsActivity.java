@@ -1,7 +1,6 @@
 package com.bitnews.bitnews.ui.activities;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,15 +8,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.utils.PreferencesManager;
 
 import java.util.Arrays;
-import java.util.Locale;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
     private String currentLanguage;
     private float currentTextSize;
     private String[] textSizesNamesList;
@@ -65,7 +62,6 @@ public class SettingsActivity extends AppCompatActivity {
                         currentLanguage = languagesList[which];
                         PreferencesManager.setLanguage(this, currentLanguage);
                         languageTextView.setText(currentLanguage);
-                        changeLocale();
                         restartActivity();
                         dialog.dismiss();
                     }
@@ -82,7 +78,6 @@ public class SettingsActivity extends AppCompatActivity {
                         currentTextSize = textSizesValuesList[which];
                         PreferencesManager.setTextSizeScale(this, currentTextSize);
                         textSizeTextView.setText(textSizesNamesList[which]);
-                        changeFontScale();
                         restartActivity();
                         dialog.dismiss();
                     }
@@ -92,23 +87,6 @@ public class SettingsActivity extends AppCompatActivity {
     private void restartActivity() {
         startActivity(new Intent(this, MainActivity.class));
         finishAffinity();
-    }
-
-    private void changeLocale() {
-        Configuration configuration = getBaseContext().getResources().getConfiguration();
-        configuration.setLocale(new Locale(PreferencesManager.convertLanguageNameToCode(currentLanguage)));
-        changeConfigurations(configuration);
-    }
-
-    private void changeFontScale() {
-        Configuration configuration = getBaseContext().getResources().getConfiguration();
-        configuration.fontScale = currentTextSize;
-        changeConfigurations(configuration);
-    }
-
-    private void changeConfigurations(Configuration configuration) {
-        getBaseContext().getResources().updateConfiguration(configuration,
-                getBaseContext().getResources().getDisplayMetrics());
     }
 
     @Override

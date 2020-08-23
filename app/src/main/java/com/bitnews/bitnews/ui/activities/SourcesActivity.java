@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.bitnews.bitnews.R;
 
-public class SourcesActivity extends AppCompatActivity {
+public class SourcesActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
