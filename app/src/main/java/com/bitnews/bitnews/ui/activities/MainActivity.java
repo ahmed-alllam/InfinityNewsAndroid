@@ -25,6 +25,7 @@ import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.fragments.PostsFragment;
 import com.bitnews.bitnews.ui.viewmodels.CategoryViewModel;
 import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
+import com.bitnews.bitnews.utils.CategoriesLocalizer;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.navigation.NavigationView;
@@ -96,8 +97,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void onSuccessfulResponse(List<Category> categories) {
         mainViewPagerAdapter = new MainViewPagerAdapter(this, categories);
         mainViewPager.setAdapter(mainViewPagerAdapter);
-        new TabLayoutMediator(categoriesTabLayout, mainViewPager, true,
-                ((tab, position) -> tab.setText(categories.get(position).getTitle()))).attach();
+        mainViewPager.setOffscreenPageLimit(1);
+        new TabLayoutMediator(categoriesTabLayout, mainViewPager,
+                ((tab, position) -> tab.setText(CategoriesLocalizer.getLocalizedCategoryTitle(this,
+                        categories.get(position).getTitle())))).attach();
         dynamicallySetTabLayoutMode(categoriesTabLayout);
     }
 

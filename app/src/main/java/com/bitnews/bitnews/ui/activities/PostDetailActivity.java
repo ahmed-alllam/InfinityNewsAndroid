@@ -1,9 +1,12 @@
 package com.bitnews.bitnews.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,16 +37,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
-import org.sufficientlysecure.htmltextview.HtmlTextView;
-
 import java.util.Collections;
 import java.util.List;
 
 
 public class PostDetailActivity extends AppCompatActivity {
     private static final int BOTTOM_SHEET_EXPANDED_OFFSET = 100;
-    private static final int BOTTOM_SHEET_COLLAPSED_OFFSET = 250;
+    private static final float BOTTOM_SHEET_COLLAPSED_PERCENT = 0.45f;
+    private static final float POST_IMAGE_VIEW_HEIGHT_PERCENT = 0.5f;
     private String postSlug;
     private CommentsViewModel commentsViewModel;
     private RecyclerView commentsRecyclerView;
@@ -113,10 +114,15 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomSheet.getLayoutParams();
-        layoutParams.height = getBootomSheetMaxHeight();
-        bottomSheet.setLayoutParams(layoutParams);
+        CoordinatorLayout.LayoutParams bottomSheetLayoutParams = (CoordinatorLayout.LayoutParams) bottomSheet.getLayoutParams();
+        bottomSheetLayoutParams.height = getBootomSheetMaxHeight();
+        bottomSheet.setLayoutParams(bottomSheetLayoutParams);
         bottomSheet.setMinimumHeight(getBootomSheetMinHeight());
+
+        ImageView postImageView = findViewById(R.id.postImage);
+        ViewGroup.LayoutParams postImageLayoutParams = postImageView.getLayoutParams();
+        postImageLayoutParams.height = getPostImageHeight();
+        postImageView.setLayoutParams(postImageLayoutParams);
 
         postViewModel.getDetailedPost(getApplicationContext(), postSlug);
     }
@@ -166,13 +172,16 @@ public class PostDetailActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void bindPostFromResponse(Post post) {
         if (post.getBody() != null && !post.getBody().isEmpty()) {
-            HtmlTextView postBody = findViewById(R.id.postBody);
-            HtmlHttpImageGetter imageGetter = new HtmlHttpImageGetter(postBody);
-            imageGetter.enableCompressImage(true);
-            postBody.setHtml(post.getBody(), imageGetter);
-            Linkify.addLinks(postBody, Linkify.ALL);
+            WebView postBody = findViewById(R.id.postBody);
+            postBody.getSettings().setJavaScriptEnabled(true);
+            postBody.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            postBody.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+            postBody.loadData(addHtmlHeadersToBody(post.getBody()),
+                    "text/html", "UTF-8");
         }
 
         if (post.getTags() != null && !post.getTags().isEmpty()) {
@@ -297,9 +306,24 @@ public class PostDetailActivity extends AppCompatActivity {
         commentsViewModel.getComments(getApplicationContext(), postSlug, lastCommentTimeStamp);
     }
 
+    private String addHtmlHeadersToBody(String postBody) {
+        String htmlStart = "<html dir=\"auto\">";
+        String style = "<head><style>img { max-width: 100%;" +
+                " margin: auto; display:block;} </style></head>";
+        String bodyStart = "<body><div class=\"container\">";
+        String htmlEnd = "</div></body></html>";
+
+        return htmlStart + style + bodyStart + postBody + htmlEnd;
+    }
+
+    private int getPostImageHeight() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return (int) (displayMetrics.heightPixels * POST_IMAGE_VIEW_HEIGHT_PERCENT);
+    }
+
     private int getBootomSheetMinHeight() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return (int) (displayMetrics.heightPixels - (BOTTOM_SHEET_COLLAPSED_OFFSET * displayMetrics.density));
+        return (int) (displayMetrics.heightPixels - (BOTTOM_SHEET_COLLAPSED_PERCENT * displayMetrics.heightPixels));
     }
 
     private int getBootomSheetMaxHeight() {

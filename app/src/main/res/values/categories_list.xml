@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_list">
+        <item>Breaking</item>
+        <item>Politics</item>
+        <item>Reports</item>
+        <item>Culture</item>
+        <item>Accidents</item>
+        <item>Finance</item>
+        <item>Investigations</item>
+        <item>Sports</item>
+        <item>Football</item>
+        <item>Arabic</item>
+        <item>Global</item>
+        <item>Caricature</item>
+        <item>Art</item>
+        <item>TV</item>
+        <item>Woman</item>
+        <item>Albums</item>
+        <item>Health</item>
+        <item>Technology</item>
+        <item>States</item>
+        <item>Us</item>
+        <item>Egypt</item>
+        <item>Money</item>
+        <item>Science</item>
+        <item>Cars</item>
+        <item>Opinion</item>
+        <item>Entertainment</item>
+        <item>Markets</item>
+        <item>Lifestyle</item>
+        <item>Estates</item>
+    </string-array>
+</resources>

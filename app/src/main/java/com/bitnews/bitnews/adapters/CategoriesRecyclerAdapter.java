@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.callbacks.CategoryItemChooseListener;
 import com.bitnews.bitnews.data.models.Category;
+import com.bitnews.bitnews.utils.CategoriesLocalizer;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -61,7 +62,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(categoryViewHolder.image);
 
-        categoryViewHolder.title.setText(category.getTitle());
+        categoryViewHolder.title.setText(CategoriesLocalizer.getLocalizedCategoryTitle(context, category.getTitle()));
         categoryViewHolder.itemView.setOnClickListener((v -> {
             if (!category.isFavouritedByUser()) {
                 category.setFavouritedByUser(true);

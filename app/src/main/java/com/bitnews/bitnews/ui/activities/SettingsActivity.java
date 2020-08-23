@@ -21,7 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
     private String currentLanguage;
     private float currentTextSize;
     private String[] textSizesNamesList;
-    private Float[] textSizesValuesList = {0.9f, 1f, 1.1f, 1.2f};
+    private Float[] textSizesValuesList = {0.85f, 1f, 1.1f, 1.2f};
     private TextView textSizeTextView;
     private TextView languageTextView;
 
@@ -66,8 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
                         PreferencesManager.setLanguage(this, currentLanguage);
                         languageTextView.setText(currentLanguage);
                         changeLocale();
-                        startActivity(new Intent(this, MainActivity.class));
-                        finishAffinity();
+                        restartActivity();
                         dialog.dismiss();
                     }
                 });
@@ -84,29 +83,32 @@ public class SettingsActivity extends AppCompatActivity {
                         PreferencesManager.setTextSizeScale(this, currentTextSize);
                         textSizeTextView.setText(textSizesNamesList[which]);
                         changeFontScale();
-                        startActivity(new Intent(this, MainActivity.class));
-                        finishAffinity();
+                        restartActivity();
                         dialog.dismiss();
                     }
                 });
     }
 
+    private void restartActivity() {
+        startActivity(new Intent(this, MainActivity.class));
+        finishAffinity();
+    }
+
     private void changeLocale() {
-        Configuration configuration = getResources().getConfiguration();
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
         configuration.setLocale(new Locale(PreferencesManager.convertLanguageNameToCode(currentLanguage)));
         changeConfigurations(configuration);
     }
 
     private void changeFontScale() {
-        Configuration configuration = getResources().getConfiguration();
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
         configuration.fontScale = currentTextSize;
         changeConfigurations(configuration);
     }
 
     private void changeConfigurations(Configuration configuration) {
-        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
-        getApplicationContext().getResources().updateConfiguration(configuration,
-                getApplicationContext().getResources().getDisplayMetrics());
+        getBaseContext().getResources().updateConfiguration(configuration,
+                getBaseContext().getResources().getDisplayMetrics());
     }
 
     @Override

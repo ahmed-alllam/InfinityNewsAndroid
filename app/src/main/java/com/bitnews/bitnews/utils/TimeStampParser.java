@@ -17,7 +17,7 @@ public class TimeStampParser {
 
     public static Date getDateFromString(String timestamp) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-        inputFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         try {
             return inputFormat.parse(timestamp);

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_list">
+        <item>عاجلة</item>
+        <item>سياسة</item>
+        <item>تقارير</item>
+        <item>ثقافة</item>
+        <item>حوادث</item>
+        <item>اقتصاد</item>
+        <item>تحقيقات</item>
+        <item>رياضة</item>
+        <item>كرة قدم</item>
+        <item>عربي</item>
+        <item>عالمي</item>
+        <item>كاريكاتير</item>
+        <item>فن</item>
+        <item>تيليفزيون</item>
+        <item>المرأة</item>
+        <item>البومات</item>
+        <item>الصحة</item>
+        <item>التكنولوجيا</item>
+        <item>المحافظات</item>
+        <item>امريكا</item>
+        <item>مصر</item>
+        <item>مال</item>
+        <item>علوم</item>
+        <item>سيارات</item>
+        <item>آراء</item>
+        <item>ترفية</item>
+        <item>الأسواق</item>
+        <item>نمط الحياة</item>
+        <item>العقارات</item>
+    </string-array>
+</resources>

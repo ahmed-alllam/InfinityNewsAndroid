@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkConfigurations() {
         boolean isChanged = false;
-        Configuration configuration = getResources().getConfiguration();
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
         String language;
         if (!(language = PreferencesManager.getLanguageCode(this)).isEmpty()) {
             isChanged = true;
@@ -68,10 +68,8 @@ public class SplashActivity extends AppCompatActivity {
             configuration.fontScale = textSize;
         }
 
-        if (isChanged) {
-            getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
-            getApplicationContext().getResources().updateConfiguration(configuration,
-                    getApplicationContext().getResources().getDisplayMetrics());
-        }
+        if (isChanged)
+            getBaseContext().getResources().updateConfiguration(configuration,
+                    getBaseContext().getResources().getDisplayMetrics());
     }
 }
