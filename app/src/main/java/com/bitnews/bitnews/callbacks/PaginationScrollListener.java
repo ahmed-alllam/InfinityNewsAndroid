@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bitnews.bitnews.adapters.PaginationRecyclerAdapter;
 
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
+    private static final int REMAINING_ITEMS_BEFORE_LOAD_COUNT = 5;
     private RecyclerView.LayoutManager layoutManager;
 
     protected PaginationScrollListener(RecyclerView.LayoutManager layoutManager) {
@@ -34,7 +35,7 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
 
         PaginationRecyclerAdapter<?> recyclerAdapter = (PaginationRecyclerAdapter<?>) recyclerView.getAdapter();
 
-        if (lastVisableItemPosition == recyclerAdapter.listSize() - 1
+        if (lastVisableItemPosition >= recyclerAdapter.listSize() - 1 - REMAINING_ITEMS_BEFORE_LOAD_COUNT
                 && !isLastPage() && !isLoading()) {
             loadMoreItems();
         }

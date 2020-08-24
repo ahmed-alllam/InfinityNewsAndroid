@@ -63,7 +63,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         toogle.syncState();
 
         categoriesTabLayout.addOnTabSelectedListener(getTabSelectedListener());
-        categoriesTabLayout.setTabTextColors(Color.GRAY, getResources().getColor(R.color.colorAccent));
+        categoriesTabLayout.setTabTextColors(Color.GRAY, getResources().getColor(R.color.colorPrimary));
 
         CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, response -> {
@@ -88,8 +88,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         });
-        userViewModel.getCurrentUser(getApplicationContext());
 
+        userViewModel.getCurrentUser(getApplicationContext());
         categoryViewModel.getFavouriteCategories(getApplicationContext());
     }
 
@@ -134,7 +134,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         int layoutWidth = getResources().getDisplayMetrics().widthPixels;
 
         if (tabsWidth < layoutWidth)
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+            addWidthDifferenceToTabs(tabLayout, layoutWidth - tabsWidth);
     }
 
     private int calculateTotalTabsWidth(TabLayout tabLayout) {
@@ -148,6 +148,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }
         return tabsWidth;
+    }
+
+    private void addWidthDifferenceToTabs(TabLayout tabLayout, int diff) {
+        int paddingPerTab = diff / tabLayout.getTabCount() / 2;
+
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null)
+                tab.view.setPadding(tab.view.getPaddingLeft() + paddingPerTab, 0,
+                        tab.view.getPaddingRight() + paddingPerTab, 0);
+        }
     }
 
     @Override

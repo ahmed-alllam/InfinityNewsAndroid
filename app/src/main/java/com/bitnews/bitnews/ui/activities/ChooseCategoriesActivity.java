@@ -72,7 +72,9 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
                 loadCategories();
         });
         categoriesRecyclerView.setAdapter(categoriesAdapter);
-        categoriesRecyclerView.setLayoutManager(getListLayoutManager());
+        int spanCount = calculateSpanCount();
+        categoriesAdapter.setItemsPerRow(spanCount);
+        categoriesRecyclerView.setLayoutManager(getListLayoutManager(spanCount));
         categoriesRecyclerView.addOnScrollListener(getOnScrollListener());
 
         categoriesSwipeLayout = findViewById(R.id.swipeRefreshLayout);
@@ -119,13 +121,13 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
         }
     }
 
-    private RecyclerView.LayoutManager getListLayoutManager() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, calculateSpanCount());
+    private RecyclerView.LayoutManager getListLayoutManager(int spanCount) {
+        GridLayoutManager layoutManager = new GridLayoutManager(this, spanCount);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 if (categoriesAdapter.getItemViewType(position) == PaginationRecyclerAdapter.VIEW_TYPE_FOOTER) {
-                    return 3;
+                    return spanCount;
                 }
                 return 1;
             }

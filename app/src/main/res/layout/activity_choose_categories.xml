@@ -24,7 +24,7 @@
         android:text="@string/choose_topics"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
-        app:autoSizeMaxTextSize="26sp"
+        app:autoSizeMaxTextSize="32sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/guideline37"
         app:layout_constraintEnd_toStartOf="@+id/guideline44"

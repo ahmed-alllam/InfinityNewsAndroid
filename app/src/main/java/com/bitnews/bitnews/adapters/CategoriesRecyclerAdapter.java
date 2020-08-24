@@ -19,10 +19,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Category> {
-    private static final int ITEMS_PER_ROW = 3;
-
     private CategoryItemChooseListener categoryItemChooseListener;
     private static int selectedColor;
+    private int itemsPerRow;
 
     public CategoriesRecyclerAdapter(RecyclerView recyclerView, CategoryItemChooseListener categoryItemChooseListener,
                                      View.OnClickListener retryOnClickListener) {
@@ -48,8 +47,12 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
     @Override
     int calculateEmptyItemsCount() {
         if (itemsPerScreenCount == 0)
-            itemsPerScreenCount = super.calculateEmptyItemsCount() * ITEMS_PER_ROW;
+            itemsPerScreenCount = super.calculateEmptyItemsCount() * itemsPerRow;
         return itemsPerScreenCount;
+    }
+
+    public void setItemsPerRow(int itemsPerRow) {
+        this.itemsPerRow = itemsPerRow;
     }
 
     @Override

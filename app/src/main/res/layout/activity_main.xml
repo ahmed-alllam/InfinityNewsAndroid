@@ -57,7 +57,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainToolBar"
             app:tabMode="scrollable"
-            app:tabMinWidth="64dp"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabMinWidth="94dp"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabRippleColor="@android:color/transparent" />
 
         <ProgressBar

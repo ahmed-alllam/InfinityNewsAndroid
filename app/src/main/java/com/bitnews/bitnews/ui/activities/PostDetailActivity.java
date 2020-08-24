@@ -46,6 +46,7 @@ public class PostDetailActivity extends BaseActivity {
     private static final float POST_IMAGE_VIEW_HEIGHT_PERCENT = 0.5f;
     private String postSlug;
     private CommentsViewModel commentsViewModel;
+    private NestedScrollView bottomSheet;
     private RecyclerView commentsRecyclerView;
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
     private int totalCommentsCount;
@@ -101,7 +102,7 @@ public class PostDetailActivity extends BaseActivity {
                 v -> loadComments());
         commentsRecyclerView.setAdapter(commentsRecyclerAdapter);
 
-        NestedScrollView bottomSheet = findViewById(R.id.postBottomSheet);
+        bottomSheet = findViewById(R.id.postBottomSheet);
         BottomSheetBehavior.from(bottomSheet).setPeekHeight(getBootomSheetMinHeight());
         bottomSheet.getViewTreeObserver().addOnScrollChangedListener(() -> {
             if (!bottomSheet.canScrollVertically(1)) {
@@ -274,6 +275,10 @@ public class PostDetailActivity extends BaseActivity {
 
                         commentsRecyclerView.setVisibility(View.VISIBLE);
                         commentsRecyclerAdapter.addAll(0, Collections.singletonList(response.getitem()));
+                        commentsRecyclerView.post(() -> {
+                            float y = commentsRecyclerView.getY() + commentsRecyclerView.getChildAt(0).getY();
+                            bottomSheet.smoothScrollTo(0, (int) y);
+                        });
                     }
                 });
     }

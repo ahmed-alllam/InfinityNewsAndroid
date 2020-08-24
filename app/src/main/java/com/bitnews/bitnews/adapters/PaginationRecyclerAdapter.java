@@ -59,11 +59,7 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
                 bindItemViewHolder(holder, itemsList.get(position), position);
                 break;
             case VIEW_TYPE_FOOTER:
-                FooterItemViewHolder footerItemViewHolder = (FooterItemViewHolder) holder;
-                if (isLoadingMore)
-                    footerItemViewHolder.showProgressBar();
-                if (isLoadingFailed)
-                    footerItemViewHolder.showRetryButton();
+                ((FooterItemViewHolder) holder).refreshLayout();
         }
     }
 
@@ -117,9 +113,11 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
 
     public void addFooterItem() {
         recyclerView.post(() -> {
-            if (itemsList.contains(null))
-                notifyItemChanged(itemsList.size() - 1);
-            else {
+            if (itemsList.contains(null)) {
+                FooterItemViewHolder footerItemViewHolder = (FooterItemViewHolder) recyclerView.findViewHolderForAdapterPosition(itemsList.size() - 1);
+                if (footerItemViewHolder != null)
+                    footerItemViewHolder.refreshLayout();
+            } else {
                 itemsList.add(null);
                 notifyItemInserted(itemsList.size() - 1);
             }
@@ -172,9 +170,9 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
 
     protected abstract RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent);
 
-    public static class FooterItemViewHolder extends RecyclerView.ViewHolder {
-        protected ProgressBar progressBar;
-        protected Button retryButton;
+    public class FooterItemViewHolder extends RecyclerView.ViewHolder {
+        private ProgressBar progressBar;
+        private Button retryButton;
 
         FooterItemViewHolder(@NonNull View itemView, View.OnClickListener onFooterClickListener) {
             super(itemView);
@@ -185,18 +183,27 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
             retryButton.setOnClickListener(onFooterClickListener);
         }
 
-        protected void showProgressBar() {
-            itemView.postDelayed(() -> {
-                retryButton.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-            }, 50);
+        protected void refreshLayout() {
+            System.out.println("ahmed in refresh " + isLoadingFailed + isLoadingMore);
+            if (isLoadingFailed)
+                showRetryButton();
+
+            if (isLoadingMore)
+                showProgressBar();
         }
 
-        protected void showRetryButton() {
+        private void showProgressBar() {
             itemView.postDelayed(() -> {
-                progressBar.setVisibility(View.GONE);
+                retryButton.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+            }, 100);
+        }
+
+        private void showRetryButton() {
+            itemView.postDelayed(() -> {
+                progressBar.setVisibility(View.INVISIBLE);
                 retryButton.setVisibility(View.VISIBLE);
-            }, 50);
+            }, 100);
         }
     }
 }
