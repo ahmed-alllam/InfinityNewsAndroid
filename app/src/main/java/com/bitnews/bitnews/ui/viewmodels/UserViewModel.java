@@ -33,12 +33,6 @@ public class UserViewModel extends ViewModel {
                 .subscribe(user::setValue));
     }
 
-    public void signupAsGuest(Context context) {
-        disposable.add(getUserRepository(context)
-                .signupAsGuest()
-                .subscribe(user::setValue));
-    }
-
     public void loginUser(Context context, String userName, String password) {
         disposable.add(getUserRepository(context)
                 .loginUser(userName, password)
@@ -55,13 +49,6 @@ public class UserViewModel extends ViewModel {
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
         disposable.add(getUserRepository(context).isUserAuthenticated()
                 .onErrorReturn(t -> false)
-                .subscribe(liveData::setValue));
-        return liveData;
-    }
-
-    public LiveData<Boolean> hasUserProfile(Context context) {
-        MutableLiveData<Boolean> liveData = new MutableLiveData<>();
-        disposable.add(getUserRepository(context).hasUserProfile()
                 .subscribe(liveData::setValue));
         return liveData;
     }

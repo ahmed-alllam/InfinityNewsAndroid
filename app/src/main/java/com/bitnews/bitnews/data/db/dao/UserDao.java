@@ -32,7 +32,4 @@ public interface UserDao {
 
     @Update
     void updateUser(User user);
-
-    @Query("SELECT EXISTS(SELECT * FROM user WHERE isCurrentUser=1)")
-    Single<Boolean> hasUserProfile();
 }

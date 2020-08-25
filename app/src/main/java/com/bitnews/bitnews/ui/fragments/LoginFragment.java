@@ -14,12 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.callbacks.OnUserAuthRequestListener;
-import com.bitnews.bitnews.callbacks.UserAuthFragmentListener;
 import com.bitnews.bitnews.data.models.AuthToken;
 import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 
-public class LoginFragment extends Fragment implements UserAuthFragmentListener {
+public class LoginFragment extends Fragment {
     private UserViewModel userViewModel;
     private OnUserAuthRequestListener onUserAuthRequestListener;
     private TextView errorLabel;
@@ -47,8 +46,9 @@ public class LoginFragment extends Fragment implements UserAuthFragmentListener 
         }));
     }
 
-    @Override
     public void sendAuthRequest() {
+        errorLabel.setVisibility(View.INVISIBLE);
+
         String username = getUsername();
         String password = getPassword();
 
@@ -59,15 +59,9 @@ public class LoginFragment extends Fragment implements UserAuthFragmentListener 
         }
     }
 
-    @Override
     public void setErrorMessage(int messageID) {
         errorLabel.setVisibility(View.VISIBLE);
         errorLabel.setText(messageID);
-    }
-
-    @Override
-    public void setErrorMessageInvisible() {
-        errorLabel.setVisibility(View.INVISIBLE);
     }
 
     private String getUsername() {

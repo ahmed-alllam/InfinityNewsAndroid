@@ -197,10 +197,9 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
 
     public void onNextButtonClicked(View view) {
         if (chosenCategories.equals(initallyChosenCategories)) {
-            if (getIntent().getBooleanExtra("isFromMainActivity", false))
-                finish();
-            else
+            if (!getIntent().getBooleanExtra("isFromMainActivity", false)) {
                 startActivity(new Intent(this, MainActivity.class));
+            }
             finish();
             return;
         }

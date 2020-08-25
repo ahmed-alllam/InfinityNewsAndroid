@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.format.DateUtils;
 
 import com.bitnews.bitnews.data.db.AppDatabase;
+import com.bitnews.bitnews.data.db.dao.AuthTokenDao;
 import com.bitnews.bitnews.data.db.dao.CategoryDao;
 import com.bitnews.bitnews.data.models.Category;
 import com.bitnews.bitnews.data.models.ResponseList;
@@ -92,6 +93,9 @@ public class CategoryRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(List<Category> data) {
+                if (AuthTokenDao.getToken().isEmpty())
+                    return false;
+
                 if (data == null || data.isEmpty())
                     return true;
 
@@ -131,6 +135,9 @@ public class CategoryRepository {
 
             @Override
             protected Single<Object> getAPICall() {
+                if (AuthTokenDao.getToken().isEmpty())
+                    return Single.just(new Object());
+
                 return apiEndpoints.updateFavouriteCategories(generateCategoriesRequestBody(categories))
                         .toSingleDefault(new Object());
             }

@@ -289,8 +289,7 @@ public class PostDetailActivity extends BaseActivity {
         userViewModel.getUser().observe(this, response -> {
             if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
                 User user = response.getitem();
-                if (!user.isGuest())
-                    bindCurrentUserToPost(response.getitem());
+                bindCurrentUserToPost(user);
             }
         });
     }

@@ -37,6 +37,9 @@ public class UserRepository {
     }
 
     public Single<APIResponse<User>> getCurrentUser() {
+        if (AuthTokenDao.getToken().isEmpty())
+            return Single.just(APIResponse.failed(null));
+
         return new NetworkBoundResource<User>() {
             @Override
             protected void saveToDB(User user, boolean isUpdate) {
@@ -85,7 +88,6 @@ public class UserRepository {
                     authTokenDao.deleteAuthToken();
                     AuthTokenDao.setToken("");
                     userDao.deleteCurrentUser();
-                    categoryDao.removeFavouriteCategories();
                 }
                 user.setLastUpdated(new Date());
                 user.setCurrentUser(true);
@@ -114,43 +116,13 @@ public class UserRepository {
         }.asSingle();
     }
 
-    public Single<APIResponse<User>> signupAsGuest() {
-        return new NetworkBoundResource<User>() {
-            @Override
-            protected void saveToDB(User user, boolean isUpdate) {
-                user.setCurrentUser(true);
-                user.setLastUpdated(new Date());
-                userDao.addUser(user);
-            }
-
-            @Override
-            protected boolean shouldFetchFromDB() {
-                return false;
-            }
-
-            @Override
-            protected boolean shouldFetchFromAPI(User data) {
-                return true;
-            }
-
-            @Override
-            protected Single<User> fetchFromDB() {
-                return null;
-            }
-
-            @Override
-            protected Single<User> getAPICall() {
-                return apiEndpoints.singUpAsGuest(true);
-            }
-        }.asSingle();
-    }
-
     public Single<APIResponse<AuthToken>> loginUser(String userName, String password) {
         return new NetworkBoundResource<AuthToken>() {
             @Override
             protected void saveToDB(AuthToken token, boolean isUpdate) {
                 authTokenDao.addAuthToken(token);
                 AuthTokenDao.setToken(token.getToken());
+                categoryDao.removeFavouriteCategories();
             }
 
             @Override
@@ -170,8 +142,6 @@ public class UserRepository {
 
             @Override
             protected Single<AuthToken> getAPICall() {
-                if (password.isEmpty())
-                    return apiEndpoints.logIn(userName);
                 return apiEndpoints.logIn(userName, password);
             }
         }.asSingle();
@@ -191,12 +161,6 @@ public class UserRepository {
         return authTokenDao.getAuthTokenFromDB()
                 .doOnSuccess((authToken -> AuthTokenDao.setToken(authToken.getToken())))
                 .map(token -> !token.getToken().isEmpty())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public Single<Boolean> hasUserProfile() {
-        return userDao.hasUserProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -58,12 +59,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
-        toogle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorPrimary));
+        int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+        toogle.getDrawerArrowDrawable().setColor(colorPrimary);
         drawerLayout.addDrawerListener(toogle);
         toogle.syncState();
 
         categoriesTabLayout.addOnTabSelectedListener(getTabSelectedListener());
-        categoriesTabLayout.setTabTextColors(Color.GRAY, getResources().getColor(R.color.colorPrimary));
+        categoriesTabLayout.setTabTextColors(Color.GRAY, colorPrimary);
 
         CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.getCategoriesLiveData().observe(this, response -> {
@@ -80,12 +82,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             if (response.getStatus() == APIResponse.Status.SUCCESFUL) {
                 User user = response.getitem();
-                isLoggedIn = !user.isGuest();
-                if (isLoggedIn) {
-                    bindNavigationViewHeader(navigationView.getHeaderView(0), user);
-                    navigationView.getMenu().findItem(R.id.editProfile).setVisible(true);
-                    navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-                }
+                isLoggedIn = true;
+                bindNavigationViewHeader(navigationView.getHeaderView(0), user);
+                navigationView.getMenu().findItem(R.id.editProfile).setVisible(true);
+                navigationView.getMenu().findItem(R.id.logout).setVisible(true);
             }
         });
 

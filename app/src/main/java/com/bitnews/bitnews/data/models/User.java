@@ -23,8 +23,6 @@ public class User {
     @SerializedName("profile_photo")
     private String profilePhoto;
     private boolean isCurrentUser;
-    @SerializedName("is_guest")
-    private boolean isGuest;
     @TypeConverters(DateTimeConverter.class)
     private Date lastUpdated;
 
@@ -42,14 +40,6 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(username, firstName, lastName, profilePhoto);
-    }
-
-    public boolean isGuest() {
-        return isGuest;
-    }
-
-    public void setGuest(boolean guest) {
-        isGuest = guest;
     }
 
     @NonNull

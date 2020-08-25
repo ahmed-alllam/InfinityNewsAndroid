@@ -8,44 +8,28 @@ import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bitnews.bitnews.R;
 import com.bitnews.bitnews.callbacks.OnUserAuthRequestListener;
-import com.bitnews.bitnews.callbacks.UserAuthFragmentListener;
-import com.bitnews.bitnews.data.models.AuthToken;
-import com.bitnews.bitnews.data.models.User;
-import com.bitnews.bitnews.data.network.APIResponse;
 import com.bitnews.bitnews.ui.fragments.LoginFragment;
 import com.bitnews.bitnews.ui.fragments.SignupFragment;
-import com.bitnews.bitnews.ui.viewmodels.UserViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class LoginSignupActivity extends BaseActivity implements OnUserAuthRequestListener {
     private SignupFragment signupFragment;
     private LoginFragment loginFragment;
-    private UserViewModel userViewModel;
-    private UserAuthFragmentListener currentAuthFragment;
+    private Fragment currentFragment;
     private Button signupButton;
     private Button loginButton;
     private ProgressBar progressBar;
     private boolean isCalledFromMainActivity;
-
-    private String guestUsername = "";
     private boolean isRequestPending;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_signup);
-
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getUser().observe(this, (this::processGuestSignupResponse));
-        userViewModel.getToken().observe(this, (response -> {
-            onRequestFinished();
-            processGuestLoginResponse(response);
-        }));
 
         isCalledFromMainActivity = getIntent().getBooleanExtra("fromMainActivity",
                 false);
@@ -61,27 +45,22 @@ public class LoginSignupActivity extends BaseActivity implements OnUserAuthReque
         loginButton.setOnClickListener((v) -> showLoginFragment());
 
         FloatingActionButton nextButton = findViewById(R.id.nextFab);
-        nextButton.setOnClickListener((v) -> {
-            if (!isRequestPending) {
-                if (currentAuthFragment != null)
-                    currentAuthFragment.sendAuthRequest();
-            }
+        nextButton.setOnClickListener(v -> {
+            if (currentFragment == signupFragment)
+                signupFragment.sendAuthRequest();
+            else if (currentFragment == loginFragment)
+                loginFragment.sendAuthRequest();
         });
 
         ExtendedFloatingActionButton skipButton = findViewById(R.id.skipFab);
-        skipButton.setOnClickListener((v -> {
+        skipButton.setOnClickListener(v -> {
             if (!isRequestPending) {
-                if (isCalledFromMainActivity) {
+                if (!isCalledFromMainActivity)
+                    startCategoriesActivity();
+                else
                     finish();
-                } else {
-                    if (guestUsername.isEmpty())
-                        signupAsGuest();
-                    else
-                        loginAsGuest();
-                    onRequestPending();
-                }
             }
-        }));
+        });
     }
 
     private void showSignupFragment() {
@@ -130,14 +109,13 @@ public class LoginSignupActivity extends BaseActivity implements OnUserAuthReque
 
         ft.commit();
 
-        currentAuthFragment = (UserAuthFragmentListener) fragmentToShow;
+        currentFragment = fragmentToShow;
     }
 
     @Override
     public void onRequestPending() {
         isRequestPending = true;
         progressBar.setVisibility(View.VISIBLE);
-        currentAuthFragment.setErrorMessageInvisible();
     }
 
     @Override
@@ -148,39 +126,12 @@ public class LoginSignupActivity extends BaseActivity implements OnUserAuthReque
 
     @Override
     public void onRequestSuccessful() {
+        startCategoriesActivity();
+    }
+
+    private void startCategoriesActivity() {
         Intent intent = new Intent(this, ChooseCategoriesActivity.class);
         startActivity(intent);
         finishAffinity();
-    }
-
-    private void signupAsGuest() {
-        userViewModel.signupAsGuest(getApplicationContext());
-    }
-
-    private void loginAsGuest() {
-        userViewModel.loginUser(getApplicationContext(), guestUsername, "");
-    }
-
-    private void processGuestSignupResponse(APIResponse<User> response) {
-        switch (response.getStatus()) {
-            case SUCCESFUL:
-                guestUsername = response.getitem().getUsername();
-                loginAsGuest();
-                break;
-            case NETWORK_FAILED:
-                guestUsername = "";
-                onRequestFinished();
-                currentAuthFragment.setErrorMessage(R.string.network_error);
-        }
-    }
-
-    private void processGuestLoginResponse(APIResponse<AuthToken> response) {
-        switch (response.getStatus()) {
-            case SUCCESFUL:
-                onRequestSuccessful();
-                break;
-            case NETWORK_FAILED:
-                currentAuthFragment.setErrorMessage(R.string.network_error);
-        }
     }
 }

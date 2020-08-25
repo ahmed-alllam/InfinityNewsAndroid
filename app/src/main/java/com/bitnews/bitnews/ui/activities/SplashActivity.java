@@ -20,22 +20,22 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.isUserAuthenticated(getApplicationContext()).observe(this, (isAuthenticated) -> {
-            if (isAuthenticated) {
-                callHasFavouriteCategories();
-            } else
-                addStartActivityDelayToHandler(TutorialActivity.class);
-        });
-    }
-
-    private void callHasFavouriteCategories() {
         CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         categoryViewModel.hasFavouriteCategories(getApplicationContext()).observe(this, hasFavourites -> {
             if (!hasFavourites)
-                addStartActivityDelayToHandler(ChooseCategoriesActivity.class);
+                checkIfAuthenticated();
             else
                 addStartActivityDelayToHandler(MainActivity.class);
+        });
+    }
+
+    private void checkIfAuthenticated() {
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.isUserAuthenticated(getApplicationContext()).observe(this, (isAuthenticated) -> {
+            if (isAuthenticated) {
+                addStartActivityDelayToHandler(ChooseCategoriesActivity.class);
+            } else
+                addStartActivityDelayToHandler(TutorialActivity.class);
         });
     }
 
