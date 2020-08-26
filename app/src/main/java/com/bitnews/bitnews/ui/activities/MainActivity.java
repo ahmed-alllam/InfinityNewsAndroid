@@ -156,8 +156,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null)
-                tab.view.setPadding(tab.view.getPaddingLeft() + paddingPerTab, 0,
-                        tab.view.getPaddingRight() + paddingPerTab, 0);
+                tab.view.setPaddingRelative(tab.view.getPaddingStart() + paddingPerTab, 0,
+                        tab.view.getPaddingEnd() + paddingPerTab, 0);
         }
     }
 

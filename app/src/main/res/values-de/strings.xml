@@ -1,0 +1,67 @@
+<resources>
+    <!-- Tutorial Activity -->
+    <string name="get_started_button">Loslegen</string>
+    <string name="tutorial1_title">Erhält die neuesten Nachrichten</string>
+    <string name="tutorial2_title">Auf dem Laufenden halten</string>
+    <string name="tutorial3_title">Intelligente Suche</string>
+    <string name="tutorial4_title">Sofort benachrichtigt werden</string>
+    <string name="tutorial1_description">Erhält die neuesten Nachrichtenbeiträge von über 100 Ihrer beliebtesten und bekanntesten Quellen und Zeitschriften in einer App</string>
+    <string name="tutorial2_description">Halten Sie sich mit den Daily Recap Stories über die täglichen und aktuellen Nachrichten in Ihrer Region auf dem Laufenden</string>
+    <string name="tutorial3_description">Suchen Sie nach Titel, Tags, Datum und Stichwörtern nach allen Nachrichten und Geschichten, die Sie benötigen</string>
+    <string name="tutorial4_description">Erhalten Sie Benachrichtigungen für Posts, sobald diese durch Abonnieren von Nachrichtenquellen veröffentlicht wurden. Push-Benachrichtigungen</string>
+
+    <!-- LoginSignup Activity -->
+    <string name="sign_up">Registrieren</string>
+    <string name="log_in">Anmelden</string>
+    <string name="password">Passwort</string>
+    <string name="forget_password">Passwort vergessen?</string>
+    <string name="last_name">Nachname</string>
+    <string name="first_name">Vorname</string>
+    <string name="username">Nutzername</string>
+    <string name="confirm_password">Bestätige das Passwort</string>
+    <string name="welcome">Willkommen!</string>
+    <string name="skip">Schwänzen</string>
+
+    <!-- Error and State Strings -->
+    <string name="network_error">Keine Netzwerk Verbindung</string>
+    <string name="wrong_username_or_password">Benutzername oder Passwort falsch</string>
+    <string name="username_taken">Benutzername bereits vergeben</string>
+    <string name="invalid_name">Ungültiger Vor- oder Nachname (muss aus mehr als 3 Buchstaben bestehen)</string>
+    <string name="invalid_username">Ungültiger Benutzername (muss aus mehr als 8 Buchstaben bestehen)</string>
+    <string name="invalid_password">Ungültiges oder nicht übereinstimmendes Passwort (muss aus mehr als 8 Buchstaben bestehen)</string>
+    <string name="retry">Versuchen</string>
+    <string name="no_feed">Ihr Feed ist leer</string>
+    <string name="loading">Wird geladen…</string>
+    <string name="next">Nächster</string>
+
+    <!-- ChooseCategories Activity -->
+    <string name="choose_topics">Wählen Sie mindestens 3 Themen aus, die Ihnen gefallen</string>
+
+    <!-- Main Activity -->
+    <string name="news">Nachrichten</string>
+
+    <!-- Main Activity NavigationView -->
+    <string name="news_sources">Nachrichtenquellen</string>
+    <string name="logout">Ausloggen</string>
+    <string name="edit_profile">Profil bearbeiten</string>
+    <string name="change_categories">Themen bearbeiten</string>
+    <string name="settings">Einstellungen</string>
+    <string name="login_or_signup">Registrieren</string>
+
+    <!-- Settings Activity -->
+    <string name="language">Sprache</string>
+    <string name="text_size">Textgröße</string>
+    <string name="choose_lanuage">Wählen Sie eine Sprache</string>
+    <string name="choose_text_size">Wählen Sie Textgröße</string>
+
+    <!-- Empty Activities -->
+    <string name="empty_screen">Diese Funktion wird in Kürze implementiert!</string>
+
+    <!-- Search Activity -->
+    <string name="search">Suche</string>
+    <string name="tags">Stichworte</string>
+    <string name="comments">Kommentare</string>
+    <string name="post_a_comment">Einen Kommentar posten</string>
+    <string name="send">Senden</string>
+
+</resources>

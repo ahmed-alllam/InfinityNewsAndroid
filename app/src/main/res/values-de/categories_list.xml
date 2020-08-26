@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_list">
+        <item>Aktuelle</item>
+        <item>Politik</item>
+        <item>Berichte</item>
+        <item>Kultur</item>
+        <item>Unfälle</item>
+        <item>Finanzen</item>
+        <item>Untersuchungen</item>
+        <item>Sport</item>
+        <item>Fußball</item>
+        <item>Arabisch</item>
+        <item>Global</item>
+        <item>Karikatur</item>
+        <item>Kunst</item>
+        <item>Fernseher</item>
+        <item>Frauen</item>
+        <item>Alben</item>
+        <item>Gesundheit</item>
+        <item>Technologie</item>
+        <item>Zustände</item>
+        <item>Us</item>
+        <item>Ägypten</item>
+        <item>Geld</item>
+        <item>Wissenschaft</item>
+        <item>Autos</item>
+        <item>Meinung</item>
+        <item>Unterhaltung</item>
+        <item>Märkte</item>
+        <item>Lebensstil</item>
+        <item>Nachlässe</item>
+    </string-array>
+</resources>

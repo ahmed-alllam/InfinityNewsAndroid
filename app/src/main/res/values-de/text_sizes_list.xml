@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="text_sizes">
-        <item>small</item>
+        <item>klein</item>
         <item>normal</item>
-        <item>big</item>
-        <item>huge</item>
+        <item>groß</item>
+        <item>enorm</item>
     </string-array>
 </resources>

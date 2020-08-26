@@ -35,7 +35,9 @@
             android:label="@string/search"
             android:theme="@style/AppTheme" />
         <activity android:name=".ui.activities.ChooseCategoriesActivity" />
-        <activity android:name=".ui.activities.LoginSignupActivity" />
+        <activity
+            android:name=".ui.activities.LoginSignupActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.activities.TutorialActivity" />
         <activity android:name=".ui.activities.MainActivity" />
         <activity android:name=".ui.activities.SplashActivity">

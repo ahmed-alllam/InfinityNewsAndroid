@@ -184,7 +184,6 @@ public abstract class PaginationRecyclerAdapter<T> extends RecyclerView.Adapter<
         }
 
         protected void refreshLayout() {
-            System.out.println("ahmed in refresh " + isLoadingFailed + isLoadingMore);
             if (isLoadingFailed)
                 showRetryButton();
 

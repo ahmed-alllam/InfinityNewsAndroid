@@ -3,5 +3,6 @@
     <string-array name="languages">
         <item>English</item>
         <item>العربية</item>
+        <item>Deutsch</item>
     </string-array>
 </resources>

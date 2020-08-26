@@ -58,8 +58,8 @@
             app:layout_constraintTop_toBottomOf="@+id/mainToolBar"
             app:tabMode="scrollable"
             app:tabGravity="fill"
+            app:tabMinWidth="0dp"
             app:tabIndicatorColor="@color/colorPrimary"
-            app:tabMinWidth="94dp"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabRippleColor="@android:color/transparent" />
 
