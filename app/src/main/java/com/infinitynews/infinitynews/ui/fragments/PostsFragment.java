@@ -74,6 +74,8 @@ public class PostsFragment extends Fragment {
             postsRecyclerView.suppressLayout(false);
             postsSwipeLayout.setRefreshing(false);
 
+            System.out.println("ahmed " + response.getStatus().name() + response.getitem());
+
             switch (response.getStatus()) {
                 case SUCCESFUL:
                     onSuccessfulResponse(response.getitem().getItems(), response.getitem().getCount());
@@ -87,6 +89,7 @@ public class PostsFragment extends Fragment {
         });
 
         postsRecyclerView = view.findViewById(R.id.postsRecyclerView);
+        postsRecyclerView.setHasFixedSize(true);
         postsRecyclerAdapter = new PostsRecyclerAdapter(postsRecyclerView, (v -> {
             if (!postsRecyclerAdapter.isLoading() && !isRefreshing)
                 loadPosts(false, false);
@@ -211,6 +214,7 @@ public class PostsFragment extends Fragment {
         if (isLoadingInitally) {
             if (!before) {
                 postsRecyclerAdapter.setLoadingInitially(true);
+                postsRecyclerAdapter.notifyDataSetChanged();
                 postsRecyclerView.suppressLayout(true);
             } else
                 timestamp = firstPostTimestamp;

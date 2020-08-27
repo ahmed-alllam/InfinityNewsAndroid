@@ -98,6 +98,7 @@ public class PostDetailActivity extends BaseActivity {
         });
 
         commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
+        commentsRecyclerView.setHasFixedSize(true);
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(commentsRecyclerView,
                 v -> loadComments());
         commentsRecyclerView.setAdapter(commentsRecyclerAdapter);
@@ -299,6 +300,7 @@ public class PostDetailActivity extends BaseActivity {
 
         if (commentsRecyclerAdapter.isEmpty()) {
             commentsRecyclerAdapter.setLoadingInitially(true);
+            commentsRecyclerAdapter.notifyDataSetChanged();
             commentsRecyclerView.suppressLayout(true);
         } else {
             commentsRecyclerAdapter.setLoadingFailed(false);
@@ -311,7 +313,7 @@ public class PostDetailActivity extends BaseActivity {
 
     private String addHtmlHeadersToBody(String postBody) {
         String htmlStart = "<html dir=\"auto\">";
-        String style = "<head><style>img { max-width: 100%;" +
+        String style = "<head><style>.container { max-width: 100%;" +
                 " margin: auto; display:block;} </style></head>";
         String bodyStart = "<body><div class=\"container\">";
         String htmlEnd = "</div></body></html>";

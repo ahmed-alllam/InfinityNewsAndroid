@@ -1,4 +1,4 @@
-<com.bitnews.bitnews.ui.views.CustomCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.infinitynews.infinitynews.ui.views.CustomCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -297,4 +297,4 @@
         android:rotationY="@dimen/rotate_by"
         android:src="@drawable/ic_arrow_small"
         tools:ignore="ContentDescription" />
-</com.bitnews.bitnews.ui.views.CustomCoordinatorLayout>
+</com.infinitynews.infinitynews.ui.views.CustomCoordinatorLayout>

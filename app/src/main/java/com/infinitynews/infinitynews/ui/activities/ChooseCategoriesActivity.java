@@ -67,6 +67,7 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
         });
 
         categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView);
+        categoriesRecyclerView.setHasFixedSize(true);
         categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView, this, (v) -> {
             if (!categoriesAdapter.isLoading())
                 loadCategories();
@@ -186,6 +187,7 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
 
         if (categoriesAdapter.isEmpty()) {
             categoriesAdapter.setLoadingInitially(true);
+            categoriesAdapter.notifyDataSetChanged();
             categoriesRecyclerView.suppressLayout(true);
         } else {
             categoriesAdapter.setLoadingFailed(false);
