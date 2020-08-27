@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Bit News</string>
+    <string name="app_name" translatable="false">Infinity News</string>
 
     <!-- Tutorial Activity -->
     <string name="get_started_button">Get Started</string>
