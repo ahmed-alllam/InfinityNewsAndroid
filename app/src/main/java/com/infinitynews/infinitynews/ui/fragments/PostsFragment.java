@@ -74,8 +74,6 @@ public class PostsFragment extends Fragment {
             postsRecyclerView.suppressLayout(false);
             postsSwipeLayout.setRefreshing(false);
 
-            System.out.println("ahmed " + response.getStatus().name() + response.getitem());
-
             switch (response.getStatus()) {
                 case SUCCESFUL:
                     onSuccessfulResponse(response.getitem().getItems(), response.getitem().getCount());

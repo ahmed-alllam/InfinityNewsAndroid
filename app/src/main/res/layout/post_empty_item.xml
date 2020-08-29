@@ -11,7 +11,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/postImageContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="110dp"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_launcher_background" />
+            app:srcCompat="@drawable/placeholder" />
     </androidx.cardview.widget.CardView>
 
     <TextView

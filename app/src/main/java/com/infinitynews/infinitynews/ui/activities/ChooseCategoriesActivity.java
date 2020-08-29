@@ -221,6 +221,7 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
                     finishAffinity();
                     break;
                 case NETWORK_FAILED:
+                case BAD_REQUEST:
                     nextButton.setEnabled(true);
                     nextErrorLabel.setVisibility(View.VISIBLE);
                     nextErrorLabel.setText(R.string.network_error);

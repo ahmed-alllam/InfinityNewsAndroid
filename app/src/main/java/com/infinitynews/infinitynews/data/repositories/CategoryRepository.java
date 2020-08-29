@@ -101,7 +101,7 @@ public class CategoryRepository {
 
                 long timeDifference = new Date().getTime() - data.get(0).getLastUpdated().getTime();
 
-                return timeDifference > DateUtils.DAY_IN_MILLIS * 7;
+                return timeDifference > DateUtils.MINUTE_IN_MILLIS * 5;
             }
 
             @Override

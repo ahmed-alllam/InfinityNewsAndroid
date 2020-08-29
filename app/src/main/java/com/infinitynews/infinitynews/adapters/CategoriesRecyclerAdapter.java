@@ -61,7 +61,7 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
 
         Glide.with(context)
                 .load(category.getImage())
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(categoryViewHolder.image);
 

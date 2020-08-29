@@ -139,7 +139,7 @@ public class PostDetailActivity extends BaseActivity {
         ImageView postImage = findViewById(R.id.postImage);
         Glide.with(this)
                 .load(post.getFullImage())
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(postImage);
 
@@ -153,7 +153,7 @@ public class PostDetailActivity extends BaseActivity {
             ImageView sourceImage = findViewById(R.id.sourceImage);
             Glide.with(this)
                     .load(postSource.getImage())
-                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(sourceImage);
         }
@@ -213,7 +213,7 @@ public class PostDetailActivity extends BaseActivity {
         userImage.setVisibility(View.VISIBLE);
         Glide.with(this)
                 .load(user.getProfilePhoto())
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.person_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(userImage);
 
@@ -313,10 +313,10 @@ public class PostDetailActivity extends BaseActivity {
 
     private String addHtmlHeadersToBody(String postBody) {
         String htmlStart = "<html dir=\"auto\">";
-        String style = "<head><style>.container { max-width: 100%;" +
+        String style = "<head><style>:not(head) { max-width: 100%;" +
                 " margin: auto; display:block;} </style></head>";
-        String bodyStart = "<body><div class=\"container\">";
-        String htmlEnd = "</div></body></html>";
+        String bodyStart = "<body>";
+        String htmlEnd = "</body></html>";
 
         return htmlStart + style + bodyStart + postBody + htmlEnd;
     }

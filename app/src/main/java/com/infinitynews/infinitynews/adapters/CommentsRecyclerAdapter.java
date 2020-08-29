@@ -31,7 +31,7 @@ public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> 
 
         Glide.with(context)
                 .load(commentsUser.getProfilePhoto())
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.person_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(commentViewHolder.commentUserImage);
 

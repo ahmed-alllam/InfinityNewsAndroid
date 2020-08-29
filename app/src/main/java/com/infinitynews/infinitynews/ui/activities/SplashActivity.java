@@ -13,7 +13,7 @@ import com.infinitynews.infinitynews.ui.viewmodels.CategoryViewModel;
 import com.infinitynews.infinitynews.ui.viewmodels.UserViewModel;
 
 public class SplashActivity extends AppCompatActivity {
-    public static final int TIME_TO_WAIT = 1500;
+    public static final int TIME_TO_WAIT = 2500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

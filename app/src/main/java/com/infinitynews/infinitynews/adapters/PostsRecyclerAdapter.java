@@ -58,7 +58,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
 
         Glide.with(context)
                 .load(post.getThumbnail())
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(postViewHolder.postImage);
 
@@ -76,7 +76,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         if (postSource != null) {
             Glide.with(context)
                     .load(postSource.getImage())
-                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(postViewHolder.sourceImage);
             postViewHolder.sourceImage.setVisibility(View.VISIBLE);

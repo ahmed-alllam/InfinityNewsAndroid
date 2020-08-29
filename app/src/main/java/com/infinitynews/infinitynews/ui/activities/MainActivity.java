@@ -210,7 +210,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (user.getProfilePhoto() != null) {
             Glide.with(this)
                     .load(user.getProfilePhoto())
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.person_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(userImage);
         }
