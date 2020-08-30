@@ -2,12 +2,12 @@ package com.infinitynews.infinitynews.ui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +50,7 @@ public class PostDetailActivity extends BaseActivity {
     private CommentsViewModel commentsViewModel;
     private NestedScrollView bottomSheet;
     private RecyclerView commentsRecyclerView;
+    private WebView postBodyWebView;
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
     private int totalCommentsCount;
     private int fetchedCommentsCount;
@@ -98,6 +99,8 @@ public class PostDetailActivity extends BaseActivity {
                     onErrorCommentsResponse();
             }
         });
+
+        postBodyWebView = findViewById(R.id.postBody);
 
         commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
         commentsRecyclerView.setHasFixedSize(true);
@@ -178,13 +181,11 @@ public class PostDetailActivity extends BaseActivity {
     @SuppressLint("SetJavaScriptEnabled")
     private void bindPostFromResponse(Post post) {
         if (post.getBody() != null && !post.getBody().isEmpty()) {
-            WebView postBody = findViewById(R.id.postBody);
-            postBody.getSettings().setJavaScriptEnabled(true);
-            postBody.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            postBody.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+            postBodyWebView.getSettings().setJavaScriptEnabled(true);
+            postBodyWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-            postBody.loadData(addHtmlHeadersToBody(post.getBody()),
-                    "text/html", "UTF-8");
+            postBodyWebView.loadData(addHtmlHeadersToBody(post.getBody()),
+                    "text/html; charset=\"utf-8\"", "utf-8");
         }
 
         if (post.getTags() != null && !post.getTags().isEmpty()) {
@@ -323,7 +324,7 @@ public class PostDetailActivity extends BaseActivity {
 
     private String addHtmlHeadersToBody(String postBody) {
         String htmlStart = "<html dir=\"auto\">";
-        String style = "<head><style>:not(head) { max-width: 100%;" +
+        String style = "<head><style>:not(head) { max-width: 100%; object-fit: scale-down;" +
                 " margin: auto; display:block;} </style></head>";
         String bodyStart = "<body>";
         String htmlEnd = "</body></html>";
@@ -344,5 +345,28 @@ public class PostDetailActivity extends BaseActivity {
     private int getBootomSheetMaxHeight() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return (int) (displayMetrics.heightPixels - (BOTTOM_SHEET_EXPANDED_OFFSET * displayMetrics.density));
+    }
+
+    @Override
+    public AssetManager getAssets() {
+        return getResources().getAssets();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        postBodyWebView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        postBodyWebView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        postBodyWebView.destroy();
+        super.onDestroy();
     }
 }

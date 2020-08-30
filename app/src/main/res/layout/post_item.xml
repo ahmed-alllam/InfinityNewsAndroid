@@ -106,12 +106,11 @@
         android:ellipsize="end"
         android:fontFamily="@font/roboto_medium"
         android:maxLines="1"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/postTitle"
         app:layout_constraintTop_toBottomOf="@+id/postTitle"
-        tools:ignore="SmallSp"
         tools:text="timestamp"
         tools:visibility="visible" />
 
