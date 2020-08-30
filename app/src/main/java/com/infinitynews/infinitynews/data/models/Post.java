@@ -28,8 +28,8 @@ public class Post {
     private String sourceSlug;
     @ForeignKey(entity = Category.class, parentColumns = "slug", childColumns = "categorySlug")
     private String categorySlug;
-    @SerializedName("detailed_url")
-    private String detailedUrl;
+    @SerializedName("detail_url")
+    private String detailUrl;
     private String body;
     @Ignore
     private Source source;
@@ -65,7 +65,7 @@ public class Post {
                 Objects.equals(timestamp, post.timestamp) &&
                 Objects.equals(sourceSlug, post.sourceSlug) &&
                 Objects.equals(categorySlug, post.categorySlug) &&
-                Objects.equals(detailedUrl, post.detailedUrl) &&
+                Objects.equals(detailUrl, post.detailUrl) &&
                 Objects.equals(body, post.body) &&
                 Objects.equals(source, post.source) &&
                 Objects.equals(category, post.category) &&
@@ -74,7 +74,7 @@ public class Post {
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug, thumbnail, title, description, timestamp, sourceSlug, categorySlug, detailedUrl, body, source, category, tags, commentsCount);
+        return Objects.hash(slug, thumbnail, title, description, timestamp, sourceSlug, categorySlug, detailUrl, body, source, category, tags, commentsCount);
     }
 
     public void setTitle(String title) {
@@ -174,12 +174,12 @@ public class Post {
         this.body = body;
     }
 
-    public String getDetailedUrl() {
-        return detailedUrl;
+    public String getDetailUrl() {
+        return detailUrl;
     }
 
-    public void setDetailedUrl(String detailedUrl) {
-        this.detailedUrl = detailedUrl;
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
     }
 
     public int getCommentsCount() {

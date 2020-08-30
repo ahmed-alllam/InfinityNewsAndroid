@@ -1,6 +1,8 @@
 package com.infinitynews.infinitynews.ui.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -192,6 +194,14 @@ public class PostDetailActivity extends BaseActivity {
             tagsRecyclerView.setVisibility(View.VISIBLE);
             tagsRecyclerView.setAdapter(new PostTagsAdapter(post.getTags()));
         }
+
+        Button viewOnSourceButton = findViewById(R.id.viewOnSourceButton);
+        viewOnSourceButton.setVisibility(View.VISIBLE);
+        viewOnSourceButton.setOnClickListener(v -> {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(post.getDetailUrl()));
+            startActivity(i);
+        });
 
         findViewById(R.id.commentsLabel).setVisibility(View.VISIBLE);
 

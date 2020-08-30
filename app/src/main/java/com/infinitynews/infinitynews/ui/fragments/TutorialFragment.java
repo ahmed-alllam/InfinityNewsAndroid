@@ -15,31 +15,31 @@ import androidx.fragment.app.Fragment;
 import com.infinitynews.infinitynews.R;
 
 public class TutorialFragment extends Fragment {
-    private int image_drawable_id;
-    private int title_string_id;
-    private int description_string_id;
+    private int imageDrawableId;
+    private int titleStringId;
+    private int descriptionStringId;
 
     public TutorialFragment(int fragmentPosition) {
         switch (fragmentPosition) {
             case 0:
-                image_drawable_id = R.drawable.ic_launcher_background;
-                title_string_id = R.string.tutorial1_title;
-                description_string_id = R.string.tutorial1_description;
+                imageDrawableId = R.drawable.ic_news;
+                titleStringId = R.string.tutorial1_title;
+                descriptionStringId = R.string.tutorial1_description;
                 break;
             case 1:
-                image_drawable_id = R.drawable.ic_launcher_background;
-                title_string_id = R.string.tutorial2_title;
-                description_string_id = R.string.tutorial2_description;
+                imageDrawableId = R.drawable.ic_up_to_date;
+                titleStringId = R.string.tutorial2_title;
+                descriptionStringId = R.string.tutorial2_description;
                 break;
             case 2:
-                image_drawable_id = R.drawable.ic_launcher_background;
-                title_string_id = R.string.tutorial3_title;
-                description_string_id = R.string.tutorial3_description;
+                imageDrawableId = R.drawable.ic_search_news;
+                titleStringId = R.string.tutorial3_title;
+                descriptionStringId = R.string.tutorial3_description;
                 break;
             case 3:
-                image_drawable_id = R.drawable.ic_launcher_background;
-                title_string_id = R.string.tutorial4_title;
-                description_string_id = R.string.tutorial4_description;
+                imageDrawableId = R.drawable.ic_notification_bell;
+                titleStringId = R.string.tutorial4_title;
+                descriptionStringId = R.string.tutorial4_description;
         }
 
     }
@@ -55,12 +55,12 @@ public class TutorialFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ImageView imageView = view.findViewById(R.id.image);
-        imageView.setImageResource(image_drawable_id);
+        imageView.setImageResource(imageDrawableId);
 
         TextView title = view.findViewById(R.id.title);
-        title.setText(title_string_id);
+        title.setText(titleStringId);
 
         TextView description = view.findViewById(R.id.description);
-        description.setText(description_string_id);
+        description.setText(descriptionStringId);
     }
 }
