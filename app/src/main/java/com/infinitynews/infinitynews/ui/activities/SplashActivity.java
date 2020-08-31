@@ -33,21 +33,20 @@ public class SplashActivity extends AppCompatActivity {
         });
 
         CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
-        categoryViewModel.hasFavouriteCategories(getApplicationContext()).observe(this, hasFavourites -> {
-            if (!hasFavourites)
-                checkIfAuthenticated();
-            else
-                setNextActivity(MainActivity.class);
-        });
+        categoryViewModel.hasFavouriteCategories(getApplicationContext()).observe(this, this::checkIfAuthenticated);
     }
 
-    private void checkIfAuthenticated() {
+    private void checkIfAuthenticated(boolean hasFavouriteCategories) {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.isUserAuthenticated(getApplicationContext()).observe(this, (isAuthenticated) -> {
-            if (isAuthenticated) {
-                setNextActivity(ChooseCategoriesActivity.class);
-            } else
-                setNextActivity(TutorialActivity.class);
+            if (hasFavouriteCategories)
+                setNextActivity(MainActivity.class);
+            else {
+                if (isAuthenticated) {
+                    setNextActivity(ChooseCategoriesActivity.class);
+                } else
+                    setNextActivity(TutorialActivity.class);
+            }
         });
     }
 

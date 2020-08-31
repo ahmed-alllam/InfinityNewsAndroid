@@ -60,13 +60,26 @@ public class CategoryRepository {
 
                 long timeDifference = new Date().getTime() - data.getItems().get(0).getLastUpdated().getTime();
 
-                return timeDifference > DateUtils.DAY_IN_MILLIS * 4;
+                return timeDifference > DateUtils.HOUR_IN_MILLIS;
             }
 
             @Override
             protected Single<ResponseList<Category>> getAPICall() {
-                return apiEndpoints.getAllCategories(
-                        PaginationCursorGenerator.getPositionCursor(String.valueOf(offset)));
+                return apiEndpoints.getAllCategories(PaginationCursorGenerator
+                        .getPositionCursor(String.valueOf(offset)))
+                        .flatMap(categories -> {
+                            if (AuthTokenDao.getToken().isEmpty()) {
+                                return categoryDao.getFavouriteCategories().map(favourites -> {
+                                    for (Category category : favourites) {
+                                        int position = categories.getItems().indexOf(category);
+                                        if (position >= 0)
+                                            categories.getItems().get(position).setFavouritedByUser(true);
+                                    }
+                                    return categories;
+                                });
+                            } else
+                                return Single.just(categories);
+                        });
             }
 
             @Override
@@ -101,7 +114,7 @@ public class CategoryRepository {
 
                 long timeDifference = new Date().getTime() - data.get(0).getLastUpdated().getTime();
 
-                return timeDifference > DateUtils.MINUTE_IN_MILLIS * 5;
+                return timeDifference > DateUtils.HOUR_IN_MILLIS * 5;
             }
 
             @Override

@@ -50,10 +50,10 @@ public class CustomCoordinatorLayout extends CoordinatorLayout {
                 lastY = newY;
 
                 if (dY > 0) {
-                    if (getNestedScrollView().canScrollVertically(-1))
+                    if (getNestedScrollView() == null || getNestedScrollView().canScrollVertically(-1))
                         return false;
                 } else {
-                    if (getBottomSheetBehavior().getState() != BottomSheetBehavior.STATE_EXPANDED)
+                    if (getBottomSheetBehavior() == null || getBottomSheetBehavior().getState() != BottomSheetBehavior.STATE_EXPANDED)
                         return false;
                 }
         }
