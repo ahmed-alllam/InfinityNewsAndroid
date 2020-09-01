@@ -93,7 +93,7 @@ public class PostDetailActivity extends BaseActivity {
 
             switch (response.getStatus()) {
                 case SUCCESFUL:
-                    onSuccseesfulCommentsResponse(response.getitem().getItems(), response.getitem().getCount());
+                    onSuccseesfulCommentsResponse(response.getitem().getItems());
                     break;
                 case NETWORK_FAILED:
                     onErrorCommentsResponse();
@@ -103,7 +103,6 @@ public class PostDetailActivity extends BaseActivity {
         postBodyWebView = findViewById(R.id.postBody);
 
         commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
-        commentsRecyclerView.setHasFixedSize(true);
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(commentsRecyclerView,
                 v -> loadComments());
         commentsRecyclerView.setAdapter(commentsRecyclerAdapter);
@@ -241,7 +240,7 @@ public class PostDetailActivity extends BaseActivity {
         });
     }
 
-    private void onSuccseesfulCommentsResponse(List<Comment> comments, int count) {
+    private void onSuccseesfulCommentsResponse(List<Comment> comments) {
         commentsRecyclerAdapter.removeFooterItem();
 
         if (!comments.isEmpty()) {
@@ -285,14 +284,14 @@ public class PostDetailActivity extends BaseActivity {
 
                         commentsRecyclerView.setVisibility(View.VISIBLE);
                         commentsRecyclerAdapter.addAll(0, Collections.singletonList(response.getitem()));
-                        commentsRecyclerView.post(() -> {
-                            float firstCommentsY = 0;
+                        commentsRecyclerView.postDelayed(() -> {
+                            int commentHeight = 0;
                             if (commentsRecyclerView.getChildAt(0) != null)
-                                firstCommentsY = commentsRecyclerView.getChildAt(0).getY();
+                                commentHeight = commentsRecyclerView.getChildAt(0).getHeight();
 
-                            float y = commentsRecyclerView.getY() + firstCommentsY;
-                            bottomSheet.smoothScrollTo(0, (int) y);
-                        });
+                            int y = commentsRecyclerView.getTop() + commentHeight;
+                            bottomSheet.smoothScrollTo(0, y);
+                        }, 100);
                     }
                 });
     }

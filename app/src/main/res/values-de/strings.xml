@@ -27,7 +27,7 @@
     <string name="wrong_username_or_password">Benutzername oder Passwort falsch</string>
     <string name="username_taken">Benutzername bereits vergeben</string>
     <string name="invalid_name">Ungültiger Vor- oder Nachname (muss aus mehr als 3 Buchstaben bestehen)</string>
-    <string name="invalid_username">Ungültiger Benutzername (muss aus mehr als 8 Buchstaben bestehen)</string>
+    <string name="invalid_username">Ungültiger Benutzername. Muss mehr als 8 Zeichen sein. Nur Englische Buchstaben, Ziffern und (@ /. / + / - / _).</string>
     <string name="invalid_password">Ungültiges oder nicht übereinstimmendes Passwort (muss aus mehr als 8 Buchstaben bestehen)</string>
     <string name="retry">Versuchen</string>
     <string name="no_feed">Ihr Feed ist leer</string>

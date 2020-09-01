@@ -27,7 +27,7 @@
     <string name="wrong_username_or_password">اسم مستخدم او كلمة سر خطأ</string>
     <string name="username_taken">اسم مستخدم محجوز من قبل</string>
     <string name="invalid_name">خطأ في الاسم الأول او الأخير (يجب ان يكون اكبر من 3 احرف)</string>
-    <string name="invalid_username">اسم مستخدم غير صالح (يجب ان يكون اكبر من 8 احرف)</string>
+    <string name="invalid_username">اسم مستخدم غير صالح. يجب أن يكون أكثر من 8 أحرف. أحرف انجليزية وأرقام و (@ /. / + / - / _) فقط.</string>
     <string name="invalid_password">كلمة سر غير صالحة (يجب ان تكون اكبر من 8 احرف)</string>
     <string name="retry">أعد المحاولة</string>
     <string name="no_feed">لا يوجد أخبار جديدة لك</string>

@@ -53,4 +53,7 @@ public abstract class CategoryDao {
     @Query("UPDATE category " +
             "SET isFavouritedByUser = 0 ")
     public abstract void removeFavouriteCategories();
+
+    @Query("DELETE FROM category")
+    public abstract void removeAllCategoires();
 }

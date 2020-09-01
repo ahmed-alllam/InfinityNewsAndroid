@@ -75,7 +75,7 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean isUsernameValid(String username) {
-        String regexPattern = "^(?=[a-zA-Z0-9._]{8,36}$)(?!.*[_.]{2})[^_.].*[^_.]$";
+        String regexPattern = "[\\w.@+-]{8,}\\Z";
         return username.matches(regexPattern);
     }
 

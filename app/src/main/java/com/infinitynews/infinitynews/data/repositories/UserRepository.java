@@ -122,7 +122,7 @@ public class UserRepository {
             protected void saveToDB(AuthToken token, boolean isUpdate) {
                 authTokenDao.addAuthToken(token);
                 AuthTokenDao.setToken(token.getToken());
-                categoryDao.removeFavouriteCategories();
+                categoryDao.removeAllCategoires();
             }
 
             @Override

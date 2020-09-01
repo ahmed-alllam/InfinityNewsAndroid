@@ -68,7 +68,7 @@ public class CommentRepository {
 
                 long timeDifference = new Date().getTime() - commentDate.getTime();
 
-                return timeDifference > DateUtils.HOUR_IN_MILLIS * 5;
+                return timeDifference > DateUtils.HOUR_IN_MILLIS / 2;
             }
 
             @Override
@@ -119,6 +119,8 @@ public class CommentRepository {
 
             @Override
             protected void saveToDB(Comment comment, boolean isUpdate) {
+                comment.setPostSlug(postSlug);
+                comment.setUserUsername(comment.getUser().getUsername());
                 commentDao.insertComments(Collections.singletonList(comment));
             }
         }.asSingle();
