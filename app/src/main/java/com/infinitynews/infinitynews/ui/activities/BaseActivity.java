@@ -2,7 +2,6 @@ package com.infinitynews.infinitynews.ui.activities;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,7 +23,6 @@ class BaseActivity extends AppCompatActivity {
             Locale locale = new Locale(language);
             Locale.setDefault(locale);
             overrideConfiguration.setLocale(locale);
-            Resources.getSystem().updateConfiguration(overrideConfiguration, null);
         }
 
         float textSize;

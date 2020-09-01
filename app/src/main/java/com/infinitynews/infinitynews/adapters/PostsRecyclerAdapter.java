@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.infinitynews.infinitynews.R;
 import com.infinitynews.infinitynews.callbacks.OnPostItemClickListener;
 import com.infinitynews.infinitynews.data.models.Post;
@@ -92,7 +93,7 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
         }
 
         if (post.getTimestamp() != null) {
-            postViewHolder.timestamp.setText(TimeStampParser.parseTimeStamp(post.getTimestamp()));
+            postViewHolder.timestamp.setReferenceTime(TimeStampParser.getDateFromString(post.getTimestamp()).getTime());
             postViewHolder.timestamp.setVisibility(View.VISIBLE);
         } else {
             postViewHolder.timestamp.setVisibility(View.GONE);
@@ -121,7 +122,8 @@ public class PostsRecyclerAdapter extends PaginationRecyclerAdapter<Post> {
 
     private static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView postImage, sourceImage;
-        TextView postTitle, postDescription, sourceTitle, timestamp;
+        TextView postTitle, postDescription, sourceTitle;
+        RelativeTimeTextView timestamp;
         Post post;
 
         PostViewHolder(@NonNull View itemView, OnPostItemClickListener onPostItemClickListener) {

@@ -97,7 +97,7 @@
         app:layout_constraintVertical_bias="1.0"
         tools:visibility="visible" />
 
-    <TextView
+    <com.github.curioustechizen.ago.RelativeTimeTextView
         android:id="@+id/timestamp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

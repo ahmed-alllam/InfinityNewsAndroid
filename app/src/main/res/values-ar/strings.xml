@@ -33,6 +33,7 @@
     <string name="no_feed">لا يوجد أخبار جديدة لك</string>
     <string name="loading">جارٍ التحميل…</string>
     <string name="next">التالي</string>
+    <string name="just_now">الآن</string>
 
     <!-- ChooseCategories Activity -->
     <string name="choose_topics">اختر 3 تصنيفات علي الأقل</string>

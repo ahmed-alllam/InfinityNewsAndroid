@@ -33,6 +33,7 @@
     <string name="no_feed">Ihr Feed ist leer</string>
     <string name="loading">Wird geladen…</string>
     <string name="next">Nächster</string>
+    <string name="just_now">Jetzt</string>
 
     <!-- ChooseCategories Activity -->
     <string name="choose_topics">Wählen Sie mindestens 3 Themen aus, die Ihnen gefallen</string>

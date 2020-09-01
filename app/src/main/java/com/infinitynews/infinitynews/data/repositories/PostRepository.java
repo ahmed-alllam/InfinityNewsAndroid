@@ -41,7 +41,7 @@ public class PostRepository {
                                                             String timestamp, boolean before) {
         String lastTimestamp;
         if (timestamp == null || timestamp.isEmpty())
-            lastTimestamp = TimeStampParser.getCurrentTime();
+            lastTimestamp = TimeStampParser.getCurrentTimeString();
         else
             lastTimestamp = timestamp;
 

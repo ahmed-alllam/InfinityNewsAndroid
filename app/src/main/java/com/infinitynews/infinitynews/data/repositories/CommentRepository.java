@@ -38,7 +38,7 @@ public class CommentRepository {
                                                                          String timestamp) {
         String lastTimestamp;
         if (timestamp == null || timestamp.isEmpty())
-            lastTimestamp = TimeStampParser.getCurrentTime();
+            lastTimestamp = TimeStampParser.getCurrentTimeString();
         else
             lastTimestamp = timestamp;
 
@@ -119,6 +119,7 @@ public class CommentRepository {
 
             @Override
             protected void saveToDB(Comment comment, boolean isUpdate) {
+                comment.setTimestamp(TimeStampParser.getCurrentTimeString());
                 comment.setPostSlug(postSlug);
                 comment.setUserUsername(comment.getUser().getUsername());
                 commentDao.insertComments(Collections.singletonList(comment));

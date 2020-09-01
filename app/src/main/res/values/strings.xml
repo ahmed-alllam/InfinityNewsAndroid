@@ -35,6 +35,7 @@
     <string name="no_feed">Your Feed is Empty</string>
     <string name="loading">Loading…</string>
     <string name="next">Next</string>
+    <string name="just_now">Right Now</string>
 
     <!-- ChooseCategories Activity -->
     <string name="choose_topics">Choose at least 3 topics you like</string>

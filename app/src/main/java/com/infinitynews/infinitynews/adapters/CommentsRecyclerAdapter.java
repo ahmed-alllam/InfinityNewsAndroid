@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.infinitynews.infinitynews.R;
 import com.infinitynews.infinitynews.data.models.Comment;
 import com.infinitynews.infinitynews.data.models.User;
@@ -37,7 +38,7 @@ public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> 
 
         commentViewHolder.commentUsername.setText(usersName);
         commentViewHolder.commentText.setText(comment.getText());
-        commentViewHolder.commentTimestamp.setText(TimeStampParser.parseTimeStamp(comment.getTimestamp()));
+        commentViewHolder.commentTimestamp.setReferenceTime(TimeStampParser.getDateFromString(comment.getTimestamp()).getTime());
     }
 
     @Override
@@ -54,7 +55,8 @@ public class CommentsRecyclerAdapter extends PaginationRecyclerAdapter<Comment> 
 
     private static class CommentViewHolder extends RecyclerView.ViewHolder {
         ImageView commentUserImage;
-        TextView commentUsername, commentTimestamp, commentText;
+        TextView commentUsername, commentText;
+        RelativeTimeTextView commentTimestamp;
 
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);

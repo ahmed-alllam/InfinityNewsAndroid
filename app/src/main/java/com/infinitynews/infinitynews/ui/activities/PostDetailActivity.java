@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.infinitynews.infinitynews.R;
@@ -167,8 +168,8 @@ public class PostDetailActivity extends BaseActivity {
             sourceTitle.setText(postSource.getTitle());
         }
 
-        TextView timestamp = findViewById(R.id.timestamp);
-        timestamp.setText(TimeStampParser.parseTimeStamp(post.getTimestamp()));
+        RelativeTimeTextView timestamp = findViewById(R.id.timestamp);
+        timestamp.setReferenceTime(TimeStampParser.getDateFromString(post.getTimestamp()).getTime());
 
         if (post.getDescription() != null && !post.getDescription().isEmpty()) {
             TextView postDescription = findViewById(R.id.postDescription);
@@ -284,14 +285,6 @@ public class PostDetailActivity extends BaseActivity {
 
                         commentsRecyclerView.setVisibility(View.VISIBLE);
                         commentsRecyclerAdapter.addAll(0, Collections.singletonList(response.getitem()));
-                        commentsRecyclerView.postDelayed(() -> {
-                            int commentHeight = 0;
-                            if (commentsRecyclerView.getChildAt(0) != null)
-                                commentHeight = commentsRecyclerView.getChildAt(0).getHeight();
-
-                            int y = commentsRecyclerView.getTop() + commentHeight;
-                            bottomSheet.smoothScrollTo(0, y);
-                        }, 100);
                     }
                 });
     }
