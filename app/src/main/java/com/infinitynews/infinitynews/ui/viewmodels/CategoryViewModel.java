@@ -27,9 +27,9 @@ public class CategoryViewModel extends ViewModel {
         return categoryRepository;
     }
 
-    public void getAllCategories(Context context, int offset) {
+    public void getAllCategories(Context context, int offset, boolean isRefresh) {
         disposable.add(getCategoryRepository(context)
-                .getAllCategories(offset)
+                .getAllCategories(offset, isRefresh)
                 .subscribe(categories::setValue));
     }
 

@@ -70,7 +70,7 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
         categoriesRecyclerView.setHasFixedSize(true);
         categoriesAdapter = new CategoriesRecyclerAdapter(categoriesRecyclerView, this, (v) -> {
             if (!categoriesAdapter.isLoading())
-                loadCategories();
+                loadCategories(false);
         });
         categoriesRecyclerView.setAdapter(categoriesAdapter);
         int spanCount = calculateSpanCount();
@@ -86,10 +86,10 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
         retryButton = findViewById(R.id.retryButton);
         retryButton.setOnClickListener(v -> {
             if (!categoriesAdapter.isLoading())
-                loadCategories();
+                loadCategories(false);
         });
 
-        loadCategories();
+        loadCategories(false);
     }
 
     private void onSuccessfulResponse(List<Category> categories, int count) {
@@ -160,7 +160,7 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
 
             @Override
             public void loadMoreItems() {
-                loadCategories();
+                loadCategories(false);
             }
         };
     }
@@ -178,10 +178,10 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
         chosenCategories.clear();
         categoriesAdapter.clear();
         initallyChosenCategories.clear();
-        loadCategories();
+        loadCategories(true);
     }
 
-    private void loadCategories() {
+    private void loadCategories(boolean isRefresh) {
         categoriesRecyclerView.setVisibility(View.VISIBLE);
         retryButton.setVisibility(View.INVISIBLE);
 
@@ -194,7 +194,7 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
             categoriesAdapter.setLoadingMore(true);
             categoriesAdapter.addFooterItem();
         }
-        categoryViewModel.getAllCategories(getApplicationContext(), offset);
+        categoryViewModel.getAllCategories(getApplicationContext(), offset, isRefresh);
     }
 
     public void onNextButtonClicked(View view) {

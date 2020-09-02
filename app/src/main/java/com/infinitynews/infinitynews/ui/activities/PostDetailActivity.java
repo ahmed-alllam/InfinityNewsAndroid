@@ -182,8 +182,8 @@ public class PostDetailActivity extends BaseActivity {
     private void bindPostFromResponse(Post post) {
         if (post.getBody() != null && !post.getBody().isEmpty()) {
             postBodyWebView.getSettings().setJavaScriptEnabled(true);
-            postBodyWebView.loadData(addHtmlHeadersToBody(post.getBody()),
-                    "text/html; charset=utf-8", "utf-8");
+            postBodyWebView.loadDataWithBaseURL(post.getSource().getWebsite(), post.getBody(),
+                    "text/html; charset=utf-8", "utf-8", null);
         }
 
         if (post.getTags() != null && !post.getTags().isEmpty()) {
@@ -314,16 +314,6 @@ public class PostDetailActivity extends BaseActivity {
         }
 
         commentsViewModel.getComments(getApplicationContext(), postSlug, lastCommentTimeStamp);
-    }
-
-    private String addHtmlHeadersToBody(String postBody) {
-        String htmlStart = "<html dir=\"auto\">";
-        String style = "<head><style>:not(head) { max-width: 100%; object-fit: scale-down;" +
-                " margin: auto; display:block;line-height: 1.8;} </style></head>";
-        String bodyStart = "<body>";
-        String htmlEnd = "</body></html>";
-
-        return htmlStart + style + bodyStart + postBody + htmlEnd;
     }
 
     private int getPostImageHeight() {

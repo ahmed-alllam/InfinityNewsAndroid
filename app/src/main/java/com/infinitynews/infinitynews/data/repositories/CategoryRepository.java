@@ -37,7 +37,7 @@ public class CategoryRepository {
         categoryDao = appDatabase.getCategoryDao();
     }
 
-    public Single<APIResponse<ResponseList<Category>>> getAllCategories(int offset) {
+    public Single<APIResponse<ResponseList<Category>>> getAllCategories(int offset, boolean isRefresh) {
         return new NetworkBoundResource<ResponseList<Category>>() {
             @Override
             protected boolean shouldFetchFromDB() {
@@ -55,7 +55,7 @@ public class CategoryRepository {
 
             @Override
             protected boolean shouldFetchFromAPI(ResponseList<Category> data) {
-                if (data == null || data.getItems().isEmpty())
+                if (isRefresh || data == null || data.getItems().isEmpty())
                     return true;
 
                 long timeDifference = new Date().getTime() - data.getItems().get(0).getLastUpdated().getTime();
