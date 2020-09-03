@@ -19,6 +19,7 @@ import com.infinitynews.infinitynews.utils.PaginationCursorGenerator;
 import com.infinitynews.infinitynews.utils.TimeStampParser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -105,7 +106,10 @@ public class PostRepository {
 
             @Override
             protected Single<Post> fetchFromDB() {
-                return postDao.getPost(postSlug);
+                return postDao.getPost(postSlug).map(post -> {
+                    addNestedFieldsToPosts(Collections.singletonList(post));
+                    return post;
+                });
             }
 
             @Override

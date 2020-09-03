@@ -112,7 +112,8 @@ public class PostsFragment extends Fragment {
                 loadPosts(true, false);
         });
 
-        loadPosts(true, false);
+        if (postViewModel.getPostsLiveData().getValue() == null)
+            loadPosts(true, false);
     }
 
     private void onSuccessfulResponse(List<Post> posts, int count) {

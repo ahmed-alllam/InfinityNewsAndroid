@@ -48,7 +48,7 @@
                 android:textSize="20sp" />
         </androidx.appcompat.widget.Toolbar>
 
-        <com.google.android.material.tabs.TabLayout
+        <com.infinitynews.infinitynews.ui.views.CustomTabLayout
             android:id="@+id/categoriesTabLayout"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -58,7 +58,6 @@
             app:layout_constraintTop_toBottomOf="@+id/mainToolBar"
             app:tabMode="scrollable"
             app:tabGravity="fill"
-            app:tabMinWidth="0dp"
             app:tabIndicatorColor="@color/colorPrimary"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabRippleColor="@android:color/transparent" />

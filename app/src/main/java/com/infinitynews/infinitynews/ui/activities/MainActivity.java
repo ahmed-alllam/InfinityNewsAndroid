@@ -89,8 +89,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         });
 
-        userViewModel.getCurrentUser(getApplicationContext());
-        categoryViewModel.getFavouriteCategories(getApplicationContext());
+        if (userViewModel.getUser().getValue() == null)
+            userViewModel.getCurrentUser(getApplicationContext());
+
+        if (categoryViewModel.getCategoriesLiveData().getValue() == null)
+            categoryViewModel.getFavouriteCategories(getApplicationContext());
     }
 
     private void onSuccessfulResponse(List<Category> categories) {
@@ -100,7 +103,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         new TabLayoutMediator(categoriesTabLayout, mainViewPager,
                 ((tab, position) -> tab.setText(CategoriesLocalizer.getLocalizedCategoryTitle(this,
                         categories.get(position).getTitle())))).attach();
-        dynamicallySetTabLayoutMode(categoriesTabLayout);
     }
 
     public void searchButtonClickListener(View view) {
@@ -127,38 +129,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         };
-    }
-
-    private void dynamicallySetTabLayoutMode(TabLayout tabLayout) {
-        int tabsWidth = calculateTotalTabsWidth(tabLayout);
-        int layoutWidth = getResources().getDisplayMetrics().widthPixels;
-
-        if (tabsWidth < layoutWidth)
-            addWidthDifferenceToTabs(tabLayout, layoutWidth - tabsWidth);
-    }
-
-    private int calculateTotalTabsWidth(TabLayout tabLayout) {
-        int tabsWidth = 0;
-
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            if (tab != null) {
-                tab.view.measure(0, 0);
-                tabsWidth += tab.view.getMeasuredWidth();
-            }
-        }
-        return tabsWidth;
-    }
-
-    private void addWidthDifferenceToTabs(TabLayout tabLayout, int diff) {
-        int paddingPerTab = diff / tabLayout.getTabCount() / 2;
-
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            if (tab != null)
-                tab.view.setPaddingRelative(tab.view.getPaddingStart() + paddingPerTab, 0,
-                        tab.view.getPaddingEnd() + paddingPerTab, 0);
-        }
     }
 
     @Override

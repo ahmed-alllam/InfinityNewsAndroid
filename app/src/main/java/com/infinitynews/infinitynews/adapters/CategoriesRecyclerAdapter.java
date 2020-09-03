@@ -29,19 +29,19 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
         this.categoryItemChooseListener = categoryItemChooseListener;
         ITEM_VIEW_HEIGHT = 100;
 
-        selectedColor = ContextCompat.getColor(context, R.color.colorAccent);
+        selectedColor = ContextCompat.getColor(context, R.color.colorRipple);
     }
 
     @Override
     protected RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent) {
         return new CategoryViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.category_item, parent, false));
+                .inflate(R.layout.category_item, parent, false), false);
     }
 
     @Override
     protected RecyclerView.ViewHolder createEmptyItemViewHolder(ViewGroup parent) {
         return new CategoryViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.category_item, parent, false));
+                .inflate(R.layout.category_item, parent, false), true);
     }
 
     @Override
@@ -90,16 +90,19 @@ public class CategoriesRecyclerAdapter extends PaginationRecyclerAdapter<Categor
         private ImageView image;
         private ImageView selectedIcon;
 
-        CategoryViewHolder(@NonNull View itemView) {
+        CategoryViewHolder(@NonNull View itemView, boolean isEmpty) {
             super(itemView);
 
             title = itemView.findViewById(R.id.title);
             image = itemView.findViewById(R.id.image);
             selectedIcon = itemView.findViewById(R.id.selectedIcon);
+
+            if (isEmpty)
+                itemView.setAlpha(0.5f);
         }
 
         private void highlightView() {
-            image.setColorFilter(selectedColor, PorterDuff.Mode.OVERLAY);
+            image.setColorFilter(selectedColor, PorterDuff.Mode.DARKEN);
             selectedIcon.setVisibility(View.VISIBLE);
         }
 

@@ -89,7 +89,8 @@ public class ChooseCategoriesActivity extends BaseActivity implements CategoryIt
                 loadCategories(false);
         });
 
-        loadCategories(false);
+        if (categoryViewModel.getCategoriesLiveData().getValue() == null)
+            loadCategories(false);
     }
 
     private void onSuccessfulResponse(List<Category> categories, int count) {
