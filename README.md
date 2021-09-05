@@ -1,23 +1,25 @@
 # InfinityNewsAndroid
 
-Infinity News — A Complete News Aggregator App
+<b>Infinity News — A Complete News Aggregator App</b>
 
-Get Latest News :  
+
+
+*<b>Get Latest News</b>* :  
 
 Get latest News Posts from all of your favourite and most famous Sources and Magazines in one App   
 
 
-Keep Up-To-Date : 
+*<b>Keep Up-To-Date</b>* : 
 
 Keep Up-to-date with the Daily and Breaking News in your Area by using the Daily Recap Stories
 
 
-Smart Searching: 
+*<b>Smart Searching</b>*: 
 
 Search By Title, Tags, Date and Keywords for all the News Posts and Stories that you need   
 
 
-Get Notified Instantly: 
+*<b>Get Notified Instantly</b>*: 
 
 Receive Notifications for Posts as soon as Published by Subscribing to news sources Push Notification    
 
