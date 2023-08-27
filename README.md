@@ -15,14 +15,14 @@
 <br />
 <div align="center">
   <a href="https://github.com/ahmed-alllam/InfinityNewsAndroid">
-    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
+    <img src="images/logo.jpg" alt="Logo" width="500">
   </a>
 
 <h3 align="center">Infinity News</h3>
 
   <p align="center">
-    <a href="https://github.com/ahmed-alllam/InfinityNewsAndroid">View Demo</a>
-    ·
+<!--     <a href="https://github.com/ahmed-alllam/InfinityNewsAndroid">View Demo</a> -->
+<!--     · -->
     <a href="https://github.com/ahmed-alllam/InfinityNewsAndroid/issues">Report Bug</a>
     ·
     <a href="https://github.com/ahmed-alllam/InfinityNewsAndroid/issues">Request Feature</a>
@@ -75,7 +75,7 @@
 
 
 
-## Built With
+## Tech Stack
 
 * [![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
 * [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
